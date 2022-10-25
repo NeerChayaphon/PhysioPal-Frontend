@@ -1,38 +1,62 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+.secondary-btn {
+  position: relative;
+  left: 45%;
+  padding: 10px 20px 10px 20px;
+  border-radius: 5px;
+  border-color: rgba(125, 125, 125, 0.1);
+  border-width: 5px;
+  background-color: rgba(0, 0, 0,0.2);
+  box-shadow: 0px 0px 0px 0px;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.secondary-btn:hover {
+  background-color: rgba(0, 0, 0,0.4);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.starting-contdown {
+  margin: auto;
+  border: 10px solid rgba(125, 125, 125, 0.5);
+  width: max-content;
+  padding: 10px 30px;
+  border-radius: 50%;
+  background-color: rgba(255,255,255,0);
+  position: relative;
+  top: 45%;
+}
+.starting-contdown h1 {
+  color: white;
+}
+.pose-img {
+  position: absolute;
+  right: 120px;
+  top: 80px;
+  width: 500px;
+  aspect-ratio: 1;
+}
+
+.performance-container {
+  display: flex;
+  padding: 20px;
+  position: absolute;
+  left: 150px;
+}
+
+
+.pose-performance {
+  margin: 10px 10px;
+  background-color: white;
+  border-radius: 8px;
+  padding: 10px;
+}
+.pose-performance h4 {
+  color: rgba(0,0,0,0.7);
+}
+
+#webcam {
+  transform: rotateY(180deg);
+}
+
+#my-canvas {
+  transform: rotateY(180deg);
 }
