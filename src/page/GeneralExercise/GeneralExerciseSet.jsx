@@ -21,6 +21,11 @@ import Navbar from '../../component/navbar';
 
 let skeletonColor = 'rgb(255,255,255)';
 
+const exerciseInfo = {
+  timePeriod: 10,
+  reps: 2,
+};
+
 const steps = [
   {
     name: 'Lie down',
@@ -71,8 +76,9 @@ function Exercise() {
   const [currentPose, setCurrentPose] = useState(steps[0]);
   const [stepCount, setStepCount] = useState(0);
   const [startingPosition, setStartingPosition] = useState(true);
-  const [round, setRound] = useState(1)
-  const [isMovenetLoaded, setIsMovenetLoaded] = useState(false)
+  const [round, setRound] = useState(1);
+  const [isMovenetLoaded, setIsMovenetLoaded] = useState(false);
+  const [isSoundOn, setIsSoundOn] = useState(true)
 
   useEffect(() => {
     const timeDiff = (currentTime - startingTime) / 1000;
@@ -83,6 +89,8 @@ function Exercise() {
       setBestPerform(timeDiff);
     }
   }, [currentTime]);
+
+  // npm i react-timer-hook
 
   // useEffect(() => {
   //   setCurrentTime(0);
@@ -151,6 +159,8 @@ function Exercise() {
     return embedding;
   }
 
+  // const countAudio = new Audio(count);
+
   const runMovenet = async () => {
     console.log(currentPose);
     const detectorConfig = {
@@ -170,7 +180,7 @@ function Exercise() {
     // );
 
     // ## Correct
-    
+
     const poseClassifier = await tf.loadLayersModel(steps[stepCount].model);
     console.log(steps[stepCount].model);
     console.log(steps[stepCount].name);
@@ -178,14 +188,14 @@ function Exercise() {
     // const poseClassifier = await tf.loadLayersModel(
     //   'https://seniorprojectdemomodel.blob.core.windows.net/startingdemo/startingmodel.json'
     // );
-    const countAudio = new Audio(count);
-    countAudio.loop = true;
+
+    // countAudio.loop = true;
     interval = setInterval(() => {
-      detectPose(detector, poseClassifier, countAudio);
+      detectPose(detector, poseClassifier);
     }, 100);
   };
 
-  const detectPose = async (detector, poseClassifier, countAudio) => {
+  const detectPose = async (detector, poseClassifier) => {
     if (
       typeof webcamRef.current !== 'undefined' &&
       webcamRef.current !== null &&
@@ -241,10 +251,12 @@ function Exercise() {
               ? StartingPositionClass[steps[stepCount].modelClass]
               : ExerciseClass[steps[stepCount].modelClass];
             console.log(steps[stepCount].modelClass);
+
             if (data[0][classNo] > 0.9) {
               if (stepCount === steps.length - 1) {
+                setIsSoundOn(true)
                 if (!flag) {
-                  countAudio.play();
+                  // countAudio.play()
                   setStartingTime(new Date(Date()).getTime());
                   flag = true;
                 }
@@ -260,9 +272,10 @@ function Exercise() {
               }
             } else {
               flag = false;
+              setIsSoundOn(false)
               skeletonColor = 'rgb(255,255,255)';
-              countAudio.pause();
-              countAudio.currentTime = 0;
+              // countAudio.pause();
+              // countAudio.currentTime = 0;
             }
           });
         };
@@ -279,8 +292,19 @@ function Exercise() {
   }
 
   function stopPose() {
-    setIsStartPose(false);
+    setRound(round + 1);
+    flag = false;
+    skeletonColor = 'rgb(255,255,255)';
+    // countAudio.pause();
+    // countAudio.currentTime = 0;
+
+    setCurrentPose(steps[0]);
     clearInterval(interval);
+    setIsStartPose(false);
+    setStartingPosition(true);
+    
+    setStepCount(0);
+    
   }
 
   useEffect(() => {
@@ -288,6 +312,12 @@ function Exercise() {
       runMovenet();
     }
   }, [stepCount, isStartPose]);
+
+  useEffect(() => {
+    if (poseTime === exerciseInfo.timePeriod) {
+      stopPose()
+    }
+  }, [poseTime, setPoseTime]);
 
   return (
     <>
@@ -316,17 +346,32 @@ function Exercise() {
                   flexDir='column'
                   alignItems='start'
                   borderTop='4px'
-                  borderTopColor={(currentPose.name === step.name) && isStartPose ? "blue.500" : "gray.400" }
+                  borderTopColor={
+                    currentPose.name === step.name && isStartPose
+                      ? 'blue.500'
+                      : 'gray.400'
+                  }
                 >
                   <Text
                     fontSize='sm'
                     fontWeight='semibold'
-                    color={(currentPose.name === step.name) && isStartPose ? "blue.500" : "gray.500" }
+                    color={
+                      currentPose.name === step.name && isStartPose
+                        ? 'blue.500'
+                        : 'gray.500'
+                    }
                     pt={3}
                   >
                     STEP {steps.indexOf(step) + 1}
                   </Text>
-                  <Text color={(currentPose.name === step.name) && isStartPose ? "blue.500" : "gray.500" } fontSize='sm'>
+                  <Text
+                    color={
+                      currentPose.name === step.name && isStartPose
+                        ? 'blue.500'
+                        : 'gray.500'
+                    }
+                    fontSize='sm'
+                  >
                     {step.name}
                   </Text>
                 </Flex>
@@ -346,17 +391,23 @@ function Exercise() {
             alignItems='center'
           >
             <VStack>
-            <Image
-              boxSize='max-content'
-              objectFit='cover'
-              src='https://cdni.iconscout.com/illustration/premium/thumb/bridge-pose-3503127-2965793.png'
-              alt='Dan Abramov'
-            />
-             {isStartPose ? <Text>Round {round}</Text> :  <Text color="gray.100">----</Text>}
-             {currentPose.name === steps[steps.length - 1].name ? <Text>Pose Time: {poseTime}</Text> :  <Text color="gray.100">----</Text>}
+              <Image
+                boxSize='max-content'
+                objectFit='cover'
+                src='https://cdni.iconscout.com/illustration/premium/thumb/bridge-pose-3503127-2965793.png'
+                alt='Dan Abramov'
+              />
+              {isStartPose ? (
+                <Text>Round {round}</Text>
+              ) : (
+                <Text color='gray.100'>----</Text>
+              )}
+              {currentPose.name === steps[steps.length - 1].name ? (
+                <Text>Pose Time: {poseTime}</Text>
+              ) : (
+                <Text color='gray.100'>----</Text>
+              )}
             </VStack>
-           
-           
           </GridItem>
           <GridItem
             w='100%'
