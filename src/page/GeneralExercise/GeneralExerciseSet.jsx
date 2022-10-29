@@ -6,7 +6,7 @@ import Webcam from 'react-webcam';
 import {count} from '../../utils/music';
 import {POINTS, keypointConnections} from '../../utils/data';
 import {drawPoint, drawSegment} from '../../utils/helper';
-import { useStopwatch } from 'react-timer-hook';
+import {useStopwatch} from 'react-timer-hook';
 
 import {
   Flex,
@@ -61,6 +61,7 @@ const ExerciseClass = {
 
 let interval;
 let flag = false;
+let secondsRemaining = 5;
 
 function Exercise() {
   const webcamRef = useRef(null);
@@ -79,20 +80,13 @@ function Exercise() {
   const [startingPosition, setStartingPosition] = useState(true);
   const [round, setRound] = useState(1);
   const [isMovenetLoaded, setIsMovenetLoaded] = useState(false);
-  const [isSoundOn, setIsSoundOn] = useState(true)
-  const [isCorrect, setIsCorrect] = useState(false)
+  const [isSoundOn, setIsSoundOn] = useState(true);
+  const [isCorrect, setIsCorrect] = useState(false);
+  const [isRest, setIsRest] = useState(false);
+  const [restTime, setRestTime] = useState(5)
 
-  const {
-    seconds,
-    minutes,
-    hours,
-    days,
-    isRunning,
-    start,
-    pause,
-    reset,
-  } = useStopwatch({ autoStart: false });
-
+  const {seconds, minutes, hours, days, isRunning, start, pause, reset} =
+    useStopwatch({autoStart: false});
 
   // useEffect(() => {
   //   // const timeDiff = (currentTime - (startingTime - (bestPerform * 1000))) / 1000;
@@ -299,7 +293,7 @@ function Exercise() {
                   // countAudio.play()
                   // setStartingTime((new Date(Date()).getTime()) - (bestPerform * 1000));
                   setIsCorrect(true);
-                  flag = true
+                  flag = true;
                 }
                 setCurrentTime(new Date(Date()).getTime());
                 skeletonColor = 'rgb(0,255,0)';
@@ -313,10 +307,10 @@ function Exercise() {
               }
             } else {
               if (stepCount === steps.length - 1) {
-                setIsCorrect(false)
-                flag = false
+                setIsCorrect(false);
+                flag = false;
               }
-              setIsSoundOn(false)
+              setIsSoundOn(false);
               skeletonColor = 'rgb(255,255,255)';
               // countAudio.pause();
               // countAudio.currentTime = 0;
@@ -341,41 +335,68 @@ function Exercise() {
     skeletonColor = 'rgb(255,255,255)';
     // countAudio.pause();
     // countAudio.currentTime = 0;
-    pause()
+    pause();
     setCurrentPose(steps[0]);
     clearInterval(interval);
-    setIsCorrect(false)
+    setIsCorrect(false);
     setIsStartPose(false);
     setStartingPosition(true);
 
     setCurrentTime(0);
     setPoseTime(0);
     setBestPerform(0);
-    
+
     setStepCount(0);
-    
+
+    secondsRemaining = 5;
+    setRestTime(5)
+
+    setIsRest(true);
   }
 
   useEffect(() => {
     if (isStartPose) {
-      reset()
-      pause()
+      reset();
+      pause();
       runMovenet();
     }
   }, [stepCount, isStartPose]);
 
   useEffect(() => {
     if (seconds > exerciseInfo.timePeriod) {
-      stopPose()
+      stopPose();
     }
   }, [seconds]);
-  
+
   useEffect(() => {
-    if (stepCount === steps.length - 1){
-      isCorrect ? start() : pause()
+    if (stepCount === steps.length - 1) {
+      isCorrect ? start() : pause();
     }
   }, [isCorrect]);
 
+  // useEffect(() => {
+  //   const timeout = setTimeout(() => {
+  //     setIsRest(false)
+  //     setIsStartPose(true);
+  //   }, 5000);
+
+  //   return () => clearTimeout(timeout);
+  // }, [isRest, setIsRest]);
+
+  useEffect(() => {
+    if (isRest) {
+      const restInterval = setInterval(() => {
+        // time is up
+        if (secondsRemaining === 0) {
+          setIsRest(false);
+          setIsStartPose(true);
+          clearInterval(restInterval);
+        }
+        secondsRemaining--;
+        setRestTime(secondsRemaining)
+      }, 1000);
+    }
+  }, [isRest, setIsRest]);
 
   return (
     <>
@@ -456,12 +477,12 @@ function Exercise() {
                 alt='Dan Abramov'
               />
               {isStartPose ? (
-                <Text fontSize="3xl" >Round {round}</Text>
+                <Text fontSize='3xl'>Round {round}</Text>
               ) : (
                 <Text color='gray.100'>----</Text>
               )}
               {currentPose.name === steps[steps.length - 1].name ? (
-                <Text fontSize="3xl">Pose Time: {seconds}</Text>
+                <Text fontSize='3xl'>Pose Time: {seconds}</Text>
               ) : (
                 <Text color='gray.100'>----</Text>
               )}
@@ -475,12 +496,22 @@ function Exercise() {
             flexDir='column'
             alignItems='center'
           >
-            {!isStartPose && (
+            {!isStartPose && !isRest && (
               <Text fontSize='2xl' fontWeight='bold' mb={5}>
                 Let's start exercising
               </Text>
             )}
-            {!isStartPose && (
+            {isRest && (
+              <Text fontSize='2xl' fontWeight='bold' mb={5}>
+                Let's take a break
+              </Text>
+            )}
+            {isRest && (
+              <Text fontSize='2xl' fontWeight='bold' mb={5}>
+                {restTime}
+              </Text>
+            )}
+            {!isStartPose && !isRest && (
               <Button
                 color='white'
                 bgColor='teal.400'
@@ -493,7 +524,7 @@ function Exercise() {
               </Button>
             )}
 
-            {isStartPose && (
+            {isStartPose && !isRest && (
               <Webcam
                 width='640px'
                 height='480px'
@@ -505,7 +536,7 @@ function Exercise() {
                 }}
               />
             )}
-            {isStartPose && (
+            {isStartPose && !isRest && (
               <canvas
                 ref={canvasRef}
                 id='my-canvas'
