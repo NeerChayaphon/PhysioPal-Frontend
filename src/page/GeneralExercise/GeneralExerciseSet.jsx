@@ -7,6 +7,7 @@ import {count} from '../../utils/music';
 import {POINTS, keypointConnections} from '../../utils/data';
 import {drawPoint, drawSegment} from '../../utils/helper';
 import {useStopwatch} from 'react-timer-hook';
+import ExerciseSet from './exercise';
 
 import {
   Flex,
@@ -21,44 +22,6 @@ import {FaPlay} from 'react-icons/fa';
 import Navbar from '../../component/navbar';
 
 let skeletonColor = 'rgb(255,255,255)';
-
-const exerciseInfo = {
-  timePeriod: 10,
-  reps: 2,
-};
-
-const steps = [
-  {
-    name: 'Lie down',
-    modelClass: 'LieDown',
-    model:
-      'https://seniorprojectdemomodel.blob.core.windows.net/startingdemo/startingmodel.json',
-  },
-  {
-    name: 'Raise your knee up',
-    modelClass: 'RaiseYourKneeUp',
-    model:
-      'https://seniorprojectdemomodel.blob.core.windows.net/demomodel/demo.json',
-  },
-  {
-    name: 'Raise your back up',
-    modelClass: 'RaiseYourBackUp',
-    model:
-      'https://seniorprojectdemomodel.blob.core.windows.net/demomodel/demo.json',
-  },
-];
-
-const StartingPositionClass = {
-  LieDown: 0,
-  Standing: 1,
-};
-
-const ExerciseClass = {
-  RaiseYourBackUp: 0,
-  RaiseYourKneeUp: 1,
-  LieDown: 2,
-};
-
 let interval;
 let flag = false;
 let secondsRemaining = 5;
@@ -71,19 +34,26 @@ function Exercise() {
   const [currentTime, setCurrentTime] = useState(0);
   const [poseTime, setPoseTime] = useState(0);
   const [bestPerform, setBestPerform] = useState(0);
-  // const [currentPose, setCurrentPose] = useState('LieDown');
+  // const [currentStep, setCurrentStep] = useState('LieDown');
   const [isStartPose, setIsStartPose] = useState(false);
   const [haveKeyPoint, setHaveKeyPoint] = useState(true);
 
-  const [currentPose, setCurrentPose] = useState(steps[0]);
+  const [exerciseIndex, setExerciseIndex] = useState(0)
+  const [currentExercise, setCurrentExercise] = useState(ExerciseSet.exerciseSet[0])
+  const [currentStep, setCurrentStep] = useState(currentExercise.exercise.steps[0]);
+
   const [stepCount, setStepCount] = useState(0);
   const [startingPosition, setStartingPosition] = useState(true);
-  const [round, setRound] = useState(1);
-  const [isMovenetLoaded, setIsMovenetLoaded] = useState(false);
+
   const [isSoundOn, setIsSoundOn] = useState(true);
   const [isCorrect, setIsCorrect] = useState(false);
   const [isRest, setIsRest] = useState(false);
   const [restTime, setRestTime] = useState(5)
+
+  const [round, setRound] = useState(1);
+
+  const [isFinish, setIsFinish] = useState(false)
+
 
   const {seconds, minutes, hours, days, isRunning, start, pause, reset} =
     useStopwatch({autoStart: false});
@@ -121,7 +91,7 @@ function Exercise() {
   //   setCurrentTime(0);
   //   setPoseTime(0);
   //   setBestPerform(0);
-  // }, [currentPose]);
+  // }, [currentStep]);
 
   // useEffect(() => {
   //   const timeDiff = (currentTime - startingTime) / 1000;
@@ -197,7 +167,7 @@ function Exercise() {
   // const countAudio = new Audio(count);
 
   const runMovenet = async () => {
-    console.log(currentPose);
+    console.log(currentStep);
     const detectorConfig = {
       modelType: poseDetection.movenet.modelType.SINGLEPOSE_THUNDER,
     };
@@ -216,7 +186,8 @@ function Exercise() {
 
     // ## Correct
 
-    const poseClassifier = await tf.loadLayersModel(steps[stepCount].model);
+    // const poseClassifier = await tf.loadLayersModel(steps[stepCount].model);
+    const poseClassifier = await tf.loadLayersModel(currentExercise.exercise.steps[stepCount].model);
     // console.log(steps[stepCount].model);
     // console.log(steps[stepCount].name);
 
@@ -282,13 +253,14 @@ function Exercise() {
           const processedInput = landmarks_to_embedding(input);
           const classification = poseClassifier.predict(processedInput);
           classification.array().then((data) => {
-            const classNo = startingPosition
-              ? StartingPositionClass[steps[stepCount].modelClass]
-              : ExerciseClass[steps[stepCount].modelClass];
-            console.log(steps[stepCount].modelClass);
+            // const classNo = startingPosition
+            //   ? StartingPositionClass[currentExercise.exercise.steps[stepCount].modelClass]
+            //   : ExerciseClass[currentExercise.exercise.steps[stepCount].modelClass];
+            const classNo = currentExercise.exercise.steps[stepCount].modelIndex
+            console.log(currentExercise.exercise.steps[stepCount].modelClass);
 
             if (data[0][classNo] > 0.9) {
-              if (stepCount === steps.length - 1) {
+              if (stepCount === currentExercise.exercise.steps.length - 1) {
                 if (!flag) {
                   // countAudio.play()
                   // setStartingTime((new Date(Date()).getTime()) - (bestPerform * 1000));
@@ -301,12 +273,12 @@ function Exercise() {
                 if (stepCount == 0) {
                   setStartingPosition(false);
                 }
-                setCurrentPose(steps[stepCount + 1]);
+                setCurrentStep(currentExercise.exercise.steps[stepCount + 1]);
                 clearInterval(interval);
                 setStepCount(stepCount + 1);
               }
             } else {
-              if (stepCount === steps.length - 1) {
+              if (stepCount === currentExercise.exercise.steps.length - 1) {
                 setIsCorrect(false);
                 flag = false;
               }
@@ -324,34 +296,47 @@ function Exercise() {
     }
   };
 
-  function startYoga() {
+  function startExercise() {
     setIsStartPose(true);
     // runMovenet();
   }
 
   function stopPose() {
-    setRound(round + 1);
+
     flag = false;
     skeletonColor = 'rgb(255,255,255)';
-    // countAudio.pause();
-    // countAudio.currentTime = 0;
     pause();
-    setCurrentPose(steps[0]);
     clearInterval(interval);
     setIsCorrect(false);
     setIsStartPose(false);
     setStartingPosition(true);
-
     setCurrentTime(0);
     setPoseTime(0);
     setBestPerform(0);
-
     setStepCount(0);
+    setCurrentStep(currentExercise.exercise.steps[0]);
+    
+    // countAudio.pause();
+    // countAudio.currentTime = 0;
 
-    secondsRemaining = 5;
-    setRestTime(5)
+    if (round < currentExercise.reps) {
+      setRound(round + 1);
+      secondsRemaining = 5;
+      setRestTime(5)
+      setIsRest(true);
+    } else {
+      if (exerciseIndex < ExerciseSet.exerciseSet.length - 1) {
+        setRound(1);
+        setExerciseIndex(exerciseIndex + 1)
+      } else {
+        setIsFinish(true)
+      }
+    }
+  }
 
-    setIsRest(true);
+  const startNextExercise = () => {
+    setCurrentExercise(ExerciseSet.exerciseSet[exerciseIndex])
+    setIsStartPose(true)
   }
 
   useEffect(() => {
@@ -363,13 +348,19 @@ function Exercise() {
   }, [stepCount, isStartPose]);
 
   useEffect(() => {
-    if (seconds > exerciseInfo.timePeriod) {
+    if (seconds > currentExercise.timePeriod) {
       stopPose();
     }
   }, [seconds]);
 
+  // useEffect(() => {
+  //   if (round > currentExercise.reps) {
+  //     stopPose();
+  //   }
+  // }, [round]);
+
   useEffect(() => {
-    if (stepCount === steps.length - 1) {
+    if (stepCount === currentExercise.exercise.steps.length - 1) {
       isCorrect ? start() : pause();
     }
   }, [isCorrect]);
@@ -403,7 +394,7 @@ function Exercise() {
       <Navbar />
       <Flex alignItems='flex-start' flexDir='column' m={8}>
         <Text textColor='black' fontWeight='bold' fontSize='xl' mb={4}>
-          Exercise 1
+          {currentExercise.exercise.name}
         </Text>
         <VStack
           w='full'
@@ -419,14 +410,14 @@ function Exercise() {
             tincidunt facilisi dui nisi, volutp
           </Text>
           <Grid w='100%' templateColumns='repeat(3, 1fr)' gap={6}>
-            {steps.map((step) => (
+            {currentExercise.exercise.steps.map((step) => (
               <GridItem w='100%'>
                 <Flex
                   flexDir='column'
                   alignItems='start'
                   borderTop='4px'
                   borderTopColor={
-                    currentPose.name === step.name && isStartPose
+                    currentStep.name === step.name && isStartPose
                       ? 'blue.500'
                       : 'gray.400'
                   }
@@ -435,17 +426,17 @@ function Exercise() {
                     fontSize='sm'
                     fontWeight='semibold'
                     color={
-                      currentPose.name === step.name && isStartPose
+                      currentStep.name === step.name && isStartPose
                         ? 'blue.500'
                         : 'gray.500'
                     }
                     pt={3}
                   >
-                    STEP {steps.indexOf(step) + 1}
+                    STEP {currentExercise.exercise.steps.indexOf(step) + 1}
                   </Text>
                   <Text
                     color={
-                      currentPose.name === step.name && isStartPose
+                      currentStep.name === step.name && isStartPose
                         ? 'blue.500'
                         : 'gray.500'
                     }
@@ -461,7 +452,20 @@ function Exercise() {
         {/* <HStack w='full' alignItems='flex-start' bg='blue.50'>
   
         </HStack> */}
-        <Grid w='100%' templateColumns='5fr 7fr' h='xl'>
+        {isFinish && <Grid w='100%' templateColumns='12fr' h='xl'>
+          <GridItem
+            w='100%'
+            bgColor='gray.100'
+            justifyContent='center'
+            display='flex'
+            alignItems='center'
+          >
+             <Text fontSize='2xl' fontWeight='bold' mb={5}>
+               Finish
+              </Text>
+          </GridItem>
+          </Grid>}
+        {!isFinish && <Grid w='100%' templateColumns='5fr 7fr' h='xl'>
           <GridItem
             w='100%'
             bgColor='gray.100'
@@ -481,7 +485,7 @@ function Exercise() {
               ) : (
                 <Text color='gray.100'>----</Text>
               )}
-              {currentPose.name === steps[steps.length - 1].name ? (
+              {currentStep.name ===  currentExercise.exercise.steps[currentExercise.exercise.steps.length - 1].name ? (
                 <Text fontSize='3xl'>Pose Time: {seconds}</Text>
               ) : (
                 <Text color='gray.100'>----</Text>
@@ -496,9 +500,14 @@ function Exercise() {
             flexDir='column'
             alignItems='center'
           >
-            {!isStartPose && !isRest && (
+            {!isStartPose && !isRest && exerciseIndex === 0 &&(
               <Text fontSize='2xl' fontWeight='bold' mb={5}>
-                Let's start exercising
+                Let's start exercise
+              </Text>
+            )}
+            {!isStartPose && !isRest && exerciseIndex > 0 &&(
+              <Text fontSize='2xl' fontWeight='bold' mb={5}>
+                Next exercise
               </Text>
             )}
             {isRest && (
@@ -511,12 +520,24 @@ function Exercise() {
                 {restTime}
               </Text>
             )}
-            {!isStartPose && !isRest && (
+            {!isStartPose && !isRest && exerciseIndex === 0 && (
               <Button
                 color='white'
                 bgColor='teal.400'
                 leftIcon={<FaPlay />}
-                onClick={startYoga}
+                onClick={startExercise}
+                _hover='teal.100'
+              >
+                {' '}
+                Start
+              </Button>
+            )}
+            {!isStartPose && !isRest && exerciseIndex > 0 && (
+              <Button
+                color='white'
+                bgColor='teal.400'
+                leftIcon={<FaPlay />}
+                onClick={startNextExercise}
                 _hover='teal.100'
               >
                 {' '}
@@ -549,7 +570,7 @@ function Exercise() {
               ></canvas>
             )}
           </GridItem>
-        </Grid>
+        </Grid>}
       </Flex>
     </>
   );
