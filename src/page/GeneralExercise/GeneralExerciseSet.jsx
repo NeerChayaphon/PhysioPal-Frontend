@@ -6,6 +6,7 @@ import Webcam from 'react-webcam';
 import {count} from '../../utils/music';
 import {POINTS, keypointConnections} from '../../utils/data';
 import {drawPoint, drawSegment} from '../../utils/helper';
+import { useStopwatch } from 'react-timer-hook';
 
 import {
   Flex,
@@ -79,16 +80,46 @@ function Exercise() {
   const [round, setRound] = useState(1);
   const [isMovenetLoaded, setIsMovenetLoaded] = useState(false);
   const [isSoundOn, setIsSoundOn] = useState(true)
+  const [isCorrect, setIsCorrect] = useState(false)
 
-  useEffect(() => {
-    const timeDiff = (currentTime - startingTime) / 1000;
-    if (flag) {
-      setPoseTime(timeDiff);
-    }
-    if ((currentTime - startingTime) / 1000 > bestPerform) {
-      setBestPerform(timeDiff);
-    }
-  }, [currentTime]);
+  const {
+    seconds,
+    minutes,
+    hours,
+    days,
+    isRunning,
+    start,
+    pause,
+    reset,
+  } = useStopwatch({ autoStart: false });
+
+
+  // useEffect(() => {
+  //   // const timeDiff = (currentTime - (startingTime - (bestPerform * 1000))) / 1000;
+  //   // if (flag) {
+  //   //   setPoseTime(timeDiff);
+  //   // }
+  //   // // } else {
+  //   // //   setBestPerform(timeDiff);
+  //   // // }
+  //   // if (timeDiff > bestPerform) {
+  //   //   setBestPerform(timeDiff);
+  //   // }
+  //   let demoTime = 0
+  //   if (bestPerform != 0){
+  //     demoTime = startingTime - (bestPerform * 1000)
+  //   } else {
+  //     demoTime = startingTime
+  //   }
+
+  //   const timeDiff = (currentTime - demoTime) / 1000;
+  //   if (flag) {
+  //       setPoseTime(timeDiff);
+  //       if (timeDiff > bestPerform) {
+  //           setBestPerform(timeDiff);
+  //         }
+  //   }
+  // }, [currentTime]);
 
   // npm i react-timer-hook
 
@@ -97,6 +128,16 @@ function Exercise() {
   //   setPoseTime(0);
   //   setBestPerform(0);
   // }, [currentPose]);
+
+  // useEffect(() => {
+  //   const timeDiff = (currentTime - startingTime) / 1000;
+  //   if (flag) {
+  //     setPoseTime(timeDiff);
+  //   }
+  //   if ((currentTime - startingTime) / 1000 > bestPerform) {
+  //     setBestPerform(timeDiff);
+  //   }
+  // }, [currentTime]);
 
   function get_center_point(landmarks, left_bodypart, right_bodypart) {
     let left = tf.gather(landmarks, left_bodypart, 1);
@@ -182,8 +223,8 @@ function Exercise() {
     // ## Correct
 
     const poseClassifier = await tf.loadLayersModel(steps[stepCount].model);
-    console.log(steps[stepCount].model);
-    console.log(steps[stepCount].name);
+    // console.log(steps[stepCount].model);
+    // console.log(steps[stepCount].name);
 
     // const poseClassifier = await tf.loadLayersModel(
     //   'https://seniorprojectdemomodel.blob.core.windows.net/startingdemo/startingmodel.json'
@@ -254,11 +295,11 @@ function Exercise() {
 
             if (data[0][classNo] > 0.9) {
               if (stepCount === steps.length - 1) {
-                setIsSoundOn(true)
                 if (!flag) {
                   // countAudio.play()
-                  setStartingTime(new Date(Date()).getTime());
-                  flag = true;
+                  // setStartingTime((new Date(Date()).getTime()) - (bestPerform * 1000));
+                  setIsCorrect(true);
+                  flag = true
                 }
                 setCurrentTime(new Date(Date()).getTime());
                 skeletonColor = 'rgb(0,255,0)';
@@ -271,7 +312,10 @@ function Exercise() {
                 setStepCount(stepCount + 1);
               }
             } else {
-              flag = false;
+              if (stepCount === steps.length - 1) {
+                setIsCorrect(false)
+                flag = false
+              }
               setIsSoundOn(false)
               skeletonColor = 'rgb(255,255,255)';
               // countAudio.pause();
@@ -297,11 +341,16 @@ function Exercise() {
     skeletonColor = 'rgb(255,255,255)';
     // countAudio.pause();
     // countAudio.currentTime = 0;
-
+    pause()
     setCurrentPose(steps[0]);
     clearInterval(interval);
+    setIsCorrect(false)
     setIsStartPose(false);
     setStartingPosition(true);
+
+    setCurrentTime(0);
+    setPoseTime(0);
+    setBestPerform(0);
     
     setStepCount(0);
     
@@ -309,15 +358,24 @@ function Exercise() {
 
   useEffect(() => {
     if (isStartPose) {
+      reset()
+      pause()
       runMovenet();
     }
   }, [stepCount, isStartPose]);
 
   useEffect(() => {
-    if (poseTime === exerciseInfo.timePeriod) {
+    if (seconds > exerciseInfo.timePeriod) {
       stopPose()
     }
-  }, [poseTime, setPoseTime]);
+  }, [seconds]);
+  
+  useEffect(() => {
+    if (stepCount === steps.length - 1){
+      isCorrect ? start() : pause()
+    }
+  }, [isCorrect]);
+
 
   return (
     <>
@@ -398,12 +456,12 @@ function Exercise() {
                 alt='Dan Abramov'
               />
               {isStartPose ? (
-                <Text>Round {round}</Text>
+                <Text fontSize="3xl" >Round {round}</Text>
               ) : (
                 <Text color='gray.100'>----</Text>
               )}
               {currentPose.name === steps[steps.length - 1].name ? (
-                <Text>Pose Time: {poseTime}</Text>
+                <Text fontSize="3xl">Pose Time: {seconds}</Text>
               ) : (
                 <Text color='gray.100'>----</Text>
               )}
