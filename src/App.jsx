@@ -6,9 +6,11 @@ import {
   Route,
 } from "react-router-dom";
 import Exercise from './page/Exercise';
+import GeneralExerciseSet from './page/GeneralExercise/GeneralExerciseSet';
 import Home from './page/Home';
 import Patient from './page/Patient';
 import Physiotherapist from './page/Physiotherapist';
+import VideoChat from './page/VideoChat';
 
 const router = createBrowserRouter([
   {
@@ -26,6 +28,14 @@ const router = createBrowserRouter([
   {
     path: "patient",
     element: <Patient/>
+  },
+  {
+    path: "generalExercise/set/:id",
+    element: <GeneralExerciseSet/>
+  },
+  {
+    path: "video-chat",
+    element: <VideoChat/>
   }
 ]);
 
