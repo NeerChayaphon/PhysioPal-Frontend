@@ -117,7 +117,6 @@ function Menu({joinCode, setJoinCode, setPage}) {
             value={joinCode}
             onChange={(e) => setJoinCode(e.target.value)}
             placeholder='Join with code'
-            color="white"
             bgColor="white"
           ></Input>
           <Button  bgColor="teal.400" color="white" onClick={() => setPage('join')}>Answer</Button>

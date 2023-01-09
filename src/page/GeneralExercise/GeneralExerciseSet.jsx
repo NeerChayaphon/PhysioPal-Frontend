@@ -259,7 +259,7 @@ function Exercise() {
             const classNo = currentExercise.exercise.steps[stepCount].modelIndex
             console.log(currentExercise.exercise.steps[stepCount].modelClass);
 
-            if (data[0][classNo] > 0.9) {
+            if (data[0][classNo] >= 0.80) {
               if (stepCount === currentExercise.exercise.steps.length - 1) {
                 if (!flag) {
                   // countAudio.play()
@@ -477,7 +477,7 @@ function Exercise() {
               <Image
                 boxSize='max-content'
                 objectFit='cover'
-                src='https://cdni.iconscout.com/illustration/premium/thumb/bridge-pose-3503127-2965793.png'
+                src={currentStep.Image}
                 alt='Dan Abramov'
               />
               {isStartPose ? (

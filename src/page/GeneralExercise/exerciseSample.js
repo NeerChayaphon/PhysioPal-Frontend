@@ -6,21 +6,21 @@ const ExerciseSet = {
         exerciseSet: [
             {
                 exercise: {
-                    name: "Bridge",
+                    name: "Exercise 1",
                     steps : [
                         {
                           name: 'Lie down',
                           modelClass: 'LieDown',
                           modelIndex: 0,
-                          Image: "https://cdni.iconscout.com/illustration/premium/thumb/bridge-pose-3503127-2965793.png",
+                          Image: "Image",
                           model:
-                            'https://seniorprojectdemomodel.blob.core.windows.net/starting/starting.json',
+                            'https://seniorprojectdemomodel.blob.core.windows.net/startingdemo/startingmodel.json',
                         },
                         {
                           name: 'Raise your knee up',
                           modelClass: 'RaiseYourKneeUp',
                           modelIndex: 1,
-                          Image: "https://cdni.iconscout.com/illustration/premium/thumb/bridge-pose-3503127-2965793.png",
+                          Image: "Image",
                           model:
                             'https://seniorprojectdemomodel.blob.core.windows.net/demomodel/demo.json',
                         },
@@ -28,43 +28,43 @@ const ExerciseSet = {
                           name: 'Raise your back up',
                           modelClass: 'RaiseYourBackUp',
                           modelIndex: 0,
-                          Image: "https://cdni.iconscout.com/illustration/premium/thumb/bridge-pose-3503127-2965793.png",
+                          Image: "Image",
                           model:
                             'https://seniorprojectdemomodel.blob.core.windows.net/demomodel/demo.json',
                         },
                       ]
                 },
-                timePeriod: 5,
+                timePeriod: 4,
                 reps: 3,
                 
             },
             {
                 exercise: {
-                    name: "Knees To Chese",
+                    name: "Exercise 2",
                     steps : [
                         {
                           name: 'Lie down',
                           modelClass: 'LieDown',
                           modelIndex: 0,
-                          Image: "https://cdn3.iconfinder.com/data/icons/yoga-poses-2-3/256/Knees-to-chest-pose-yoga-512.png",
+                          Image: "Image",
                           model:
-                            'https://seniorprojectdemomodel.blob.core.windows.net/starting/starting.json',
+                            'https://seniorprojectdemomodel.blob.core.windows.net/startingdemo/startingmodel.json',
                         },
                         {
                           name: 'Raise your knee up',
                           modelClass: 'RaiseYourKneeUp',
                           modelIndex: 1,
-                          Image: "https://cdn3.iconfinder.com/data/icons/yoga-poses-2-3/256/Knees-to-chest-pose-yoga-512.png",
+                          Image: "Image",
                           model:
-                            'https://seniorprojectdemomodel.blob.core.windows.net/exercise2/exercise2.json',
+                            'https://seniorprojectdemomodel.blob.core.windows.net/demomodel/demo.json',
                         },
                         {
                           name: 'Raise your back up',
                           modelClass: 'RaiseYourBackUp',
-                          modelIndex: 2,
-                          Image: "https://cdn3.iconfinder.com/data/icons/yoga-poses-2-3/256/Knees-to-chest-pose-yoga-512.png",
+                          modelIndex: 0,
+                          Image: "Image",
                           model:
-                            'https://seniorprojectdemomodel.blob.core.windows.net/exercise2/exercise2.json',
+                            'https://seniorprojectdemomodel.blob.core.windows.net/demomodel/demo.json',
                         },
                       ]
                 },
