@@ -5,21 +5,16 @@ import {
   RouterProvider,
   Route,
 } from "react-router-dom";
-import Exercise from './page/Exercise';
 import GeneralExerciseSet from './page/GeneralExercise/GeneralExerciseSet';
 import Home from './page/Home';
-import Patient from './page/Patient';
-import Physiotherapist from './page/Physiotherapist';
-import VideoChat from './page/VideoChat';
+import Patient from './page/Patient/Telemed/Patient';
+import Physiotherapist from './page/PT/Physiotherapist';
+import VideoChat from './page/VideoChat/VideoChat';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Home />,
-  },
-  {
-    path: "exercise",
-    element: <Exercise />,
   },
   {
     path: "physiotherapist/:id",
