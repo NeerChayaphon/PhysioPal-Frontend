@@ -1,11 +1,9 @@
 import React from 'react';
-import Navbar from '../component/Navbar/Navbar';
-import PatientNavbar from '../component/Navbar/PatientNavbar';
+import NavigationBar from '../component/Navbar/NavigationBar';
 
 const Home = () => {
   return (
     <>
-      <PatientNavbar />
       <div>Home</div>
     </>
   );

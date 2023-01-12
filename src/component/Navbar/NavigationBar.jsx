@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from './Navbar';
 
-const PatientNavbar = () => {
+const NavigationBar = () => {
   const Links = [
     {
       name: 'Home',
@@ -27,4 +27,4 @@ const PatientNavbar = () => {
   return <Navbar Links={Links} />;
 };
 
-export default PatientNavbar;
+export default NavigationBar;
