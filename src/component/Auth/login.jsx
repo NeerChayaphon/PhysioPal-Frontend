@@ -4,21 +4,20 @@ import {
   GridItem,
   Text,
   Input,
-  Link,
   Spinner,
   Button,
+  Link,
 } from '@chakra-ui/react';
 import React from 'react';
-import Post from '../../Hook/Post';
 import { useDispatch } from 'react-redux';
 import { login } from '../../slice/user/userSlice';
 import { useNavigate } from 'react-router-dom';
+import GetUserInfo from '../../utils/Auth/GetUserInfo';
 
 const Login = () => {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [error, setError] = React.useState(null);
-  const [data, setData] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
 
@@ -41,10 +40,9 @@ const Login = () => {
         });
         const data = await response.json();
         if (response.ok) {
-          setData(data);
           sessionStorage.setItem('token', data.token);
 
-          const userData = await getUserInfo(data.token);
+          const userData = await GetUserInfo(data.token);
           if (userData) {
             dispatch(login(userData));
             navigate('/');
@@ -107,7 +105,16 @@ const Login = () => {
                 </Text>
               )}
               {/* <Link mb={6}>Forget your password?</Link> */}
-              <Button bgColor='teal.400' color='white' type='submit' w={24}>
+              <Button
+                bgColor='teal.400'
+                color='white'
+                type='submit'
+                w={24}
+                _hover={{
+                  textDecoration: 'none',
+                  bg: 'teal.300',
+                }}
+              >
                 {!loading ? <Text>SIGN IN</Text> : <Spinner color='white' />}
               </Button>
             </Flex>
@@ -120,31 +127,33 @@ const Login = () => {
           display='flex'
           alignItems='center'
         >
-          Sign in to PhysioPal
+          <Flex flexDir='column' w='100%' alignItems='center'>
+            <Text fontSize='3xl' fontWeight='bold' mb={8}>
+              Hello, Friend!
+            </Text>
+            <Text fontWeight='boid'>Enter your personal details</Text>
+            <Text fontWeight='boid' mb={6}>
+              and start your journey with us
+            </Text>
+            <Button
+              onClick={() => navigate('/signup')}
+              color='gray.700'
+              w={24}
+              variant='outline'
+              borderColor='gray.200'
+              _hover={{
+                textDecoration: 'none',
+                bg: 'gray.200',
+              }}
+            >
+              {' '}
+              SIGN UP
+            </Button>
+          </Flex>
         </GridItem>
       </Grid>
     </>
   );
-};
-
-const getUserInfo = async (token) => {
-  try {
-    const response = await fetch('http://localhost:8080/user/GetUserByJWT', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `${token}`,
-      },
-    });
-    const data = await response.json();
-    if (response.ok) {
-      return data;
-    } else {
-      return null;
-    }
-  } catch (error) {
-    return null;
-  }
 };
 
 export default Login;
