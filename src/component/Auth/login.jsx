@@ -10,6 +10,9 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import Post from '../../Hook/Post';
+import { useDispatch } from 'react-redux';
+import { login } from '../../slice/user/userSlice';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [email, setEmail] = React.useState('');
@@ -17,6 +20,9 @@ const Login = () => {
   const [error, setError] = React.useState(null);
   const [data, setData] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
+  const navigate = useNavigate();
+
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,6 +43,12 @@ const Login = () => {
         if (response.ok) {
           setData(data);
           sessionStorage.setItem('token', data.token);
+
+          const userData = await getUserInfo(data.token);
+          if (userData) {
+            dispatch(login(userData));
+            navigate('/');
+          }
         } else {
           setError(data);
         }
@@ -113,6 +125,26 @@ const Login = () => {
       </Grid>
     </>
   );
+};
+
+const getUserInfo = async (token) => {
+  try {
+    const response = await fetch('http://localhost:8080/user/GetUserByJWT', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `${token}`,
+      },
+    });
+    const data = await response.json();
+    if (response.ok) {
+      return data;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    return null;
+  }
 };
 
 export default Login;
