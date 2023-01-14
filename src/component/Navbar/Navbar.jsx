@@ -25,6 +25,9 @@ import {
 } from '@chakra-ui/icons';
 
 import Logo from '../../icons/Logo.png';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { logout } from '../../slice/user/userSlice';
 
 const Links = [
   'Home',
@@ -34,26 +37,20 @@ const Links = [
   'About us',
 ];
 
-const NavLink = ({ children }) => (
-  <Link
-    px={2}
-    py={1}
-    rounded={'md'}
-    _hover={{
-      textDecoration: 'none',
-      bg: useColorModeValue('teal.300', 'teal.700'),
-    }}
-    href={'#'}
-  >
-    {children}
-  </Link>
-);
+const Navbar = ({ Links, HomePageLink, User, UserLinks, SignoutLink }) => {
+  const dispatch = useDispatch();
+  const refresh = () => window.location.reload(true);
 
-export default function Navbar({ Links, HomePageLink }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   if (HomePageLink === undefined) {
     HomePageLink = '/';
   }
+
+  const signout = () => {
+    dispatch(logout());
+    sessionStorage.removeItem('token');
+    // refresh();
+  };
   return (
     <>
       <Box bg='teal.400' px={8} py={2}>
@@ -71,50 +68,99 @@ export default function Navbar({ Links, HomePageLink }) {
             </Link>
           </HStack>
           <Flex alignItems={'center'}>
-            <HStack
-              as={'nav'}
-              spacing={5}
-              display={{ base: 'none', md: 'flex' }}
-            >
-              {Links.map((link) => (
-                <NavLink key={link.name} href={link.url}>
-                  {' '}
-                  <Text fontWeight='medium'>{link.name}</Text>
-                </NavLink>
-              ))}
+            {User && (
+              <HStack
+                as={'nav'}
+                spacing={5}
+                display={{ base: 'none', md: 'flex' }}
+              >
+                {Links.map((link) => (
+                  <NavLink key={link.name} link={link.url}>
+                    {' '}
+                    <Text fontWeight='medium'>{link.name}</Text>
+                  </NavLink>
+                ))}
 
-              <Menu>
-                <MenuButton
-                  as={Button}
-                  colorScheme='none'
-                  color='black'
+                {User && (
+                  <Menu>
+                    <MenuButton
+                      as={Button}
+                      colorScheme='none'
+                      color='black'
+                      _hover={{
+                        textDecoration: 'none',
+                        bg: 'teal.300',
+                      }}
+                      leftIcon={
+                        <Avatar
+                          size={'sm'}
+                          src={
+                            'https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9'
+                          }
+                        />
+                      }
+                      rightIcon={<ChevronDownIcon />}
+                    >
+                      <Text fontWeight='normal' fontSize='md'>
+                        {User.data.Name.En_Name}
+                      </Text>
+                    </MenuButton>
+                    <MenuList>
+                      {UserLinks.map((link) => (
+                        <MenuItem>
+                          <Link
+                            w='full'
+                            _hover={{
+                              textDecoration: 'none',
+                            }}
+                            href={link.url}
+                          >
+                            {' '}
+                            {link.name}
+                          </Link>
+                        </MenuItem>
+                      ))}
+                      <MenuItem onClick={signout}>Sign Out</MenuItem>
+                    </MenuList>
+                  </Menu>
+                )}
+              </HStack>
+            )}
+            {!User && (
+              <HStack
+                as={'nav'}
+                spacing={5}
+                display={{ base: 'none', md: 'flex' }}
+              >
+                <Link
+                  px={4}
+                  py={2}
+                  borderRadius='md'
+                  href={'/patient/login'}
+                  bg='teal.400'
                   _hover={{
                     textDecoration: 'none',
-                    bg: useColorModeValue('teal.300', 'teal.700'),
+                    bg: 'teal.300',
                   }}
-                  leftIcon={
-                    <Avatar
-                      size={'sm'}
-                      src={
-                        'https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9'
-                      }
-                    />
-                  }
-                  rightIcon={<ChevronDownIcon />}
                 >
-                  <Text fontWeight='normal' fontSize='md'>
-                    Chayaphon Bunyakan
-                  </Text>
-                </MenuButton>
-                <MenuList>
-                  <MenuItem>Download</MenuItem>
-                  <MenuItem>Create a Copy</MenuItem>
-                  <MenuItem>Mark as Draft</MenuItem>
-                  <MenuItem>Delete</MenuItem>
-                  <MenuItem>Attend a Workshop</MenuItem>
-                </MenuList>
-              </Menu>
-            </HStack>
+                  <Text fontWeight='medium'>Login</Text>
+                </Link>
+
+                <Link
+                  px={4}
+                  py={2}
+                  borderRadius='md'
+                  href={'/patient/register'}
+                  bg='teal.300'
+                  _hover={{
+                    textDecoration: 'none',
+                    bg: 'teal.100',
+                  }}
+                >
+                  <Text fontWeight='medium'>Sign Up</Text>
+                </Link>
+              </HStack>
+            )}
           </Flex>
         </Flex>
 
@@ -122,7 +168,9 @@ export default function Navbar({ Links, HomePageLink }) {
           <Box pb={4} display={{ md: 'none' }}>
             <Stack as={'nav'} spacing={4}>
               {Links.map((link) => (
-                <NavLink key={link}>{link}</NavLink>
+                <NavLink key={link.name} link={link.url}>
+                  {link.name}
+                </NavLink>
               ))}
             </Stack>
           </Box>
@@ -130,4 +178,21 @@ export default function Navbar({ Links, HomePageLink }) {
       </Box>
     </>
   );
-}
+};
+
+const NavLink = ({ link, children }) => (
+  <Link
+    px={2}
+    py={1}
+    rounded={'md'}
+    _hover={{
+      textDecoration: 'none',
+      bg: useColorModeValue('teal.300', 'teal.700'),
+    }}
+    href={link}
+  >
+    {children}
+  </Link>
+);
+
+export default Navbar;

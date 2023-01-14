@@ -1,14 +1,13 @@
 import React from 'react';
-import Navbar from '../component/Navbar/Navbar';
-import PatientNavbar from '../component/Navbar/PatientNavbar';
+import { useSelector } from 'react-redux';
+import NavigationBar from '../component/Navbar/NavigationBar';
+import useCheckUser from '../Hook/useCheckUser';
 
 const Home = () => {
-  return (
-    <>
-      <PatientNavbar />
-      <div>Home</div>
-    </>
-  );
+  useCheckUser('patient', '/patient/login');
+  const user = useSelector((state) => state.user.data);
+
+  return <>{user && <div>{user.role}</div>}</>;
 };
 
 export default Home;

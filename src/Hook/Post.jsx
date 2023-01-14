@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react';
     }); 
 */
 
-const usePost = (url, body) => {
+const Post = (url, body) => {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -36,3 +36,5 @@ const usePost = (url, body) => {
 
   return { data, error, loading };
 };
+
+export default Post;
