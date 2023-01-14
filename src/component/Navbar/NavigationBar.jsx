@@ -1,19 +1,21 @@
 import React from 'react';
 import Navbar from './Navbar';
-
+import { useSelector } from 'react-redux';
 const NavigationBar = () => {
+  const user = useSelector((state) => state.user.data);
+
   const Links = [
     {
       name: 'Home',
-      url: '/#',
+      url: '/##',
     },
     {
       name: 'General Exercise',
-      url: '/#',
+      url: '/###',
     },
     {
       name: 'Telemedicine',
-      url: '/#',
+      url: '/####',
     },
     {
       name: 'My Exercise',
@@ -24,7 +26,25 @@ const NavigationBar = () => {
       url: '/#',
     },
   ];
-  return <Navbar Links={Links} />;
+
+  if (window.location.pathname === '/patient/login') {
+    return <Navbar Links={[]} UserLinks={[]} />;
+  } else {
+    if (user === null) {
+      return <Navbar Links={[]} />;
+    } else if (user.role === 'patient') {
+      return (
+        <Navbar
+          Links={Links}
+          User={user}
+          UserLinks={Links}
+          SignoutLink={'/patient/login'}
+        />
+      );
+    } else if (user.role === 'physiotherapist') {
+      return <Navbar Links={[]} />;
+    }
+  }
 };
 
 export default NavigationBar;

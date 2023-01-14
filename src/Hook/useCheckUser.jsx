@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../slice/user/userSlice';
 
-function useCheckUser(role) {
+function useCheckUser(role, navigateTo) {
   const user = useSelector((state) => state.user.data);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -12,7 +12,7 @@ function useCheckUser(role) {
     const fetchUser = async () => {
       const token = sessionStorage.getItem('token');
       if (!token) {
-        navigate('/patient/login');
+        navigate(navigateTo);
       }
 
       if (user === null) {
@@ -30,14 +30,19 @@ function useCheckUser(role) {
           const data = await response.json();
           if (response.ok) {
             dispatch(login(data));
+            checkRole(role, data);
           } else {
-            navigate('/patient/login');
+            navigate(navigateTo);
           }
         } catch (error) {
-          navigate('/patient/login');
+          navigate(navigateTo);
         }
+      } else {
+        checkRole(role, user);
       }
+    };
 
+    const checkRole = (role, user) => {
       if (role === 'patient' && user.role !== 'patient') {
         navigate('/patient/login');
       }
@@ -46,6 +51,7 @@ function useCheckUser(role) {
         navigate('/patient/login');
       }
     };
+
     fetchUser();
   }, [dispatch, navigate, role, user]);
 }
