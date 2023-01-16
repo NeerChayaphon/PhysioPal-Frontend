@@ -9,8 +9,9 @@ import {
   Link,
 } from '@chakra-ui/react';
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../slice/user/userSlice';
+import { setEnglish, setThai } from '../../slice/language/languageSlice';
 import { useNavigate } from 'react-router-dom';
 import GetUserInfo from '../../utils/Auth/GetUserInfo';
 
@@ -22,6 +23,8 @@ const Login = () => {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
+  const language = useSelector((state) => state.language.value);
+  console.log(language);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -70,11 +73,11 @@ const Login = () => {
         >
           <form onSubmit={(e) => handleSubmit(e)}>
             <Flex flexDir='column' w='100%' alignItems='center'>
-              <Text fontSize='3xl' fontWeight='bold' mb={8}>
-                Sign in to PhysioPal
+              <Text fontSize='3xl' fontWeight='bold' mb={8} px={24}>
+                PhysioPal
               </Text>
               <Text fontWeight='semibold' mb={6}>
-                Your email account
+                {language === 'English' ? 'Your email account' : 'บัญชีของคุณ'}
               </Text>
               <Input
                 type='email'
@@ -82,7 +85,7 @@ const Login = () => {
                 bgColor='white'
                 borderColor='gray.300'
                 mb={6}
-                placeholder='Email'
+                placeholder={language === 'English' ? 'Email' : 'อีเมล'}
                 onChange={(e) => setEmail(e.target.value)}
               ></Input>
               <Input
@@ -91,7 +94,7 @@ const Login = () => {
                 bgColor='white'
                 borderColor='gray.300'
                 mb={4}
-                placeholder='Password'
+                placeholder={language === 'English' ? 'Password' : 'รหัสผ่าน'}
                 onChange={(e) => setPassword(e.target.value)}
               ></Input>
 
@@ -115,7 +118,13 @@ const Login = () => {
                   bg: 'teal.300',
                 }}
               >
-                {!loading ? <Text>SIGN IN</Text> : <Spinner color='white' />}
+                {!loading ? (
+                  <Text>
+                    {language === 'English' ? 'SIGN IN' : 'เข้าสู่ระบบ'}
+                  </Text>
+                ) : (
+                  <Spinner color='white' />
+                )}
               </Button>
             </Flex>
           </form>
@@ -129,11 +138,17 @@ const Login = () => {
         >
           <Flex flexDir='column' w='100%' alignItems='center'>
             <Text fontSize='3xl' fontWeight='bold' mb={8}>
-              Hello, Friend!
+              {language === 'English' ? 'Hello, Friend!' : 'สวัสดีเพื่อน!'}
             </Text>
-            <Text fontWeight='boid'>Enter your personal details</Text>
+            <Text fontWeight='boid'>
+              {language === 'English'
+                ? 'Enter your personal detail'
+                : 'กรอกข้อมูลส่วนตัว'}
+            </Text>
             <Text fontWeight='boid' mb={6}>
-              and start your journey with us
+              {language === 'English'
+                ? 'and start your journey with us'
+                : 'และเริ่มต้นเส้นทางกับเรา'}
             </Text>
             <Button
               onClick={() => navigate('/signup')}
@@ -147,8 +162,10 @@ const Login = () => {
               }}
             >
               {' '}
-              SIGN UP
+              {language === 'English' ? 'SIGN UP' : 'ลงทะเบียน'}
             </Button>
+            {/* <Button onClick={() => dispatch(setThai())}> Thai</Button>
+            <Button onClick={() => dispatch(setEnglish())}> Eng</Button> */}
           </Flex>
         </GridItem>
       </Grid>

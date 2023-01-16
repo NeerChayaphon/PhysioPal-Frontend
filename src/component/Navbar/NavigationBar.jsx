@@ -1,12 +1,14 @@
 import React from 'react';
 import Navbar from './Navbar';
 import { useSelector } from 'react-redux';
+
 const NavigationBar = () => {
   const user = useSelector((state) => state.user.data);
+  const language = useSelector((state) => state.language.value);
 
   const Links = [
     {
-      name: 'Home',
+      name: language === 'English' ? 'Home' : 'หน้าหลัก',
       url: '/##',
     },
     {
