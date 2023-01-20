@@ -1,6 +1,6 @@
 import React from 'react';
 import io from 'socket.io-client';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 
 const Patient = () => {
   const [socket, setSocket] = useState(null); // socket
@@ -8,7 +8,7 @@ const Patient = () => {
   const [onlinePhy, setOnlinePhy] = useState({});
 
   useEffect(() => {
-    const newSocket = io('localhost:5000/'); // socket connect
+    const newSocket = io('https://physiopal-telemed-api.azurewebsites.net/'); // socket connect
     setSocket(newSocket);
     getOnline(newSocket, setOnlinePhy);
   }, [setSocket]);

@@ -34,13 +34,16 @@ const Login = () => {
       setLoading(false);
     } else {
       try {
-        const response = await fetch('http://localhost:8080/patient/login', {
-          method: 'POST',
-          body: JSON.stringify({ email, password }),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
+        const response = await fetch(
+          'https://physiopal-api.azurewebsites.net/patient/login',
+          {
+            method: 'POST',
+            body: JSON.stringify({ email, password }),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
         const data = await response.json();
         if (response.ok) {
           sessionStorage.setItem('token', data.token);
