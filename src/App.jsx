@@ -4,7 +4,7 @@ import { createBrowserRouter, RouterProvider, Route } from 'react-router-dom';
 import NavigationBar from './component/Navbar/NavigationBar';
 import GeneralExerciseSet from './page/GeneralExercise/GeneralExerciseSet';
 import Home from './page/Home';
-import PatientLogin from './page/Patient/Auth/PatientLogin';
+import PatientLoginPage from './page/Patient/Auth/PatientLoginPage';
 import Patient from './page/Patient/Telemed/Patient';
 import Physiotherapist from './page/PT/Physiotherapist';
 import VideoChat from './page/VideoChat/VideoChat';
@@ -16,7 +16,7 @@ const router = createBrowserRouter([
   },
   {
     path: 'patient/login',
-    element: <PatientLogin />,
+    element: <PatientLoginPage />,
   },
   {
     path: 'physiotherapist/:id',

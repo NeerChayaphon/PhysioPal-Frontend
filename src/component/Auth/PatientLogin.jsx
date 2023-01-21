@@ -15,7 +15,7 @@ import { setEnglish, setThai } from '../../slice/language/languageSlice';
 import { useNavigate } from 'react-router-dom';
 import GetUserInfo from '../../utils/Auth/GetUserInfo';
 
-const Login = () => {
+const PatientLogin = () => {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [error, setError] = React.useState(null);
@@ -66,7 +66,7 @@ const Login = () => {
 
   return (
     <>
-      <Grid w='100%' templateColumns='7fr 5fr' h='xl' px={8} pt={10}>
+      <Grid w='100%' templateColumns='7fr 5fr' h='90vh' px={8} py={10}>
         <GridItem
           w='100%'
           bgColor='gray.100'
@@ -176,4 +176,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default PatientLogin;
