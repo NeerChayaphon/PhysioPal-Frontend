@@ -24,7 +24,6 @@ const PatientLogin = () => {
 
   const dispatch = useDispatch();
   const language = useSelector((state) => state.language.value);
-  console.log(language);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -154,7 +153,7 @@ const PatientLogin = () => {
                 : 'และเริ่มต้นเส้นทางกับเรา'}
             </Text>
             <Button
-              onClick={() => navigate('/signup')}
+              onClick={() => navigate('/patient/register')}
               color='gray.700'
               w={24}
               variant='outline'

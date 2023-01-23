@@ -5,6 +5,7 @@ import NavigationBar from './component/Navbar/NavigationBar';
 import GeneralExerciseSet from './page/GeneralExercise/GeneralExerciseSet';
 import Home from './page/Home';
 import PatientLoginPage from './page/Patient/Auth/PatientLoginPage';
+import PatientRegisterPage from './page/Patient/Auth/PatientRegisterPage';
 import Patient from './page/Patient/Telemed/Patient';
 import Physiotherapist from './page/PT/Physiotherapist';
 import VideoChat from './page/VideoChat/VideoChat';
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
   {
     path: 'patient/login',
     element: <PatientLoginPage />,
+  },
+  {
+    path: 'patient/register',
+    element: <PatientRegisterPage />,
   },
   {
     path: 'physiotherapist/:id',
