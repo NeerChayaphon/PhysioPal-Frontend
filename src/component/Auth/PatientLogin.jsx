@@ -34,7 +34,7 @@ const PatientLogin = () => {
     } else {
       try {
         const response = await fetch(
-          'https://physiopal-api.azurewebsites.net/patient/login',
+          'https://physiopal-api-production.up.railway.app/patient/login',
           {
             method: 'POST',
             body: JSON.stringify({ email, password }),

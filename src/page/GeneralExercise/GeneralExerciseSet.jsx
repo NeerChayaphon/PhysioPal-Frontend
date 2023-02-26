@@ -1,12 +1,12 @@
 import * as poseDetection from '@tensorflow-models/pose-detection';
 import * as tf from '@tensorflow/tfjs';
-import React, {useRef, useState, useEffect} from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import '@tensorflow/tfjs-backend-webgl';
 import Webcam from 'react-webcam';
-import {count} from '../../utils/music';
-import {POINTS, keypointConnections} from '../../utils/data';
-import {drawPoint, drawSegment} from '../../utils/helper';
-import {useStopwatch} from 'react-timer-hook';
+import { count } from '../../utils/music';
+import { POINTS, keypointConnections } from '../../utils/data';
+import { drawPoint, drawSegment } from '../../utils/helper';
+import { useStopwatch } from 'react-timer-hook';
 import ExerciseSet from './exercise';
 
 import {
@@ -18,8 +18,7 @@ import {
   Image,
   Button,
 } from '@chakra-ui/react';
-import {FaPlay} from 'react-icons/fa';
-import Navbar from '../../component/navbar';
+import { FaPlay } from 'react-icons/fa';
 
 let skeletonColor = 'rgb(255,255,255)';
 let interval;
@@ -38,9 +37,13 @@ function Exercise() {
   const [isStartPose, setIsStartPose] = useState(false);
   const [haveKeyPoint, setHaveKeyPoint] = useState(true);
 
-  const [exerciseIndex, setExerciseIndex] = useState(0)
-  const [currentExercise, setCurrentExercise] = useState(ExerciseSet.exerciseSet[0])
-  const [currentStep, setCurrentStep] = useState(currentExercise.exercise.steps[0]);
+  const [exerciseIndex, setExerciseIndex] = useState(0);
+  const [currentExercise, setCurrentExercise] = useState(
+    ExerciseSet.exerciseSet[0]
+  );
+  const [currentStep, setCurrentStep] = useState(
+    currentExercise.exercise.steps[0]
+  );
 
   const [stepCount, setStepCount] = useState(0);
   const [startingPosition, setStartingPosition] = useState(true);
@@ -48,15 +51,14 @@ function Exercise() {
   const [isSoundOn, setIsSoundOn] = useState(true);
   const [isCorrect, setIsCorrect] = useState(false);
   const [isRest, setIsRest] = useState(false);
-  const [restTime, setRestTime] = useState(5)
+  const [restTime, setRestTime] = useState(5);
 
   const [round, setRound] = useState(1);
 
-  const [isFinish, setIsFinish] = useState(false)
+  const [isFinish, setIsFinish] = useState(false);
 
-
-  const {seconds, minutes, hours, days, isRunning, start, pause, reset} =
-    useStopwatch({autoStart: false});
+  const { seconds, minutes, hours, days, isRunning, start, pause, reset } =
+    useStopwatch({ autoStart: false });
 
   // useEffect(() => {
   //   // const timeDiff = (currentTime - (startingTime - (bestPerform * 1000))) / 1000;
@@ -187,7 +189,9 @@ function Exercise() {
     // ## Correct
 
     // const poseClassifier = await tf.loadLayersModel(steps[stepCount].model);
-    const poseClassifier = await tf.loadLayersModel(currentExercise.exercise.steps[stepCount].model);
+    const poseClassifier = await tf.loadLayersModel(
+      currentExercise.exercise.steps[stepCount].model
+    );
     // console.log(steps[stepCount].model);
     // console.log(steps[stepCount].name);
 
@@ -256,10 +260,12 @@ function Exercise() {
             // const classNo = startingPosition
             //   ? StartingPositionClass[currentExercise.exercise.steps[stepCount].modelClass]
             //   : ExerciseClass[currentExercise.exercise.steps[stepCount].modelClass];
-            const classNo = currentExercise.exercise.steps[stepCount].modelIndex
+            const classNo =
+              currentExercise.exercise.steps[stepCount].modelIndex;
             console.log(currentExercise.exercise.steps[stepCount].modelClass);
 
-            if (data[0][classNo] >= 0.80) {
+            console.log(data[0][classNo]);
+            if (data[0][classNo] > 0.9) {
               if (stepCount === currentExercise.exercise.steps.length - 1) {
                 if (!flag) {
                   // countAudio.play()
@@ -302,7 +308,6 @@ function Exercise() {
   }
 
   function stopPose() {
-
     flag = false;
     skeletonColor = 'rgb(255,255,255)';
     pause();
@@ -315,29 +320,29 @@ function Exercise() {
     setBestPerform(0);
     setStepCount(0);
     setCurrentStep(currentExercise.exercise.steps[0]);
-    
+
     // countAudio.pause();
     // countAudio.currentTime = 0;
 
     if (round < currentExercise.reps) {
       setRound(round + 1);
       secondsRemaining = 5;
-      setRestTime(5)
+      setRestTime(5);
       setIsRest(true);
     } else {
       if (exerciseIndex < ExerciseSet.exerciseSet.length - 1) {
         setRound(1);
-        setExerciseIndex(exerciseIndex + 1)
+        setExerciseIndex(exerciseIndex + 1);
       } else {
-        setIsFinish(true)
+        setIsFinish(true);
       }
     }
   }
 
   const startNextExercise = () => {
-    setCurrentExercise(ExerciseSet.exerciseSet[exerciseIndex])
-    setIsStartPose(true)
-  }
+    setCurrentExercise(ExerciseSet.exerciseSet[exerciseIndex]);
+    setIsStartPose(true);
+  };
 
   useEffect(() => {
     if (isStartPose) {
@@ -384,14 +389,13 @@ function Exercise() {
           clearInterval(restInterval);
         }
         secondsRemaining--;
-        setRestTime(secondsRemaining)
+        setRestTime(secondsRemaining);
       }, 1000);
     }
   }, [isRest, setIsRest]);
 
   return (
     <>
-      <Navbar />
       <Flex alignItems='flex-start' flexDir='column' m={8}>
         <Text textColor='black' fontWeight='bold' fontSize='xl' mb={4}>
           {currentExercise.exercise.name}
@@ -452,125 +456,132 @@ function Exercise() {
         {/* <HStack w='full' alignItems='flex-start' bg='blue.50'>
   
         </HStack> */}
-        {isFinish && <Grid w='100%' templateColumns='12fr' h='xl'>
-          <GridItem
-            w='100%'
-            bgColor='gray.100'
-            justifyContent='center'
-            display='flex'
-            alignItems='center'
-          >
-             <Text fontSize='2xl' fontWeight='bold' mb={5}>
-               Finish
+        {isFinish && (
+          <Grid w='100%' templateColumns='12fr' h='xl'>
+            <GridItem
+              w='100%'
+              bgColor='gray.100'
+              justifyContent='center'
+              display='flex'
+              alignItems='center'
+            >
+              <Text fontSize='2xl' fontWeight='bold' mb={5}>
+                Finish
               </Text>
-          </GridItem>
-          </Grid>}
-        {!isFinish && <Grid w='100%' templateColumns='5fr 7fr' h='xl'>
-          <GridItem
-            w='100%'
-            bgColor='gray.100'
-            justifyContent='center'
-            display='flex'
-            alignItems='center'
-          >
-            <VStack>
-              <Image
-                boxSize='max-content'
-                objectFit='cover'
-                src={currentStep.Image}
-                alt='Dan Abramov'
-              />
-              {isStartPose ? (
-                <Text fontSize='3xl'>Round {round}</Text>
-              ) : (
-                <Text color='gray.100'>----</Text>
+            </GridItem>
+          </Grid>
+        )}
+        {!isFinish && (
+          <Grid w='100%' templateColumns='5fr 7fr' h='xl'>
+            <GridItem
+              w='100%'
+              bgColor='gray.100'
+              justifyContent='center'
+              display='flex'
+              alignItems='center'
+            >
+              <VStack>
+                <Image
+                  boxSize='max-content'
+                  objectFit='cover'
+                  src='https://cdni.iconscout.com/illustration/premium/thumb/bridge-pose-3503127-2965793.png'
+                  alt='Dan Abramov'
+                />
+                {isStartPose ? (
+                  <Text fontSize='3xl'>Round {round}</Text>
+                ) : (
+                  <Text color='gray.100'>----</Text>
+                )}
+                {currentStep.name ===
+                currentExercise.exercise.steps[
+                  currentExercise.exercise.steps.length - 1
+                ].name ? (
+                  <Text fontSize='3xl'>Pose Time: {seconds}</Text>
+                ) : (
+                  <Text color='gray.100'>----</Text>
+                )}
+              </VStack>
+            </GridItem>
+            <GridItem
+              w='100%'
+              bgColor='gray.200'
+              justifyContent='center'
+              display='flex'
+              flexDir='column'
+              alignItems='center'
+            >
+              {!isStartPose && !isRest && exerciseIndex === 0 && (
+                <Text fontSize='2xl' fontWeight='bold' mb={5}>
+                  Let's start exercise
+                </Text>
               )}
-              {currentStep.name ===  currentExercise.exercise.steps[currentExercise.exercise.steps.length - 1].name ? (
-                <Text fontSize='3xl'>Pose Time: {seconds}</Text>
-              ) : (
-                <Text color='gray.100'>----</Text>
+              {!isStartPose && !isRest && exerciseIndex > 0 && (
+                <Text fontSize='2xl' fontWeight='bold' mb={5}>
+                  Next exercise
+                </Text>
               )}
-            </VStack>
-          </GridItem>
-          <GridItem
-            w='100%'
-            bgColor='gray.200'
-            justifyContent='center'
-            display='flex'
-            flexDir='column'
-            alignItems='center'
-          >
-            {!isStartPose && !isRest && exerciseIndex === 0 &&(
-              <Text fontSize='2xl' fontWeight='bold' mb={5}>
-                Let's start exercise
-              </Text>
-            )}
-            {!isStartPose && !isRest && exerciseIndex > 0 &&(
-              <Text fontSize='2xl' fontWeight='bold' mb={5}>
-                Next exercise
-              </Text>
-            )}
-            {isRest && (
-              <Text fontSize='2xl' fontWeight='bold' mb={5}>
-                Let's take a break
-              </Text>
-            )}
-            {isRest && (
-              <Text fontSize='2xl' fontWeight='bold' mb={5}>
-                {restTime}
-              </Text>
-            )}
-            {!isStartPose && !isRest && exerciseIndex === 0 && (
-              <Button
-                color='white'
-                bgColor='teal.400'
-                leftIcon={<FaPlay />}
-                onClick={startExercise}
-                _hover='teal.100'
-              >
-                {' '}
-                Start
-              </Button>
-            )}
-            {!isStartPose && !isRest && exerciseIndex > 0 && (
-              <Button
-                color='white'
-                bgColor='teal.400'
-                leftIcon={<FaPlay />}
-                onClick={startNextExercise}
-                _hover='teal.100'
-              >
-                {' '}
-                Start
-              </Button>
-            )}
+              {isRest && (
+                <Text fontSize='2xl' fontWeight='bold' mb={5}>
+                  Let's take a break
+                </Text>
+              )}
+              {isRest && (
+                <Text fontSize='2xl' fontWeight='bold' mb={5}>
+                  {restTime}
+                </Text>
+              )}
+              {!isStartPose && !isRest && exerciseIndex === 0 && (
+                <Button
+                  color='white'
+                  bgColor='teal.400'
+                  leftIcon={<FaPlay />}
+                  onClick={startExercise}
+                  _hover='teal.100'
+                >
+                  {' '}
+                  Start
+                </Button>
+              )}
+              {!isStartPose && !isRest && exerciseIndex > 0 && (
+                <Button
+                  color='white'
+                  bgColor='teal.400'
+                  leftIcon={<FaPlay />}
+                  onClick={startNextExercise}
+                  _hover='teal.100'
+                >
+                  {' '}
+                  Start
+                </Button>
+              )}
 
-            {isStartPose && !isRest && (
-              <Webcam
-                width='640px'
-                height='480px'
-                id='webcam'
-                ref={webcamRef}
-                style={{
-                  position: 'absolute',
-                  padding: '0px',
-                }}
-              />
-            )}
-            {isStartPose && !isRest && (
-              <canvas
-                ref={canvasRef}
-                id='my-canvas'
-                width='640px'
-                height='480px'
-                style={{
-                  position: 'absolute',
-                  zIndex: 1,
-                }}
-              ></canvas>
-            )}
-          </GridItem>
-        </Grid>}
+              {isStartPose && !isRest && (
+                <Webcam
+                  width='640px'
+                  height='480px'
+                  id='webcam'
+                  ref={webcamRef}
+                  style={{
+                    position: 'absolute',
+                    padding: '0px',
+                  }}
+                />
+              )}
+              {isStartPose && !isRest && (
+                <canvas
+                  ref={canvasRef}
+                  id='my-canvas'
+                  width='640px'
+                  height='480px'
+                  style={{
+                    position: 'absolute',
+                    zIndex: 1,
+                  }}
+                ></canvas>
+              )}
+            </GridItem>
+          </Grid>
+        )}
       </Flex>
     </>
   );

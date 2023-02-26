@@ -18,7 +18,7 @@ function useCheckUser(role, navigateTo) {
       if (user === null) {
         try {
           const response = await fetch(
-            'https://physiopal-api.azurewebsites.net/user/GetUserByJWT',
+            'https://physiopal-api-production.up.railway.app/user/GetUserByJWT',
             {
               method: 'GET',
               headers: {
