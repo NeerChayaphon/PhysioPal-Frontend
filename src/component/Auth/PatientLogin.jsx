@@ -7,6 +7,9 @@ import {
   Spinner,
   Button,
   Link,
+  InputGroup,
+  InputLeftElement,
+  Image,
 } from '@chakra-ui/react';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,6 +17,9 @@ import { login } from '../../slice/user/userSlice';
 import { setEnglish, setThai } from '../../slice/language/languageSlice';
 import { useNavigate } from 'react-router-dom';
 import GetUserInfo from '../../utils/Auth/GetUserInfo';
+import { MdEmail } from 'react-icons/md';
+import { RiLockPasswordFill } from 'react-icons/ri';
+import SingInPicture from '../../icons/Exercise/SingInPicture.png';
 
 const PatientLogin = () => {
   const [email, setEmail] = React.useState('');
@@ -65,7 +71,7 @@ const PatientLogin = () => {
 
   return (
     <>
-      <Grid w='100%' templateColumns='7fr 5fr' h='90vh' px={8} py={10}>
+      <Grid w='100%' templateColumns='7fr 5fr' h='max' px={8} py={10}>
         <GridItem
           w='100%'
           bgColor='gray.100'
@@ -81,7 +87,12 @@ const PatientLogin = () => {
               <Text fontWeight='semibold' mb={6}>
                 {language === 'English' ? 'Your email account' : 'บัญชีของคุณ'}
               </Text>
-              <Input
+              <InputGroup>
+                <InputLeftElement
+                    pointerEvents='none'
+                    children={<MdEmail color='gray.300' />}
+                />
+                <Input
                 type='email'
                 required
                 bgColor='white'
@@ -89,16 +100,24 @@ const PatientLogin = () => {
                 mb={6}
                 placeholder={language === 'English' ? 'Email' : 'อีเมล'}
                 onChange={(e) => setEmail(e.target.value)}
-              ></Input>
-              <Input
-                type='password'
-                required
-                bgColor='white'
-                borderColor='gray.300'
-                mb={4}
-                placeholder={language === 'English' ? 'Password' : 'รหัสผ่าน'}
-                onChange={(e) => setPassword(e.target.value)}
-              ></Input>
+                ></Input>
+              </InputGroup>
+
+              <InputGroup>
+                <InputLeftElement
+                  pointerEvents='none'
+                  children={<RiLockPasswordFill color='gray.300' />}
+                  />
+                <Input
+                  type='password'
+                  required
+                  bgColor='white'
+                  borderColor='gray.300'
+                  mb={4}
+                  placeholder={language === 'English' ? 'Password' : 'รหัสผ่าน'}
+                  onChange={(e) => setPassword(e.target.value)}
+                ></Input>
+              </InputGroup>
 
               {error ? (
                 <Text color='red.800' mb={6}>
@@ -139,6 +158,12 @@ const PatientLogin = () => {
           alignItems='center'
         >
           <Flex flexDir='column' w='100%' alignItems='center'>
+            <Image 
+              src={SingInPicture} 
+              px={10}
+              mt={20}
+              mb={10}
+              />  
             <Text fontSize='3xl' fontWeight='bold' mb={8}>
               {language === 'English' ? 'Hello, Friend!' : 'สวัสดีเพื่อน!'}
             </Text>
@@ -158,6 +183,7 @@ const PatientLogin = () => {
               w={24}
               variant='outline'
               borderColor='gray.200'
+              mb={20}
               _hover={{
                 textDecoration: 'none',
                 bg: 'gray.200',
