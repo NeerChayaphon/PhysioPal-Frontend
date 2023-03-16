@@ -8,6 +8,7 @@ import { POINTS, keypointConnections } from '../../utils/data';
 import { drawPoint, drawSegment } from '../../utils/helper';
 import { useStopwatch } from 'react-timer-hook';
 import ExerciseSet from './exercise';
+import debounce from 'lodash/debounce';
 
 import {
   Flex,
@@ -17,6 +18,8 @@ import {
   Text,
   Image,
   Button,
+  HStack,
+  Progress,
 } from '@chakra-ui/react';
 import { FaPlay } from 'react-icons/fa';
 
@@ -28,6 +31,9 @@ let secondsRemaining = 5;
 function Exercise() {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
+
+  const [exerciseData, setExerciseDate] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const [startingTime, setStartingTime] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
@@ -41,11 +47,11 @@ function Exercise() {
   const [currentExercise, setCurrentExercise] = useState(
     ExerciseSet.exerciseSet[0]
   );
+  const [stepCount, setStepCount] = useState(0);
   const [currentStep, setCurrentStep] = useState(
-    currentExercise.exercise.steps[0]
+    currentExercise.exercise.steps[stepCount]
   );
 
-  const [stepCount, setStepCount] = useState(0);
   const [startingPosition, setStartingPosition] = useState(true);
 
   const [isSoundOn, setIsSoundOn] = useState(true);
@@ -56,9 +62,32 @@ function Exercise() {
   const [round, setRound] = useState(1);
 
   const [isFinish, setIsFinish] = useState(false);
+  const [audioPath, setAudioPath] = useState('');
+
+  const [isShowCanva, setIsShowCanva] = useState(false);
+
+  console.log(currentStep.details.th_description.audio);
+  const countAudio = new Audio(audioPath);
+  const roundAudio = new Audio(
+    `https://d13nrtvuooncbe.cloudfront.net/round${round}-th.mp3`
+  );
+  const newAudio = new Audio(
+    currentExercise.exercise.details.th_description.audio
+  );
+  const timerAudio = new Audio(
+    `https://d13nrtvuooncbe.cloudfront.net/timer-th.mp3`
+  );
+  const restAudio = new Audio(
+    'https://d13nrtvuooncbe.cloudfront.net/take-a-break-th.mp3'
+  );
+  const nextExerciseAudio = new Audio(
+    'https://d13nrtvuooncbe.cloudfront.net/next-exercise-th.mp3'
+  );
 
   const { seconds, minutes, hours, days, isRunning, start, pause, reset } =
     useStopwatch({ autoStart: false });
+
+  const delayTime = stepCount === 0 ? 1000 : 3000;
 
   // useEffect(() => {
   //   // const timeDiff = (currentTime - (startingTime - (bestPerform * 1000))) / 1000;
@@ -170,6 +199,9 @@ function Exercise() {
 
   const runMovenet = async () => {
     console.log(currentStep);
+    setAudioPath(
+      currentExercise.exercise.steps[stepCount].details.th_description.audio
+    );
     const detectorConfig = {
       modelType: poseDetection.movenet.modelType.SINGLEPOSE_THUNDER,
     };
@@ -200,9 +232,14 @@ function Exercise() {
     // );
 
     // countAudio.loop = true;
-    interval = setInterval(() => {
-      detectPose(detector, poseClassifier);
-    }, 100);
+    setIsShowCanva(false);
+    const debouncePose = debounce((event) => {
+      setIsShowCanva(true);
+      interval = setInterval(() => {
+        detectPose(detector, poseClassifier);
+      }, delayTime);
+    });
+    debouncePose();
   };
 
   const detectPose = async (detector, poseClassifier) => {
@@ -265,8 +302,8 @@ function Exercise() {
             console.log(currentExercise.exercise.steps[stepCount].modelClass);
 
             console.log(data[0][classNo]);
-            if (data[0][classNo] > 0.9) {
-              if (stepCount === currentExercise.exercise.steps.length - 1) {
+            if (data[0][classNo] > currentExercise.exercise.accuracy) {
+              if (currentExercise.exercise.steps[stepCount].timer === true) {
                 if (!flag) {
                   // countAudio.play()
                   // setStartingTime((new Date(Date()).getTime()) - (bestPerform * 1000));
@@ -284,7 +321,7 @@ function Exercise() {
                 setStepCount(stepCount + 1);
               }
             } else {
-              if (stepCount === currentExercise.exercise.steps.length - 1) {
+              if (currentExercise.exercise.steps[stepCount].timer === true) {
                 setIsCorrect(false);
                 flag = false;
               }
@@ -307,7 +344,22 @@ function Exercise() {
     // runMovenet();
   }
 
+  function nextCorrectPose() {
+    flag = false;
+    skeletonColor = 'rgb(255,255,255)';
+    pause();
+    clearInterval(interval);
+    setIsCorrect(false);
+    setCurrentTime(0);
+    setPoseTime(0);
+    setBestPerform(0);
+
+    setCurrentStep(currentExercise.exercise.steps[stepCount + 1]);
+    setStepCount(stepCount + 1);
+  }
+
   function stopPose() {
+    console.log('stop pose');
     flag = false;
     skeletonColor = 'rgb(255,255,255)';
     pause();
@@ -332,11 +384,53 @@ function Exercise() {
     } else {
       if (exerciseIndex < ExerciseSet.exerciseSet.length - 1) {
         setRound(1);
+        setCurrentExercise(ExerciseSet.exerciseSet[exerciseIndex + 1]);
         setExerciseIndex(exerciseIndex + 1);
+        nextExerciseAudio.play();
       } else {
         setIsFinish(true);
       }
     }
+  }
+
+  function skipPose() {
+    console.log('skip pose');
+    flag = false;
+    skeletonColor = 'rgb(255,255,255)';
+    pause();
+    clearInterval(interval);
+    setIsCorrect(false);
+    setIsStartPose(false);
+    setStartingPosition(true);
+    setCurrentTime(0);
+    setPoseTime(0);
+    setBestPerform(0);
+    setStepCount(0);
+    // setCurrentStep(currentExercise.exercise.steps[0]);
+
+    // countAudio.pause();
+    // countAudio.currentTime = 0;
+
+    if (exerciseIndex < ExerciseSet.exerciseSet.length - 1) {
+      setRound(1);
+      setExerciseIndex(exerciseIndex + 1);
+    } else {
+      setIsFinish(true);
+    }
+
+    // if (round < currentExercise.reps) {
+    //   setRound(round + 1);
+    //   secondsRemaining = 5;
+    //   setRestTime(5);
+    //   setIsRest(true);
+    // } else {
+    //   if (exerciseIndex < ExerciseSet.exerciseSet.length - 1) {
+    //     setRound(1);
+    //     setExerciseIndex(exerciseIndex + 1);
+    //   } else {
+    //     setIsFinish(true);
+    //   }
+    // }
   }
 
   const startNextExercise = () => {
@@ -344,17 +438,118 @@ function Exercise() {
     setIsStartPose(true);
   };
 
+  // const skipExercise = () => {
+  //   setRound(currentExercise.reps);
+  //   stopPose();
+  //   setExerciseIndex(exerciseIndex + 1);
+  // };
+
   useEffect(() => {
+    const token = sessionStorage.getItem('token');
+    fetch('https://physiopal-api-production.up.railway.app/user/GetUserByJWT', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setData(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+        setLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    const handlePlayClick = async () => {
+      newAudio.addEventListener('ended', handlePlayClick2);
+      newAudio.play();
+      await new Promise((resolve) => {
+        const checkAudioEnded = setInterval(() => {
+          if (newAudio.ended) {
+            clearInterval(checkAudioEnded);
+            resolve();
+          }
+        }, 100);
+      });
+    };
+
+    const handlePlayClick2 = async () => {
+      newAudio.removeEventListener('ended', handlePlayClick2);
+      roundAudio.addEventListener('ended', handleAudioEnded);
+      roundAudio.play();
+      await new Promise((resolve) => {
+        const checkAudioEnded = setInterval(() => {
+          if (roundAudio.ended) {
+            clearInterval(checkAudioEnded);
+            resolve();
+          }
+        }, 100);
+      });
+    };
+
+    const handleAudioEnded = () => {
+      console.log('Audio ended, now do the next operation');
+      roundAudio.removeEventListener('ended', handleAudioEnded);
+      runMovenet();
+    };
+
     if (isStartPose) {
       reset();
       pause();
-      runMovenet();
+      if (stepCount === 0) {
+        handlePlayClick().catch(console.error);
+      } else {
+        runMovenet();
+      }
     }
   }, [stepCount, isStartPose]);
 
   useEffect(() => {
+    if (
+      currentExercise.exercise.steps[stepCount].timer === true &&
+      seconds === 0
+    ) {
+      const handlePlayClick = async () => {
+        countAudio.addEventListener('ended', handleAudioEnded);
+        countAudio.play();
+        await new Promise((resolve) => {
+          const checkAudioEnded = setInterval(() => {
+            if (countAudio.ended) {
+              clearInterval(checkAudioEnded);
+              resolve();
+            }
+          }, 0);
+        });
+      };
+
+      const handleAudioEnded = () => {
+        countAudio.removeEventListener('ended', handleAudioEnded);
+        timerAudio.play();
+      };
+
+      handlePlayClick().catch(console.error);
+    } else {
+      countAudio.play();
+    }
+  }, [audioPath, setAudioPath]);
+
+  console.log(stepCount === currentExercise.exercise.steps.length - 1);
+  useEffect(() => {
     if (seconds > currentExercise.timePeriod) {
-      stopPose();
+      if (stepCount === currentExercise.exercise.steps.length - 1) {
+        stopPose();
+      } else {
+        setCurrentStep(currentExercise.exercise.steps[stepCount + 1]);
+        clearInterval(interval);
+        setStepCount(stepCount + 1);
+      }
+    } else {
+      setAudioPath(`https://d13nrtvuooncbe.cloudfront.net/${seconds}-th.mp3`);
     }
   }, [seconds]);
 
@@ -365,7 +560,10 @@ function Exercise() {
   // }, [round]);
 
   useEffect(() => {
-    if (stepCount === currentExercise.exercise.steps.length - 1) {
+    // if (stepCount === currentExercise.exercise.steps.length - 1) {
+    //   isCorrect ? start() : pause();
+    // }
+    if (currentExercise.exercise.steps[stepCount].timer === true) {
       isCorrect ? start() : pause();
     }
   }, [isCorrect]);
@@ -381,6 +579,11 @@ function Exercise() {
 
   useEffect(() => {
     if (isRest) {
+      const playRestAudio = debounce((event) => {
+        restAudio.play();
+      }, 500);
+
+      playRestAudio();
       const restInterval = setInterval(() => {
         // time is up
         if (secondsRemaining === 0) {
@@ -396,9 +599,9 @@ function Exercise() {
 
   return (
     <>
-      <Flex alignItems='flex-start' flexDir='column' m={8}>
+      <Flex palignItems='flex-start' flexDir='column' m={8}>
         <Text textColor='black' fontWeight='bold' fontSize='xl' mb={4}>
-          {currentExercise.exercise.name}
+          {currentExercise.exercise.details.th_description.name}
         </Text>
         <VStack
           w='full'
@@ -407,13 +610,17 @@ function Exercise() {
           bg='gray.50'
           p={4}
         >
-          <Text mb={2}>
+          {/* <Text mb={2}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Non
             convallis venenatis nam dignissim tortor integer imperdiet dignissim
             ac. Urna aenean cras eget orci, augue nisl nunc, vitae odio. Tellus
             tincidunt facilisi dui nisi, volutp
-          </Text>
-          <Grid w='100%' templateColumns='repeat(3, 1fr)' gap={6}>
+          </Text> */}
+          <Grid
+            w='100%'
+            templateColumns={`repeat(${currentExercise.exercise.steps.length}, 1fr)`}
+            gap={6}
+          >
             {currentExercise.exercise.steps.map((step) => (
               <GridItem w='100%'>
                 <Flex
@@ -421,7 +628,7 @@ function Exercise() {
                   alignItems='start'
                   borderTop='4px'
                   borderTopColor={
-                    currentStep.name === step.name && isStartPose
+                    currentStep.details === step.details && isStartPose
                       ? 'blue.500'
                       : 'gray.400'
                   }
@@ -430,23 +637,24 @@ function Exercise() {
                     fontSize='sm'
                     fontWeight='semibold'
                     color={
-                      currentStep.name === step.name && isStartPose
+                      currentStep.details === step.details && isStartPose
                         ? 'blue.500'
                         : 'gray.500'
                     }
                     pt={3}
                   >
-                    STEP {currentExercise.exercise.steps.indexOf(step) + 1}
+                    ขั้นตอนที่{' '}
+                    {currentExercise.exercise.steps.indexOf(step) + 1}
                   </Text>
                   <Text
                     color={
-                      currentStep.name === step.name && isStartPose
+                      currentStep.details === step.details && isStartPose
                         ? 'blue.500'
                         : 'gray.500'
                     }
                     fontSize='sm'
                   >
-                    {step.name}
+                    {step.details.th_description.name}
                   </Text>
                 </Flex>
               </GridItem>
@@ -480,27 +688,57 @@ function Exercise() {
               display='flex'
               alignItems='center'
             >
-              <VStack>
+              <VStack gap={2}>
                 <Image
-                  boxSize='max-content'
+                  boxSize='md'
                   objectFit='cover'
-                  src='https://cdni.iconscout.com/illustration/premium/thumb/bridge-pose-3503127-2965793.png'
+                  src={currentExercise.exercise.steps[stepCount].image}
+                  alt='Dan Abramov'
+                />
+
+                {isStartPose && (
+                  <VStack
+                    bgColor='white'
+                    px={4}
+                    borderRadius='lg'
+                    boxShadow='lg'
+                    py={2}
+                  >
+                    {isStartPose ? (
+                      <Text color='gray.700' fontSize='2xl'>
+                        รอบที่ {round}
+                      </Text>
+                    ) : (
+                      <Text color='gray.100'>----</Text>
+                    )}
+                    //
+                    {currentStep.timer === true && seconds !== 0 && (
+                      <Text color='gray.700' fontSize='2xl'>
+                        จับเวลา: {seconds} วินาที
+                      </Text>
+                    )}
+                  </VStack>
+                )}
+              </VStack>
+              {/* <VStack>
+                <Image
+                  boxSize='md'
+                  objectFit='cover'
+                  src={currentExercise.exercise.steps[stepCount].image}
                   alt='Dan Abramov'
                 />
                 {isStartPose ? (
-                  <Text fontSize='3xl'>Round {round}</Text>
+                  <Text fontSize='3xl'>รอบที่ {round}</Text>
                 ) : (
                   <Text color='gray.100'>----</Text>
                 )}
-                {currentStep.name ===
-                currentExercise.exercise.steps[
-                  currentExercise.exercise.steps.length - 1
-                ].name ? (
-                  <Text fontSize='3xl'>Pose Time: {seconds}</Text>
+                //
+                {currentStep.timer === true ? (
+                  <Text fontSize='3xl'>จับเวลา: {seconds} วินาที</Text>
                 ) : (
                   <Text color='gray.100'>----</Text>
                 )}
-              </VStack>
+              </VStack> */}
             </GridItem>
             <GridItem
               w='100%'
@@ -510,7 +748,7 @@ function Exercise() {
               flexDir='column'
               alignItems='center'
             >
-              {!isStartPose && !isRest && exerciseIndex === 0 && (
+              {/* {!isStartPose && !isRest && exerciseIndex === 0 && (
                 <Text fontSize='2xl' fontWeight='bold' mb={5}>
                   Let's start exercise
                 </Text>
@@ -524,13 +762,28 @@ function Exercise() {
                 <Text fontSize='2xl' fontWeight='bold' mb={5}>
                   Let's take a break
                 </Text>
+              )} */}
+              {!isStartPose && !isRest && exerciseIndex === 0 && (
+                <Text fontSize='2xl' fontWeight='bold' mb={5}>
+                  เริ่มต้นออกกำลังกาย
+                </Text>
+              )}
+              {!isStartPose && !isRest && exerciseIndex > 0 && (
+                <Text fontSize='2xl' fontWeight='bold' mb={5}>
+                  ท่าออกกำลังกายถัดไป
+                </Text>
+              )}
+              {isRest && (
+                <Text fontSize='2xl' fontWeight='bold' mb={5}>
+                  พัก 5 วินาที
+                </Text>
               )}
               {isRest && (
                 <Text fontSize='2xl' fontWeight='bold' mb={5}>
                   {restTime}
                 </Text>
               )}
-              {!isStartPose && !isRest && exerciseIndex === 0 && (
+              {/* {!isStartPose && !isRest && exerciseIndex === 0 && (
                 <Button
                   color='white'
                   bgColor='teal.400'
@@ -541,8 +794,20 @@ function Exercise() {
                   {' '}
                   Start
                 </Button>
+              )} */}
+              {!isStartPose && !isRest && (
+                <Button
+                  color='white'
+                  bgColor='teal.400'
+                  leftIcon={<FaPlay />}
+                  onClick={startExercise}
+                  _hover='teal.100'
+                >
+                  {' '}
+                  <Text fontSize='xl'>เริ่ม</Text>
+                </Button>
               )}
-              {!isStartPose && !isRest && exerciseIndex > 0 && (
+              {/* {!isStartPose && !isRest && exerciseIndex > 0 && (
                 <Button
                   color='white'
                   bgColor='teal.400'
@@ -553,7 +818,19 @@ function Exercise() {
                   {' '}
                   Start
                 </Button>
-              )}
+              )} */}
+              {/* {!isStartPose && !isRest && exerciseIndex > 0 && (
+                <Button
+                  color='white'
+                  bgColor='teal.400'
+                  leftIcon={<FaPlay />}
+                  onClick={startNextExercise}
+                  _hover='teal.100'
+                >
+                  {' '}
+                  เริ่ม
+                </Button>
+              )} */}
 
               {isStartPose && !isRest && (
                 <Webcam
@@ -567,7 +844,7 @@ function Exercise() {
                   }}
                 />
               )}
-              {isStartPose && !isRest && (
+              {isStartPose && !isRest && isShowCanva && (
                 <canvas
                   ref={canvasRef}
                   id='my-canvas'
@@ -581,6 +858,18 @@ function Exercise() {
               )}
             </GridItem>
           </Grid>
+        )}
+        {isStartPose && (
+          <Flex w='full' justifyContent='center' mt={4} c>
+            <Button
+              color='white'
+              bgColor='teal.400'
+              _hover='teal.100'
+              onClick={skipPose}
+            >
+              ข้ามท่าออกกำลังกายนี้
+            </Button>
+          </Flex>
         )}
       </Flex>
     </>
