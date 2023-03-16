@@ -846,79 +846,79 @@ const ExerciseSet = {
 //       timePeriod: 5,
 //       reps: 1,
 //     },
-//     // {
-//     //   exercise: {
-//     //     details: {
-//     //       en_description: {
-//     //         name: 'Exercise 2 : Knees to chest',
-//     //         description: '',
-//     //       },
-//     //       th_description: {
-//     //         name: 'ท่าออกกำลังกายที่ 2 : ท่าดึงหัวเข่า',
-//     //         description: '',
-//     //       },
-//     //     },
-//     //     accuracy: 0.93,
-//     //     steps: [
-//     //       {
-//     //         details: {
-//     //           en_description: {
-//     //             name: 'Begin lying on your back',
-//     //             description: '',
-//     //           },
-//     //           th_description: {
-//     //             name: 'นอนหงายลงบนเสื่อ',
-//     //             description: '',
-//     //             audio: 'https://d2uacysxmpqola.cloudfront.net/step1-th.mp3',
-//     //           },
-//     //         },
-//     //         modelClass: 'Lie-down',
-//     //         modelIndex: 1,
-//     //         image: 'https://d2dg13aszggr0f.cloudfront.net/Lie-down-Image.png',
-//     //         model: 'https://d1gx22tbnl8i3v.cloudfront.net/startingv2.json',
-//     //         timer: false,
-//     //       },
-//     //       {
-//     //         details: {
-//     //           en_description: {
-//     //             name: 'Bend your legs and put your feet on a mat',
-//     //             description: '',
-//     //           },
-//     //           th_description: {
-//     //             name: 'ชันขาทั้งสองข้างขึ้นมาและวางเท้าลงบนเสื่อ',
-//     //             description: '',
-//     //             audio: 'https://d2uacysxmpqola.cloudfront.net/step2-th.mp3',
-//     //           },
-//     //         },
-//     //         modelClass: 'Step2',
-//     //         modelIndex: 1,
-//     //         image: 'https://d2uacysxmpqola.cloudfront.net/Step2.png',
-//     //         model: 'https://d2uacysxmpqola.cloudfront.net/exercise2.json',
-//     //         timer: false,
-//     //       },
-//     //       {
-//     //         details: {
-//     //           en_description: {
-//     //             name: 'Hug the knees to chest',
-//     //             description: '',
-//     //           },
-//     //           th_description: {
-//     //             name: 'กอดเท่าทั้งสองข้างไว้บริเวณอก',
-//     //             description: '',
-//     //             audio: 'https://d2uacysxmpqola.cloudfront.net/step3-th.mp3',
-//     //           },
-//     //         },
-//     //         modelClass: 'Step3',
-//     //         modelIndex: 2,
-//     //         image: 'https://d2uacysxmpqola.cloudfront.net/Step3.png',
-//     //         model: 'https://d2uacysxmpqola.cloudfront.net/exercise2.json',
-//     //         timer: true,
-//     //       },
-//     //     ],
-//     //   },
-//     //   timePeriod: 10,
-//     //   reps: 2,
-//     // },
+// {
+//   exercise: {
+//     details: {
+//       en_description: {
+//         name: 'Exercise 2 : Knees to chest',
+//         description: '',
+//       },
+//       th_description: {
+//         name: 'ท่าออกกำลังกายที่ 2 : ท่าดึงหัวเข่า',
+//         description: '',
+//       },
+//     },
+//     accuracy: 0.93,
+//     steps: [
+//       {
+//         details: {
+//           en_description: {
+//             name: 'Begin lying on your back',
+//             description: '',
+//           },
+//           th_description: {
+//             name: 'นอนหงายลงบนเสื่อ',
+//             description: '',
+//             audio: 'https://d2uacysxmpqola.cloudfront.net/step1-th.mp3',
+//           },
+//         },
+//         modelClass: 'Lie-down',
+//         modelIndex: 1,
+//         image: 'https://d2dg13aszggr0f.cloudfront.net/Lie-down-Image.png',
+//         model: 'https://d1gx22tbnl8i3v.cloudfront.net/startingv2.json',
+//         timer: false,
+//       },
+//       {
+//         details: {
+//           en_description: {
+//             name: 'Bend your legs and put your feet on a mat',
+//             description: '',
+//           },
+//           th_description: {
+//             name: 'ชันขาทั้งสองข้างขึ้นมาและวางเท้าลงบนเสื่อ',
+//             description: '',
+//             audio: 'https://d2uacysxmpqola.cloudfront.net/step2-th.mp3',
+//           },
+//         },
+//         modelClass: 'Step2',
+//         modelIndex: 1,
+//         image: 'https://d2uacysxmpqola.cloudfront.net/Step2.png',
+//         model: 'https://d2uacysxmpqola.cloudfront.net/exercise2.json',
+//         timer: false,
+//       },
+//       {
+//         details: {
+//           en_description: {
+//             name: 'Hug the knees to chest',
+//             description: '',
+//           },
+//           th_description: {
+//             name: 'กอดเท่าทั้งสองข้างไว้บริเวณอก',
+//             description: '',
+//             audio: 'https://d2uacysxmpqola.cloudfront.net/step3-th.mp3',
+//           },
+//         },
+//         modelClass: 'Step3',
+//         modelIndex: 2,
+//         image: 'https://d2uacysxmpqola.cloudfront.net/Step3.png',
+//         model: 'https://d2uacysxmpqola.cloudfront.net/exercise2.json',
+//         timer: true,
+//       },
+//     ],
+//   },
+//   timePeriod: 10,
+//   reps: 2,
+// },
 //     // {
 //     //   exercise: {
 //     //     details: {

@@ -32,9 +32,6 @@ function Exercise() {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
 
-  const [exerciseData, setExerciseDate] = useState(null);
-  const [loading, setLoading] = useState(true);
-
   const [startingTime, setStartingTime] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [poseTime, setPoseTime] = useState(0);
@@ -237,8 +234,10 @@ function Exercise() {
       setIsShowCanva(true);
       interval = setInterval(() => {
         detectPose(detector, poseClassifier);
-      }, delayTime);
-    });
+      }, 100);
+    }, delayTime);
+    // setIsShowCanva(true);
+    // detectPose(detector, poseClassifier);
     debouncePose();
   };
 
@@ -444,18 +443,24 @@ function Exercise() {
   //   setExerciseIndex(exerciseIndex + 1);
   // };
 
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    const token = sessionStorage.getItem('token');
-    fetch('https://physiopal-api-production.up.railway.app/user/GetUserByJWT', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `${token}`,
-      },
-    })
+    fetch(
+      'https://physiopal-api-production.up.railway.app/generalExercise/join/6413040e6b83eb4e19aa4845',
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkwNDU1MjksImlkIjoiNjNlYjFkYTNjNzg2ZGJhYWVkZDUzNTYwIiwicm9sZSI6InBhdGllbnQifQ.q0apekop0IorSQ9-hYvsAkKVxtwB6cIum6YSyJMNV-A`,
+        },
+      }
+    )
       .then((response) => response.json())
       .then((data) => {
         setData(data);
+        console.log(data.data);
         setLoading(false);
       })
       .catch((error) => {
@@ -597,283 +602,287 @@ function Exercise() {
     }
   }, [isRest, setIsRest]);
 
-  return (
-    <>
-      <Flex palignItems='flex-start' flexDir='column' m={8}>
-        <Text textColor='black' fontWeight='bold' fontSize='xl' mb={4}>
-          {currentExercise.exercise.details.th_description.name}
-        </Text>
-        <VStack
-          w='full'
-          borderTopRadius='md'
-          alignItems='flex-start'
-          bg='gray.50'
-          p={4}
-        >
-          {/* <Text mb={2}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Non
-            convallis venenatis nam dignissim tortor integer imperdiet dignissim
-            ac. Urna aenean cras eget orci, augue nisl nunc, vitae odio. Tellus
-            tincidunt facilisi dui nisi, volutp
-          </Text> */}
-          <Grid
-            w='100%'
-            templateColumns={`repeat(${currentExercise.exercise.steps.length}, 1fr)`}
-            gap={6}
+  if (loading) {
+    return <div>Loading...</div>;
+  } else {
+    return (
+      <>
+        <Flex palignItems='flex-start' flexDir='column' m={8}>
+          <Text textColor='black' fontWeight='bold' fontSize='xl' mb={4}>
+            {currentExercise.exercise.details.th_description.name}
+          </Text>
+          <VStack
+            w='full'
+            borderTopRadius='md'
+            alignItems='flex-start'
+            bg='gray.50'
+            p={4}
           >
-            {currentExercise.exercise.steps.map((step) => (
-              <GridItem w='100%'>
-                <Flex
-                  flexDir='column'
-                  alignItems='start'
-                  borderTop='4px'
-                  borderTopColor={
-                    currentStep.details === step.details && isStartPose
-                      ? 'blue.500'
-                      : 'gray.400'
-                  }
-                >
-                  <Text
-                    fontSize='sm'
-                    fontWeight='semibold'
-                    color={
+            {/* <Text mb={2}>
+             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Non
+             convallis venenatis nam dignissim tortor integer imperdiet dignissim
+             ac. Urna aenean cras eget orci, augue nisl nunc, vitae odio. Tellus
+             tincidunt facilisi dui nisi, volutp
+           </Text> */}
+            <Grid
+              w='100%'
+              templateColumns={`repeat(${currentExercise.exercise.steps.length}, 1fr)`}
+              gap={6}
+            >
+              {currentExercise.exercise.steps.map((step) => (
+                <GridItem w='100%'>
+                  <Flex
+                    flexDir='column'
+                    alignItems='start'
+                    borderTop='4px'
+                    borderTopColor={
                       currentStep.details === step.details && isStartPose
                         ? 'blue.500'
-                        : 'gray.500'
+                        : 'gray.400'
                     }
-                    pt={3}
                   >
-                    ขั้นตอนที่{' '}
-                    {currentExercise.exercise.steps.indexOf(step) + 1}
-                  </Text>
-                  <Text
-                    color={
-                      currentStep.details === step.details && isStartPose
-                        ? 'blue.500'
-                        : 'gray.500'
-                    }
-                    fontSize='sm'
-                  >
-                    {step.details.th_description.name}
-                  </Text>
-                </Flex>
+                    <Text
+                      fontSize='sm'
+                      fontWeight='semibold'
+                      color={
+                        currentStep.details === step.details && isStartPose
+                          ? 'blue.500'
+                          : 'gray.500'
+                      }
+                      pt={3}
+                    >
+                      ขั้นตอนที่{' '}
+                      {currentExercise.exercise.steps.indexOf(step) + 1}
+                    </Text>
+                    <Text
+                      color={
+                        currentStep.details === step.details && isStartPose
+                          ? 'blue.500'
+                          : 'gray.500'
+                      }
+                      fontSize='sm'
+                    >
+                      {step.details.th_description.name}
+                    </Text>
+                  </Flex>
+                </GridItem>
+              ))}
+            </Grid>
+          </VStack>
+          {/* <HStack w='full' alignItems='flex-start' bg='blue.50'>
+   
+         </HStack> */}
+          {isFinish && (
+            <Grid w='100%' templateColumns='12fr' h='xl'>
+              <GridItem
+                w='100%'
+                bgColor='gray.100'
+                justifyContent='center'
+                display='flex'
+                alignItems='center'
+              >
+                <Text fontSize='2xl' fontWeight='bold' mb={5}>
+                  Finish
+                </Text>
               </GridItem>
-            ))}
-          </Grid>
-        </VStack>
-        {/* <HStack w='full' alignItems='flex-start' bg='blue.50'>
-  
-        </HStack> */}
-        {isFinish && (
-          <Grid w='100%' templateColumns='12fr' h='xl'>
-            <GridItem
-              w='100%'
-              bgColor='gray.100'
-              justifyContent='center'
-              display='flex'
-              alignItems='center'
-            >
-              <Text fontSize='2xl' fontWeight='bold' mb={5}>
-                Finish
-              </Text>
-            </GridItem>
-          </Grid>
-        )}
-        {!isFinish && (
-          <Grid w='100%' templateColumns='5fr 7fr' h='xl'>
-            <GridItem
-              w='100%'
-              bgColor='gray.100'
-              justifyContent='center'
-              display='flex'
-              alignItems='center'
-            >
-              <VStack gap={2}>
-                <Image
-                  boxSize='md'
-                  objectFit='cover'
-                  src={currentExercise.exercise.steps[stepCount].image}
-                  alt='Dan Abramov'
-                />
+            </Grid>
+          )}
+          {!isFinish && (
+            <Grid w='100%' templateColumns='5fr 7fr' h='xl'>
+              <GridItem
+                w='100%'
+                bgColor='gray.100'
+                justifyContent='center'
+                display='flex'
+                alignItems='center'
+              >
+                <VStack gap={2}>
+                  <Image
+                    boxSize='md'
+                    objectFit='cover'
+                    src={currentExercise.exercise.steps[stepCount].image}
+                    alt='Dan Abramov'
+                  />
 
-                {isStartPose && (
-                  <VStack
-                    bgColor='white'
-                    px={4}
-                    borderRadius='lg'
-                    boxShadow='lg'
-                    py={2}
+                  {isStartPose && (
+                    <VStack
+                      bgColor='white'
+                      px={4}
+                      borderRadius='lg'
+                      boxShadow='lg'
+                      py={2}
+                    >
+                      {isStartPose ? (
+                        <Text color='gray.700' fontSize='2xl'>
+                          รอบที่ {round}
+                        </Text>
+                      ) : (
+                        <Text color='gray.100'>----</Text>
+                      )}
+                      //
+                      {currentStep.timer === true && seconds !== 0 && (
+                        <Text color='gray.700' fontSize='2xl'>
+                          จับเวลา: {seconds} วินาที
+                        </Text>
+                      )}
+                    </VStack>
+                  )}
+                </VStack>
+                {/* <VStack>
+                 <Image
+                   boxSize='md'
+                   objectFit='cover'
+                   src={currentExercise.exercise.steps[stepCount].image}
+                   alt='Dan Abramov'
+                 />
+                 {isStartPose ? (
+                   <Text fontSize='3xl'>รอบที่ {round}</Text>
+                 ) : (
+                   <Text color='gray.100'>----</Text>
+                 )}
+                 //
+                 {currentStep.timer === true ? (
+                   <Text fontSize='3xl'>จับเวลา: {seconds} วินาที</Text>
+                 ) : (
+                   <Text color='gray.100'>----</Text>
+                 )}
+               </VStack> */}
+              </GridItem>
+              <GridItem
+                w='100%'
+                bgColor='gray.200'
+                justifyContent='center'
+                display='flex'
+                flexDir='column'
+                alignItems='center'
+              >
+                {/* {!isStartPose && !isRest && exerciseIndex === 0 && (
+                 <Text fontSize='2xl' fontWeight='bold' mb={5}>
+                   Let's start exercise
+                 </Text>
+               )}
+               {!isStartPose && !isRest && exerciseIndex > 0 && (
+                 <Text fontSize='2xl' fontWeight='bold' mb={5}>
+                   Next exercise
+                 </Text>
+               )}
+               {isRest && (
+                 <Text fontSize='2xl' fontWeight='bold' mb={5}>
+                   Let's take a break
+                 </Text>
+               )} */}
+                {!isStartPose && !isRest && exerciseIndex === 0 && (
+                  <Text fontSize='2xl' fontWeight='bold' mb={5}>
+                    เริ่มต้นออกกำลังกาย
+                  </Text>
+                )}
+                {!isStartPose && !isRest && exerciseIndex > 0 && (
+                  <Text fontSize='2xl' fontWeight='bold' mb={5}>
+                    ท่าออกกำลังกายถัดไป
+                  </Text>
+                )}
+                {isRest && (
+                  <Text fontSize='2xl' fontWeight='bold' mb={5}>
+                    พัก 5 วินาที
+                  </Text>
+                )}
+                {isRest && (
+                  <Text fontSize='2xl' fontWeight='bold' mb={5}>
+                    {restTime}
+                  </Text>
+                )}
+                {/* {!isStartPose && !isRest && exerciseIndex === 0 && (
+                 <Button
+                   color='white'
+                   bgColor='teal.400'
+                   leftIcon={<FaPlay />}
+                   onClick={startExercise}
+                   _hover='teal.100'
+                 >
+                   {' '}
+                   Start
+                 </Button>
+               )} */}
+                {!isStartPose && !isRest && (
+                  <Button
+                    color='white'
+                    bgColor='teal.400'
+                    leftIcon={<FaPlay />}
+                    onClick={startExercise}
+                    _hover='teal.100'
                   >
-                    {isStartPose ? (
-                      <Text color='gray.700' fontSize='2xl'>
-                        รอบที่ {round}
-                      </Text>
-                    ) : (
-                      <Text color='gray.100'>----</Text>
-                    )}
-                    //
-                    {currentStep.timer === true && seconds !== 0 && (
-                      <Text color='gray.700' fontSize='2xl'>
-                        จับเวลา: {seconds} วินาที
-                      </Text>
-                    )}
-                  </VStack>
+                    {' '}
+                    <Text fontSize='xl'>เริ่ม</Text>
+                  </Button>
                 )}
-              </VStack>
-              {/* <VStack>
-                <Image
-                  boxSize='md'
-                  objectFit='cover'
-                  src={currentExercise.exercise.steps[stepCount].image}
-                  alt='Dan Abramov'
-                />
-                {isStartPose ? (
-                  <Text fontSize='3xl'>รอบที่ {round}</Text>
-                ) : (
-                  <Text color='gray.100'>----</Text>
-                )}
-                //
-                {currentStep.timer === true ? (
-                  <Text fontSize='3xl'>จับเวลา: {seconds} วินาที</Text>
-                ) : (
-                  <Text color='gray.100'>----</Text>
-                )}
-              </VStack> */}
-            </GridItem>
-            <GridItem
-              w='100%'
-              bgColor='gray.200'
-              justifyContent='center'
-              display='flex'
-              flexDir='column'
-              alignItems='center'
-            >
-              {/* {!isStartPose && !isRest && exerciseIndex === 0 && (
-                <Text fontSize='2xl' fontWeight='bold' mb={5}>
-                  Let's start exercise
-                </Text>
-              )}
-              {!isStartPose && !isRest && exerciseIndex > 0 && (
-                <Text fontSize='2xl' fontWeight='bold' mb={5}>
-                  Next exercise
-                </Text>
-              )}
-              {isRest && (
-                <Text fontSize='2xl' fontWeight='bold' mb={5}>
-                  Let's take a break
-                </Text>
-              )} */}
-              {!isStartPose && !isRest && exerciseIndex === 0 && (
-                <Text fontSize='2xl' fontWeight='bold' mb={5}>
-                  เริ่มต้นออกกำลังกาย
-                </Text>
-              )}
-              {!isStartPose && !isRest && exerciseIndex > 0 && (
-                <Text fontSize='2xl' fontWeight='bold' mb={5}>
-                  ท่าออกกำลังกายถัดไป
-                </Text>
-              )}
-              {isRest && (
-                <Text fontSize='2xl' fontWeight='bold' mb={5}>
-                  พัก 5 วินาที
-                </Text>
-              )}
-              {isRest && (
-                <Text fontSize='2xl' fontWeight='bold' mb={5}>
-                  {restTime}
-                </Text>
-              )}
-              {/* {!isStartPose && !isRest && exerciseIndex === 0 && (
-                <Button
-                  color='white'
-                  bgColor='teal.400'
-                  leftIcon={<FaPlay />}
-                  onClick={startExercise}
-                  _hover='teal.100'
-                >
-                  {' '}
-                  Start
-                </Button>
-              )} */}
-              {!isStartPose && !isRest && (
-                <Button
-                  color='white'
-                  bgColor='teal.400'
-                  leftIcon={<FaPlay />}
-                  onClick={startExercise}
-                  _hover='teal.100'
-                >
-                  {' '}
-                  <Text fontSize='xl'>เริ่ม</Text>
-                </Button>
-              )}
-              {/* {!isStartPose && !isRest && exerciseIndex > 0 && (
-                <Button
-                  color='white'
-                  bgColor='teal.400'
-                  leftIcon={<FaPlay />}
-                  onClick={startNextExercise}
-                  _hover='teal.100'
-                >
-                  {' '}
-                  Start
-                </Button>
-              )} */}
-              {/* {!isStartPose && !isRest && exerciseIndex > 0 && (
-                <Button
-                  color='white'
-                  bgColor='teal.400'
-                  leftIcon={<FaPlay />}
-                  onClick={startNextExercise}
-                  _hover='teal.100'
-                >
-                  {' '}
-                  เริ่ม
-                </Button>
-              )} */}
+                {/* {!isStartPose && !isRest && exerciseIndex > 0 && (
+                 <Button
+                   color='white'
+                   bgColor='teal.400'
+                   leftIcon={<FaPlay />}
+                   onClick={startNextExercise}
+                   _hover='teal.100'
+                 >
+                   {' '}
+                   Start
+                 </Button>
+               )} */}
+                {/* {!isStartPose && !isRest && exerciseIndex > 0 && (
+                 <Button
+                   color='white'
+                   bgColor='teal.400'
+                   leftIcon={<FaPlay />}
+                   onClick={startNextExercise}
+                   _hover='teal.100'
+                 >
+                   {' '}
+                   เริ่ม
+                 </Button>
+               )} */}
 
-              {isStartPose && !isRest && (
-                <Webcam
-                  width='640px'
-                  height='480px'
-                  id='webcam'
-                  ref={webcamRef}
-                  style={{
-                    position: 'absolute',
-                    padding: '0px',
-                  }}
-                />
-              )}
-              {isStartPose && !isRest && isShowCanva && (
-                <canvas
-                  ref={canvasRef}
-                  id='my-canvas'
-                  width='640px'
-                  height='480px'
-                  style={{
-                    position: 'absolute',
-                    zIndex: 1,
-                  }}
-                ></canvas>
-              )}
-            </GridItem>
-          </Grid>
-        )}
-        {isStartPose && (
-          <Flex w='full' justifyContent='center' mt={4} c>
-            <Button
-              color='white'
-              bgColor='teal.400'
-              _hover='teal.100'
-              onClick={skipPose}
-            >
-              ข้ามท่าออกกำลังกายนี้
-            </Button>
-          </Flex>
-        )}
-      </Flex>
-    </>
-  );
+                {isStartPose && !isRest && (
+                  <Webcam
+                    width='640px'
+                    height='480px'
+                    id='webcam'
+                    ref={webcamRef}
+                    style={{
+                      position: 'absolute',
+                      padding: '0px',
+                    }}
+                  />
+                )}
+                {isStartPose && !isRest && isShowCanva && (
+                  <canvas
+                    ref={canvasRef}
+                    id='my-canvas'
+                    width='640px'
+                    height='480px'
+                    style={{
+                      position: 'absolute',
+                      zIndex: 1,
+                    }}
+                  ></canvas>
+                )}
+              </GridItem>
+            </Grid>
+          )}
+          {isStartPose && (
+            <Flex w='full' justifyContent='center' mt={4} c>
+              <Button
+                color='white'
+                bgColor='teal.400'
+                _hover='teal.100'
+                onClick={skipPose}
+              >
+                ข้ามท่าออกกำลังกายนี้
+              </Button>
+            </Flex>
+          )}
+        </Flex>
+      </>
+    );
+  }
 }
 
 export default Exercise;
