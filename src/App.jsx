@@ -3,6 +3,7 @@ import { render } from 'react-dom';
 import { createBrowserRouter, RouterProvider, Route } from 'react-router-dom';
 import NavigationBar from './component/Navbar/NavigationBar';
 import GeneralExerciseSet from './page/GeneralExercise/GeneralExerciseSet';
+import GeneralExerciseMain from './page/GeneralExercise/GeneralExerciseMain';
 import Home from './page/Home';
 import PatientLoginPage from './page/Patient/Auth/PatientLoginPage';
 import PatientRegisterPage from './page/Patient/Auth/PatientRegisterPage';
@@ -33,7 +34,7 @@ const router = createBrowserRouter([
   },
   {
     path: 'generalExercise/set/:id',
-    element: <GeneralExerciseSet />,
+    element: <GeneralExerciseMain />,
   },
   {
     path: 'video-chat',

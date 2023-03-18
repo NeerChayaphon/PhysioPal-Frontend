@@ -13,7 +13,7 @@ const NavigationBar = () => {
     },
     {
       name: 'General Exercise',
-      url: '/###',
+      url: '/generalExercise/set/123',
     },
     {
       name: 'Telemedicine',
