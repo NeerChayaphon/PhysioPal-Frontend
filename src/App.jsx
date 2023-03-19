@@ -1,98 +1,162 @@
-import React from 'react';
-import { render } from 'react-dom';
-import { createBrowserRouter, RouterProvider, Route } from 'react-router-dom';
-import NavigationBar from './component/Navbar/NavigationBar';
-import GeneralExerciseSet from './page/GeneralExercise/GeneralExerciseSet';
-import Home from './page/Home';
-import PatientLoginPage from './page/Patient/Auth/PatientLoginPage';
-import PatientRegisterPage from './page/Patient/Auth/PatientRegisterPage';
-import Patient from './page/Patient/Telemed/Patient';
-import Physiotherapist from './page/PT/Physiotherapist';
-import TelemedicineFirstPage from './page/Telemedicine/TelemedicineFirstPage';
-import VideoChat from './page/VideoChat/VideoChat';
-import TelemedicineSecondPage from './page/Telemedicine/TelemedicineSecondPage';
-import GeneralExerciseTypePage from './page/GeneralExercise/GeneralExerciseTypePage';
-import GeneralExerciseInfo from './page/GeneralExercise/GeneralExerciseInfo';
-import PatientProfileInfo from './page/PatientProfile/PatientProfileInfo';
-import PatientAppointmentRecord from './page/PatientProfile/PatientAppointmentRecord'
-import PatientExerciseRecord from './page/PatientProfile/PatientExerciseRecord'
-import PatientAppointmentDetail from './page/PatientProfile/PatientAppointmentDetail'
-import PatientVideoRecord from './page/PatientProfile/PatientVideoRecord'
-import Homepage from './page/Homepage/Homepage';
-import MyExercise from './page/MyExercise/MyExercise';
+import React from "react";
+import { render } from "react-dom";
+import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
+import NavigationBar from "./component/Navbar/NavigationBar";
+import GeneralExerciseSet from "./page/GeneralExercise/GeneralExerciseSet";
+import Home from "./page/Home";
+import PatientLoginPage from "./page/Patient/Auth/PatientLoginPage";
+import PatientRegisterPage from "./page/Patient/Auth/PatientRegisterPage";
+import Patient from "./page/Patient/Telemed/Patient";
+import Physiotherapist from "./page/PT/Physiotherapist";
+import TelemedicineFirstPage from "./page/Patient/Telemedicine/TelemedicineFirstPage";
+import VideoChat from "./page/Patient/VideoChat/VideoChat";
+import TelemedicineSecondPage from "./page/Patient/Telemedicine/TelemedicineSecondPage";
+import GeneralExerciseTypePage from "./page/GeneralExercise/GeneralExerciseTypePage";
+import GeneralExerciseInfo from "./page/GeneralExercise/GeneralExerciseInfo";
+import PatientProfileInfo from "./page/Patient/PatientProfile/PatientProfileInfo";
+import PatientAppointmentRecord from "./page/Patient/PatientProfile/PatientAppointmentRecord";
+import PatientExerciseRecord from "./page/Patient/PatientProfile/PatientExerciseRecord";
+import PatientAppointmentDetail from "./page/Patient/PatientProfile/PatientAppointmentDetail";
+import PatientVideoRecord from "./page/Patient/PatientProfile/PatientVideoRecord";
+import Homepage from "./page/Patient/Homepage/Homepage";
+import MyExercise from "./page/Patient/MyExercise/MyExercise";
+
+import PTProfile from "./page/PT/PTProfile/PTProfile";
+import PTLogIn from "./page/PT/PTLogIn/PTLogIn";
+import PTDashboard from "./page/PT/PTDashboard/PTDashboard";
+import PTViewPatientProfile from "./page/PT/PTViewPatientProfile/PTViewPatientProfile";
+import PTPatientAppointment from "./page/PT/PTViewPatientProfile/PTPatientAppointment";
+import PTPatientAppointmentDetail from "./page/PT/PTViewPatientProfile/PTPatientAppointmentDetail";
+import PTPatientExerciseRecord from "./page/PT/PTViewPatientProfile/PTPatientExerciseRecord";
+import PTPatientVideoRecord from "./page/PT/PTViewPatientProfile/PTPatientVideoRecord";
+import PTAppointmentDetail from "./page/PT/PTDashboard/PTAppointmentDetail";
+import PTTherapeuticalExercise from "./page/PT/PTDashboard/PTTherapeuticalExercise";
+import PTTherapeuticalExerciseShopping from "./page/PT/PTDashboard/PTTherapeuticalExerciseShopping";
+import PTNote from "./page/PT/PTNote/PTNote";
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <Home />,
   },
   {
-    path: 'homepage',
-    element: <Homepage/>,
+    path: "homepage",
+    element: <Homepage />,
   },
   {
-    path: 'patient/login',
+    path: "patient/login",
     element: <PatientLoginPage />,
   },
   {
-    path: 'patient/register',
+    path: "patient/register",
     element: <PatientRegisterPage />,
   },
   {
-    path: 'physiotherapist/:id',
+    path: "patient/physiotherapist/:id",
     element: <Physiotherapist />,
   },
   {
-    path: 'patient',
+    path: "testtelemedicine",
     element: <Patient />,
   },
   {
-    path: 'generalExercise/set/:id',
+    path: "patient/generalExercise/set/:id",
     element: <GeneralExerciseSet />,
   },
   {
-    path: 'video-chat',
+    path: "patient/video-chat",
     element: <VideoChat />,
   },
   {
-    path: 'telemedicine',
+    path: "patient/telemedicine",
     element: <TelemedicineFirstPage />,
   },
   {
-    path: 'telemedicine/:id',
+    path: "patient/telemedicine/:id",
     element: <TelemedicineSecondPage />,
   },
   {
-    path: 'generalExercise',
-    element: <GeneralExerciseTypePage/>,
+    path: "patient/generalExercise",
+    element: <GeneralExerciseTypePage />,
   },
   {
-    path: 'generalExercise/type/:id',
-    element: <GeneralExerciseInfo/>,
+    path: "patient/generalExercise/type/:id",
+    element: <GeneralExerciseInfo />,
   },
   {
-    path: 'patientProfile',
-    element: <PatientProfileInfo/>,
+    path: "patient/profile",
+    element: <PatientProfileInfo />,
   },
   {
-    path: 'patientProfile/appointment',
-    element: <PatientAppointmentRecord/>,
+    path: "patient/profile/appointment",
+    element: <PatientAppointmentRecord />,
   },
   {
-    path: 'patientProfile/exercise',
-    element: <PatientExerciseRecord/>,
+    path: "patient/profile/exercise",
+    element: <PatientExerciseRecord />,
   },
   {
-    path: 'patientProfile/appointment/:id',
-    element: <PatientAppointmentDetail/>,
+    path: "patient/profile/appointment/:id",
+    element: <PatientAppointmentDetail />,
   },
   {
-    path: 'patientProfile/exercise/:id',
-    element: <PatientVideoRecord/>,
+    path: "patient/profile/exercise/:id",
+    element: <PatientVideoRecord />,
   },
   {
-    path: 'myExercise',
-    element: <MyExercise/>,
+    path: "patient/myExercise",
+    element: <MyExercise />,
+  },
+  // End for Patient
+
+  //Start for Doctor
+  {
+    path: "physiotherapist/profile",
+    element: <PTProfile />,
+  },
+  {
+    path: "physiotherapist/login",
+    element: <PTLogIn />,
+  },
+  {
+    path: "physiotherapist/dashboard",
+    element: <PTDashboard />,
+  },
+  {
+    path: "physiotherapist/patientprofile",
+    element: <PTViewPatientProfile />,
+  },
+  {
+    path: "physiotherapist/patientappointment",
+    element: <PTPatientAppointment />,
+  },
+  {
+    path: "physiotherapist/patientappointment/:id",
+    element: <PTPatientAppointmentDetail />,
+  },
+  {
+    path: "physiotherapist/patientexercise",
+    element: <PTPatientExerciseRecord />,
+  },
+  {
+    path: "physiotherapist/patientexercise/:id",
+    element: <PTPatientVideoRecord />,
+  },
+  {
+    path: "physiotherapist/dashboard/:id",
+    element: <PTAppointmentDetail />,
+  },
+  {
+    path: "physiotherapist/dashboard/:id/therapeutical",
+    element: <PTTherapeuticalExercise />,
+  },
+  {
+    path: "physiotherapist/dashboard/:id/therapeutical/shopping",
+    element: <PTTherapeuticalExerciseShopping />,
+  },
+  {
+    path: "physiotherapist/note",
+    element: <PTNote />,
   },
 ]);
 

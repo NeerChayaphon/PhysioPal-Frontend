@@ -3,11 +3,11 @@ import {useRef, useState} from 'react';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 
-import {ReactComponent as HangupIcon} from '../../icons/hangup.svg';
-import {ReactComponent as MoreIcon} from '../../icons/more-vertical.svg';
-import {ReactComponent as CopyIcon} from '../../icons/copy.svg';
+import {ReactComponent as HangupIcon} from '../../../icons/hangup.svg';
+import {ReactComponent as MoreIcon} from '../../../icons/more-vertical.svg';
+import {ReactComponent as CopyIcon} from '../../../icons/copy.svg';
 
-import '../../App.css';
+import '../../../App.css';
 import {
   Button,
   Flex,
@@ -26,7 +26,7 @@ import {
   Grid,
   GridItem,
 } from '@chakra-ui/react';
-import Navbar from '../../component/navbar';
+import Navbar from '../../../component/navbar';
 
 // Initialize Firebase
 const firebaseConfig = {

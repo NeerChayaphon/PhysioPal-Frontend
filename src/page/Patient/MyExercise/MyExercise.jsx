@@ -18,22 +18,22 @@ import {
     MenuButton,
     useColorModeValue,
     Stack,
-    Heading,
+    Heading, 
   } from '@chakra-ui/react';
-  import CardMyExercise from '../../icons/Exercise/CardMyExercise.png';
-
+  import CardMyExercise from '../../../icons/Exercise/CardMyExercise.png';
+  
 const MyExercise = () => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     return (
         <Tabs isFitted variant='unstyled' >
             <TabList mb='1em' h='60px' bgColor='teal.400'>
-                <Tab _selected={{ color: 'teal.600', bg: 'white' }}>General Exercise</Tab>
-                <Tab _selected={{ color: 'teal.600', bg: 'white' }}>Therapeutical Exercise</Tab>
+                <Tab fontWeight='semibold' _selected={{ color: 'teal.600', bg: 'white' }}>General Exercise</Tab>
+                <Tab fontWeight='semibold' _selected={{ color: 'teal.600', bg: 'white' }}>Therapeutical Exercise</Tab>
             </TabList>
             <TabPanels>
                 <TabPanel>
-                    <Heading size='md' align='center'>General Exercise</Heading>
-                    <Grid px={10} py={8} templateColumns='repeat(4, 1fr)' gap={10}> 
+                    <Heading size='md' align='center' py={5}>General Exercise</Heading>
+                    <Grid px={10} py={10} templateColumns='repeat(4, 1fr)' gap={10}> 
                         <Menu isOpen={isOpen}>
                             <MenuButton
                                 variant="ghost"
@@ -43,6 +43,7 @@ const MyExercise = () => {
                                 aria-label="Courses"
                                 fontWeight="normal"
                                 w='max'
+                                boxShadow='md'
                                 //  onMouseEnter={onOpen}
                                 //  onMouseLeave={onClose}   
                             >  
@@ -64,6 +65,7 @@ const MyExercise = () => {
                                 aria-label="Courses"
                                 fontWeight="normal"
                                 w='max'
+                                boxShadow='md'
                                 //  onMouseEnter={onOpen}
                                 //  onMouseLeave={onClose}   
                             >  
@@ -85,6 +87,7 @@ const MyExercise = () => {
                                 aria-label="Courses"
                                 fontWeight="normal"
                                 w='max'
+                                boxShadow='md'
                                 //  onMouseEnter={onOpen}
                                 //  onMouseLeave={onClose}   
                             >  
@@ -106,6 +109,7 @@ const MyExercise = () => {
                                 aria-label="Courses"
                                 fontWeight="normal"
                                 w='max'
+                                boxShadow='md'
                                 //  onMouseEnter={onOpen}
                                 //  onMouseLeave={onClose}   
                             >  
@@ -127,6 +131,7 @@ const MyExercise = () => {
                                 aria-label="Courses"
                                 fontWeight="normal"
                                 w='max'
+                                boxShadow='md'
                                 //  onMouseEnter={onOpen}
                                 //  onMouseLeave={onClose}   
                             >  
@@ -145,8 +150,8 @@ const MyExercise = () => {
                 </TabPanel>
 
                 <TabPanel>
-                <Heading size='md' align='center'>Therapeutical Exercise</Heading>
-                    <Grid px={10} py={8} templateColumns='repeat(4, 1fr)' gap={10}> 
+                    <Heading size='md' align='center' py={5}>Therapeutical Exercise</Heading>
+                    <Grid px={10} py={10} templateColumns='repeat(4, 1fr)' gap={10}> 
                         <Menu isOpen={isOpen}>
                             <MenuButton
                                 variant="ghost"
@@ -156,6 +161,7 @@ const MyExercise = () => {
                                 aria-label="Courses"
                                 fontWeight="normal"
                                 w='max'
+                                boxShadow='md'
                                 //  onMouseEnter={onOpen}
                                 //  onMouseLeave={onClose}   
                             >  
@@ -177,6 +183,7 @@ const MyExercise = () => {
                                 aria-label="Courses"
                                 fontWeight="normal"
                                 w='max'
+                                boxShadow='md'
                                 //  onMouseEnter={onOpen}
                                 //  onMouseLeave={onClose}   
                             >  
@@ -198,6 +205,7 @@ const MyExercise = () => {
                                 aria-label="Courses"
                                 fontWeight="normal"
                                 w='max'
+                                boxShadow='md'
                                 //  onMouseEnter={onOpen}
                                 //  onMouseLeave={onClose}   
                             >  
@@ -219,6 +227,7 @@ const MyExercise = () => {
                                 aria-label="Courses"
                                 fontWeight="normal"
                                 w='max'
+                                boxShadow='md'
                                 //  onMouseEnter={onOpen}
                                 //  onMouseLeave={onClose}   
                             >  
@@ -240,6 +249,7 @@ const MyExercise = () => {
                                 aria-label="Courses"
                                 fontWeight="normal"
                                 w='max'
+                                boxShadow='md'
                                 //  onMouseEnter={onOpen}
                                 //  onMouseLeave={onClose}   
                             >  
@@ -261,6 +271,7 @@ const MyExercise = () => {
                                 aria-label="Courses"
                                 fontWeight="normal"
                                 w='max'
+                                boxShadow='md'
                                 //  onMouseEnter={onOpen}
                                 //  onMouseLeave={onClose}   
                             >  
@@ -282,6 +293,7 @@ const MyExercise = () => {
                                 aria-label="Courses"
                                 fontWeight="normal"
                                 w='max'
+                                boxShadow='md'
                                 //  onMouseEnter={onOpen}
                                 //  onMouseLeave={onClose}   
                             >  
