@@ -24,7 +24,7 @@ const GeneralExerciseMain = () => {
       .then((data) => {
         console.log(params.id);
         // remove this later
-        if (params.id - 1 === 0) {
+        if (params.id - 1 < data.data.length) {
           setId(data.data[params.id - 1]._id);
         }
         console.log('try another id');
