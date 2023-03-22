@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import GeneralExerciseSet from './GeneralExerciseSet';
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const GeneralExerciseMain = () => {
   const [data, setData] = useState(null);
@@ -9,6 +10,7 @@ const GeneralExerciseMain = () => {
 
   const token = sessionStorage.getItem('token');
   const params = useParams();
+  const language = useSelector((state) => state.language.value);
 
   useEffect(() => {
     fetch('https://physiopal-api-production.up.railway.app/generalExercises', {
@@ -62,7 +64,12 @@ const GeneralExerciseMain = () => {
     return <div>Loading...</div>;
   } else {
     console.log(data.data.ExerciseSet[0]);
-    return <GeneralExerciseSet ExerciseSet={data.data} Language={'eng'} />;
+    return (
+      <GeneralExerciseSet
+        ExerciseSet={data.data}
+        Language={language === 'English' ? 'eng' : 'th'}
+      />
+    );
   }
 };
 

@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Navbar from './Navbar';
 import { useSelector } from 'react-redux';
 
 const NavigationBar = () => {
   const user = useSelector((state) => state.user.data);
   const language = useSelector((state) => state.language.value);
+
+  const [userData, setUserData] = React.useState(null);
+
+  useEffect(() => {
+    setUserData(user);
+  }, [user]);
 
   const Links = [
     {
@@ -13,7 +19,7 @@ const NavigationBar = () => {
     },
     {
       name: 'General Exercise',
-      url: '/generalExercise/set/123',
+      url: '/generalExercise/set/1',
     },
     {
       name: 'Telemedicine',
@@ -29,12 +35,26 @@ const NavigationBar = () => {
     },
   ];
 
-  if (window.location.pathname === '/patient/login') {
-    return <Navbar Links={[]} UserLinks={[]} />;
-  } else {
-    if (user === null) {
-      return <Navbar Links={[]} />;
-    } else if (user.role === 'patient') {
+  // if (window.location.pathname === '/patient/login') {
+  //   return <Navbar Links={[]} UserLinks={[]} />;
+  // } else {
+  //   if (userData === null) {
+  //     return null;
+  //   } else if (userData.role === 'patient') {
+  //     return (
+  //       <Navbar
+  //         Links={Links}
+  //         User={userData}
+  //         UserLinks={Links}
+  //         SignoutLink={'/patient/login'}
+  //       />
+  //     );
+  //   } else if (userData.role === 'physiotherapist') {
+  //     return <Navbar Links={[]} />;
+  //   }
+  // }
+  if (user != null) {
+    if (user.role === 'patient') {
       return (
         <Navbar
           Links={Links}
@@ -46,6 +66,8 @@ const NavigationBar = () => {
     } else if (user.role === 'physiotherapist') {
       return <Navbar Links={[]} />;
     }
+  } else {
+    return <Navbar Links={[]} />;
   }
 };
 
