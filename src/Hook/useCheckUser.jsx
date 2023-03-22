@@ -11,6 +11,7 @@ function useCheckUser(role, navigateTo) {
   useEffect(() => {
     const fetchUser = async () => {
       const token = sessionStorage.getItem('token');
+      console.log(token);
       if (!token) {
         navigate(navigateTo);
       }
@@ -18,7 +19,7 @@ function useCheckUser(role, navigateTo) {
       if (user === null) {
         try {
           const response = await fetch(
-            'https://physiopal-api.azurewebsites.net/user/GetUserByJWT',
+            'https://physiopal-api-production.up.railway.app/user/GetUserByJWT',
             {
               method: 'GET',
               headers: {

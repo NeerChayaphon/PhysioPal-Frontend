@@ -28,6 +28,7 @@ import Logo from '../../icons/Logo.png';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../slice/user/userSlice';
+import { setEnglish, setThai } from '../../slice/language/languageSlice';
 
 const Links = [
   'Home',
@@ -120,6 +121,12 @@ const Navbar = ({ Links, HomePageLink, User, UserLinks, SignoutLink }) => {
                           </Link>
                         </MenuItem>
                       ))}
+                      <MenuItem onClick={() => dispatch(setThai())}>
+                        THAI
+                      </MenuItem>
+                      <MenuItem onClick={() => dispatch(setEnglish())}>
+                        ENG
+                      </MenuItem>
                       <MenuItem onClick={signout}>Sign Out</MenuItem>
                     </MenuList>
                   </Menu>
