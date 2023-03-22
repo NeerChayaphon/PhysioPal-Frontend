@@ -9,6 +9,7 @@ import { drawPoint, drawSegment } from '../../utils/helper';
 import { useStopwatch } from 'react-timer-hook';
 // import ExerciseSet from './exercise';
 import debounce from 'lodash/debounce';
+import { useNavigate } from 'react-router-dom';
 
 import {
   Flex,
@@ -29,6 +30,8 @@ let flag = false;
 let secondsRemaining = 5;
 
 function Exercise({ ExerciseSet, Language }) {
+  const navigate = useNavigate();
+
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
 
@@ -669,9 +672,24 @@ function Exercise({ ExerciseSet, Language }) {
               display='flex'
               alignItems='center'
             >
-              <Text fontSize='2xl' fontWeight='bold' mb={5}>
-                Finish
-              </Text>
+              <VStack gap={2}>
+                <Text fontSize='2xl' fontWeight='bold' mb={5}>
+                  Finish
+                </Text>
+                <Button
+                  color='white'
+                  bgColor='teal.400'
+                  leftIcon={<FaPlay />}
+                  onClick={() => navigate('/')}
+                  _hover='teal.100'
+                >
+                  {' '}
+                  <Text fontSize='xl'>
+                    {' '}
+                    {Language === 'th' ? 'กลับไปหน้าหลัก' : 'Back to Home Page'}
+                  </Text>
+                </Button>
+              </VStack>
             </GridItem>
           </Grid>
         )}
