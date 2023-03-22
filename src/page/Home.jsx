@@ -8,6 +8,7 @@ const Home = () => {
   const user = useSelector((state) => state.user.data);
 
   return <>{user && <div>{user.role}</div>}</>;
+  
 };
 
 export default Home;
