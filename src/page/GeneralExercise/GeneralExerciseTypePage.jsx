@@ -7,7 +7,7 @@ import GeneralExerciseType from '../../component/GeneralExercise/GeneralExercise
 const GeneralExerciseTypePage = () => {
     return (
         <div>
-            <Heading size='lg' px={10} mt={8} mb={5}>General Exercise</Heading>
+            <Heading size='lg' px={10} mt={10} mb={5}>General Exercise</Heading>
             <GeneralExerciseType/>
         </div>
     )

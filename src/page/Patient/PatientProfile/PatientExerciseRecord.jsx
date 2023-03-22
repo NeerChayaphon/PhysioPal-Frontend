@@ -3,13 +3,10 @@ import {
     Grid, 
     GridItem, 
     Text, 
-    Flex, 
-    Input, 
     Button, 
     Table,
     Thead,
     Tbody,
-    Tfoot,
     Tr,
     Th,
     Td,
@@ -17,7 +14,7 @@ import {
     TableContainer,
     VStack,
   } from '@chakra-ui/react';
-  import PatientProfileMenu from '../../component/PatientProfile/PatientProfileMenu';
+  import PatientProfileMenu from '../../../component/PatientProfile/PatientProfileMenu';
 
 const PatientExerciseRecord = () => {
     return (
@@ -36,8 +33,8 @@ const PatientExerciseRecord = () => {
                             Exercise Record
                         </Text>
                     </VStack>
-                    <TableContainer borderRadius='lg'>
-                        <Table variant='striped' colorScheme='teal' bgColor='white' borderRadius='lg' >
+                    <TableContainer borderRadius='lg' boxShadow='lg' px={2} py={2} bgColor='white'>
+                        <Table variant='striped' colorScheme='teal' bgColor='white' borderRadius='lg'>
                             <Thead>
                             <Tr>
                                 <Th>NO.</Th>
@@ -53,7 +50,7 @@ const PatientExerciseRecord = () => {
                                 <Tr>
                                     <Td>1.</Td>
                                     <Td>Set 1</Td>
-                                    <Td>General Exercise</Td>
+                                    <Td>General <br/>Exercise</Td>
                                     <Td>-</Td>
                                     <Td>01/10/2022</Td>
                                     <Td>Unfinish</Td>
@@ -87,7 +84,7 @@ const PatientExerciseRecord = () => {
                                 <Tr>
                                     <Td>3.</Td>
                                     <Td>Set 1</Td>
-                                    <Td>Therapeutical <br/> Exercise</Td>
+                                    <Td>Therapeutical <br/>Exercise</Td>
                                     <Td>Noolek</Td>
                                     <Td>03/10/2022</Td>
                                     <Td>Unfinish</Td>
@@ -104,7 +101,7 @@ const PatientExerciseRecord = () => {
                                 <Tr>
                                     <Td>4.</Td>
                                     <Td>Set 2</Td>
-                                    <Td>Therapeutical <br/> Exercise</Td>
+                                    <Td>Therapeutical <br/>Exercise</Td>
                                     <Td>Pear</Td>
                                     <Td>04/10/2022</Td>
                                     <Td>finish</Td>
@@ -121,7 +118,7 @@ const PatientExerciseRecord = () => {
                                 <Tr>
                                     <Td>5.</Td>
                                     <Td>Set 1</Td>
-                                    <Td>General Exercise</Td>
+                                    <Td>General <br/>Exercise</Td>
                                     <Td>-</Td>
                                     <Td>05/10/2022</Td>
                                     <Td>Unfinish</Td>
@@ -138,7 +135,7 @@ const PatientExerciseRecord = () => {
                                 <Tr>
                                     <Td>6.</Td>
                                     <Td>Set 1</Td>
-                                    <Td>General Exercise</Td>
+                                    <Td>General <br/>Exercise</Td>
                                     <Td>-</Td>
                                     <Td>06/10/2022</Td>
                                     <Td>Unfinish</Td>
@@ -155,7 +152,7 @@ const PatientExerciseRecord = () => {
                                 <Tr>
                                     <Td>7.</Td>
                                     <Td>Set 2</Td>
-                                    <Td>Therapeutical <br/> Exercise</Td>
+                                    <Td>Therapeutical <br/>Exercise</Td>
                                     <Td>Neer</Td>
                                     <Td>07/10/2022</Td>
                                     <Td>finish</Td>
@@ -172,7 +169,7 @@ const PatientExerciseRecord = () => {
                                 <Tr>
                                     <Td>8.</Td>
                                     <Td>Set 1</Td>
-                                    <Td>Therapeutical <br/> Exercise</Td>
+                                    <Td>Therapeutical <br/>Exercise</Td>
                                     <Td>Pear</Td>
                                     <Td>08/10/2022</Td>
                                     <Td>Unfinish</Td>
@@ -189,7 +186,7 @@ const PatientExerciseRecord = () => {
                                 <Tr>
                                     <Td>9.</Td>
                                     <Td>Set 4</Td>
-                                    <Td>Therapeutical <br/> Exercise</Td>
+                                    <Td>Therapeutical<br/>Exercise</Td>
                                     <Td>Noolek</Td>
                                     <Td>09/10/2022</Td>
                                     <Td>finish</Td>
@@ -206,7 +203,7 @@ const PatientExerciseRecord = () => {
                                 <Tr>
                                     <Td>10.</Td>
                                     <Td>Set 1</Td>
-                                    <Td>General Exercise</Td>
+                                    <Td>General <br/>Exercise</Td>
                                     <Td>-</Td>
                                     <Td>10/10/2022</Td>
                                     <Td>Unfinish</Td>
@@ -223,7 +220,7 @@ const PatientExerciseRecord = () => {
                                 <Tr>
                                     <Td>11.</Td>
                                     <Td>Set 1</Td>
-                                    <Td>General Exercise</Td>
+                                    <Td>General <br/>Exercise</Td>
                                     <Td>-</Td>
                                     <Td>11/10/2022</Td>
                                     <Td>Unfinish</Td>
@@ -240,7 +237,7 @@ const PatientExerciseRecord = () => {
                                 <Tr>
                                     <Td>12.</Td>
                                     <Td>Set 2</Td>
-                                    <Td>Therapeutical <br/> Exercise</Td>
+                                    <Td>Therapeutical <br/>Exercise</Td>
                                     <Td>Neer</Td>
                                     <Td>12/10/2022</Td>
                                     <Td>finish</Td>
@@ -257,7 +254,7 @@ const PatientExerciseRecord = () => {
                                 <Tr>
                                     <Td>13.</Td>
                                     <Td>Set 1</Td>
-                                    <Td>Therapeutical <br/> Exercise</Td>
+                                    <Td>Therapeutical <br/>Exercise</Td>
                                     <Td>Pear</Td>
                                     <Td>13/10/2022</Td>
                                     <Td>Unfinish</Td>
@@ -274,7 +271,7 @@ const PatientExerciseRecord = () => {
                                 <Tr>
                                     <Td>14.</Td>
                                     <Td>Set 4</Td>
-                                    <Td>Therapeutical <br/> Exercise</Td>
+                                    <Td>Therapeutical <br/>Exercise</Td>
                                     <Td>Noolek</Td>
                                     <Td>14/10/2022</Td>
                                     <Td>finish</Td>
@@ -291,7 +288,7 @@ const PatientExerciseRecord = () => {
                                 <Tr>
                                     <Td>15.</Td>
                                     <Td>Set 1</Td>
-                                    <Td>General Exercise</Td>
+                                    <Td>General <br/>Exercise</Td>
                                     <Td>-</Td>
                                     <Td>15/10/2022</Td>
                                     <Td>Unfinish</Td>
@@ -305,17 +302,26 @@ const PatientExerciseRecord = () => {
                                         </Button>  
                                     </Td>                           
                                 </Tr>
+                                <Tr>
+                                    <Td>16.</Td>
+                                    <Td>Set 1</Td>
+                                    <Td>General <br/>Exercise</Td>
+                                    <Td>-</Td>
+                                    <Td>16/10/2022</Td>
+                                    <Td>Unfinish</Td>
+                                    <Td>
+                                        <Button 
+                                        colorScheme='teal' 
+                                        variant='solid'
+                                        size='xs'
+                                        >
+                                            View Detail
+                                        </Button>  
+                                    </Td>                           
+                                </Tr>
                             </Tbody>
-                            {/* <Tfoot>
-                            <Tr>
-                                <Th>To convert</Th>
-                                <Th>into</Th>
-                                <Th isNumeric>multiply by</Th>
-                            </Tr>
-                            </Tfoot> */}
                         </Table>
                     </TableContainer>
-                  
             </GridItem>
         </Grid>
     )

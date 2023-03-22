@@ -16,8 +16,8 @@ import {
     CardBody,
     Stack,
   } from '@chakra-ui/react';
-import Picture from '../../icons/Exercise/Picture.png';
-import Exercise1 from '../../icons/Exercise/Exercise1.png';
+import Picture from '../../../icons/Exercise/Picture.png';
+import Exercise1 from '../../../icons/Exercise/Exercise1.png';
 
 const PatientVideoRecord = () => {
     return (
@@ -27,9 +27,9 @@ const PatientVideoRecord = () => {
                 <Image
                     src={Picture}
                     borderTopRadius='lg'
-                    boxSize='100%'
+                    w='100%'
                 />
-                <Flex flexDir='column' bgColor='gray.100' px={10} py={8} borderRadius='lg'>
+                <Flex flexDir='column' bgColor='gray.100' px={10} py={8} borderBottomRadius='lg' boxShadow='lg'>
                     <Heading size='lg' mt={8} mb={5}>Physiotherapist</Heading>
 
                     <HStack>

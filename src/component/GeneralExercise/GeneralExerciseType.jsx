@@ -23,25 +23,26 @@ const GeneralExerciseType = () => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     return (
         <Grid px={10} py={8} templateColumns='repeat(4, 1fr)' gap={10}>
-            <Menu isOpen={isOpen}>
+            <Menu isOpen={isOpen} >
                 <MenuButton
                     variant="ghost"
                     mx={1}
                     px={8}
                     borderRadius={5}
-                    bgColor='teal.100'
-                    _hover={{ bg: useColorModeValue("teal.300", "teal.500") }}
+                    bgColor='gray.200'
+                    _hover={{ bg: useColorModeValue("gray.400", "gray.600") }}
                     aria-label="Courses"
                     fontWeight="normal"
                     w='max'
+                    boxShadow='lg'
                     //  onMouseEnter={onOpen}
                     //  onMouseLeave={onClose}   
                 >  
-                    <VStack py={5} spacing='3'>
+                    <VStack py={5} spacing='6'>
                         <Image
                             src={Back}
                             borderRadius='lg'
-                            boxSize='250px'
+                            boxSize='220px'
                             mt={5}
                             />
                             <Heading size='md' align='center'>Back</Heading>
@@ -52,20 +53,21 @@ const GeneralExerciseType = () => {
                     mx={1}
                     px={8}
                     borderRadius={5}
-                    bgColor='teal.100'
-                    _hover={{ bg: useColorModeValue("teal.300", "teal.500") }}
+                    bgColor='gray.200'
+                    _hover={{ bg: useColorModeValue("gray.400", "gray.600") }}
                     aria-label="Courses"
                     fontWeight="normal"
                     w='max'
+                    boxShadow='lg'
                     //  onMouseEnter={onOpen}
                     //  onMouseLeave={onClose}   
                 >  
-                    <VStack py={5} spacing='3'>
+                    <VStack py={5} spacing='6'>
                         <Image
                             src={Knee}
                             borderRadius='lg'
                             mt={5}
-                            boxSize='250px'
+                            boxSize='220px'
                             />
                             <Heading size='md' align='center'>Knee</Heading>
                     </VStack>
@@ -75,20 +77,21 @@ const GeneralExerciseType = () => {
                     mx={1}
                     px={8}
                     borderRadius={5}
-                    bgColor='teal.100'
-                    _hover={{ bg: useColorModeValue("teal.300", "teal.500") }}
+                    bgColor='gray.200'
+                    _hover={{ bg: useColorModeValue("gray.400", "gray.600") }}
                     aria-label="Courses"
                     fontWeight="normal"
                     w='max'
+                    boxShadow='lg'
                     //  onMouseEnter={onOpen}
                     //  onMouseLeave={onClose}   
                 >  
-                    <VStack py={5} spacing='3'>
+                    <VStack py={5} spacing='6'>
                         <Image
                             src={Shoulder}
                             borderRadius='lg'
                             mt={5}
-                            boxSize='250px'
+                            boxSize='220px'
                             />
                             <Heading size='md' align='center'>Shoulder</Heading>
                     </VStack>
@@ -98,19 +101,20 @@ const GeneralExerciseType = () => {
                     mx={1}
                     px={8}
                     borderRadius={5}
-                    bgColor='teal.100'
-                    _hover={{ bg: useColorModeValue("teal.300", "teal.500") }}
+                    bgColor='gray.200'
+                    _hover={{ bg: useColorModeValue("gray.400", "gray.600") }}
                     aria-label="Courses"
                     fontWeight="normal"
                     w='max'
+                    boxShadow='lg'
                     //  onMouseEnter={onOpen}
                     //  onMouseLeave={onClose}   
                 >  
-                    <VStack py={5} spacing='3'>
+                    <VStack py={5} spacing='6'>
                         <Image
                             src={Neck}
                             borderRadius='lg'
-                            boxSize='250px'
+                            boxSize='220px'
                             mt={5}
                             />
                             <Heading size='md' align='center'>Neck</Heading>
@@ -121,19 +125,20 @@ const GeneralExerciseType = () => {
                     mx={1}
                     px={8}
                     borderRadius={5}
-                    bgColor='teal.100'
-                    _hover={{ bg: useColorModeValue("teal.300", "teal.500") }}
+                    bgColor='gray.200'
+                    _hover={{ bg: useColorModeValue("gray.400", "gray.600") }}
                     aria-label="Courses"
                     fontWeight="normal"
                     w='max'
+                    boxShadow='lg'
                     //  onMouseEnter={onOpen}
                     //  onMouseLeave={onClose}   
                 >  
-                    <VStack py={5} spacing='3'>
+                    <VStack py={5} spacing='6'>
                         <Image
                             src={Elbow}
                             borderRadius='lg'
-                            boxSize='250px'
+                            boxSize='220px'
                             mt={5}
                             />
                             <Heading size='md' align='center'>Elbow</Heading>
@@ -144,19 +149,20 @@ const GeneralExerciseType = () => {
                     mx={1}
                     px={8}
                     borderRadius={5}
-                    bgColor='teal.100'
-                    _hover={{ bg: useColorModeValue("teal.300", "teal.500") }}
+                    bgColor='gray.200'
+                    _hover={{ bg: useColorModeValue("gray.400", "gray.600") }}
                     aria-label="Courses"
                     fontWeight="normal"
                     w='max'
+                    boxShadow='lg'
                     //  onMouseEnter={onOpen}
                     //  onMouseLeave={onClose}   
                 >  
-                    <VStack py={5} spacing='3'>
+                    <VStack py={5} spacing='6'>
                         <Image
                             src={Hip}
                             borderRadius='lg'
-                            boxSize='250px'
+                            boxSize='220px'
                             mt={5}
                             />
                             <Heading size='md' align='center'>Hip</Heading>
@@ -167,19 +173,20 @@ const GeneralExerciseType = () => {
                     mx={1}
                     px={8}
                     borderRadius={5}
-                    bgColor='teal.100'
-                    _hover={{ bg: useColorModeValue("teal.300", "teal.500") }}
+                    bgColor='gray.200'
+                    _hover={{ bg: useColorModeValue("gray.400", "gray.600") }}
                     aria-label="Courses"
                     fontWeight="normal"
                     w='max'
+                    boxShadow='lg'
                     //  onMouseEnter={onOpen}
                     //  onMouseLeave={onClose}   
                 >  
-                    <VStack py={5} spacing='3'>
+                    <VStack py={5} spacing='6'>
                         <Image
                             src={AchillesTendon}
                             borderRadius='lg'
-                            boxSize='250px'
+                            boxSize='220px'
                             mt={5}
                             />
                             <Heading size='md' align='center'>Achilles tendon</Heading>
@@ -190,19 +197,20 @@ const GeneralExerciseType = () => {
                     mx={1}
                     px={8}
                     borderRadius={5}
-                    bgColor='teal.100'
-                    _hover={{ bg: useColorModeValue("teal.300", "teal.500") }}
+                    bgColor='gray.200'
+                    _hover={{ bg: useColorModeValue("gray.400", "gray.600") }}
                     aria-label="Courses"
                     fontWeight="normal"
                     w='max'
+                    boxShadow='lg'
                     //  onMouseEnter={onOpen}
                     //  onMouseLeave={onClose}   
                 >  
-                    <VStack py={5} spacing='3'>
+                    <VStack py={5} spacing='6'>
                         <Image
                             src={Ankle}
                             borderRadius='lg'
-                            boxSize='250px'
+                            boxSize='220px'
                             mt={5}
                             />
                             <Heading size='md' align='center'>Ankle</Heading>
@@ -213,19 +221,20 @@ const GeneralExerciseType = () => {
                     mx={1}
                     px={8}
                     borderRadius={5}
-                    bgColor='teal.100'
-                    _hover={{ bg: useColorModeValue("teal.300", "teal.500") }}
+                    bgColor='gray.200'
+                    _hover={{ bg: useColorModeValue("gray.400", "gray.600") }}
                     aria-label="Courses"
                     fontWeight="normal"
                     w='max'
+                    boxShadow='lg'
                     //  onMouseEnter={onOpen}
                     //  onMouseLeave={onClose}   
                 >  
-                    <VStack py={5} spacing='3'>
+                    <VStack py={5} spacing='6'>
                         <Image
                             src={HeelOrFootSole}
                             borderRadius='lg'
-                            boxSize='250px'
+                            boxSize='220px'
                             mt={5}
                             />
                             <Heading size='md' align='center'>Heel or foot sole</Heading>

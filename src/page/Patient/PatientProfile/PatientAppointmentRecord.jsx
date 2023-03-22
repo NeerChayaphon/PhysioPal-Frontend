@@ -17,7 +17,7 @@ import {
     TableContainer,
     VStack,
   } from '@chakra-ui/react';
-  import PatientProfileMenu from '../../component/PatientProfile/PatientProfileMenu';
+  import PatientProfileMenu from '../../../component/PatientProfile/PatientProfileMenu';
 
 const PatientAppointmentRecord = () => {
     
@@ -37,8 +37,8 @@ const PatientAppointmentRecord = () => {
                             Appointment Record
                         </Text>
                     </VStack>
-                    <TableContainer borderRadius='lg' >
-                        <Table variant='simple' bgColor='white' borderRadius='lg'>
+                    <TableContainer borderRadius='lg' boxShadow='lg'>
+                        <Table variant='simple' bgColor='white' borderRadius='lg' size='md'>
                             {/* <TableCaption>Imperial to metric conversion factors</TableCaption> */}
                             <Thead>
                                 <Tr>
@@ -54,7 +54,7 @@ const PatientAppointmentRecord = () => {
                                     <Td>1.</Td>
                                     <Td>01/10/2022</Td>
                                     <Td>Neer</Td>
-                                    <Td>Low back pain</Td>
+                                    <Td>Lower back pain</Td>
                                     <Td>
                                         <Button 
                                             colorScheme='teal' 
@@ -69,7 +69,7 @@ const PatientAppointmentRecord = () => {
                                     <Td>2.</Td>
                                     <Td>02/10/2022</Td>
                                     <Td>Pear</Td>
-                                    <Td>Low back pain</Td>
+                                    <Td>Lower back pain</Td>
                                     <Td>
                                         <Button 
                                             colorScheme='teal' 
@@ -99,7 +99,7 @@ const PatientAppointmentRecord = () => {
                                     <Td>4.</Td>
                                     <Td>04/10/2022</Td>
                                     <Td>Noolek</Td>
-                                    <Td>Low back pain</Td>
+                                    <Td>Lower back pain</Td>
                                     <Td>
                                         <Button 
                                             colorScheme='teal' 
@@ -114,7 +114,7 @@ const PatientAppointmentRecord = () => {
                                     <Td>5.</Td>
                                     <Td>05/10/2022</Td>
                                     <Td>Noolek</Td>
-                                    <Td>Low back pain</Td>
+                                    <Td>Lower back pain</Td>
                                     <Td>
                                         <Button 
                                             colorScheme='teal' 
@@ -129,7 +129,7 @@ const PatientAppointmentRecord = () => {
                                     <Td>6.</Td>
                                     <Td>06/10/2022</Td>
                                     <Td>Neer</Td>
-                                    <Td>Low back pain</Td>
+                                    <Td>Lower back pain</Td>
                                     <Td>
                                         <Button 
                                             colorScheme='teal' 
@@ -144,7 +144,7 @@ const PatientAppointmentRecord = () => {
                                     <Td>7.</Td>
                                     <Td>07/10/2022</Td>
                                     <Td>Pear</Td>
-                                    <Td>Low back pain</Td>
+                                    <Td>Lower back pain</Td>
                                     <Td>
                                         <Button 
                                             colorScheme='teal' 
@@ -159,7 +159,7 @@ const PatientAppointmentRecord = () => {
                                     <Td>8.</Td>
                                     <Td>08/10/2022</Td>
                                     <Td>Noolek</Td>
-                                    <Td>Low back pain</Td>
+                                    <Td>Lower back pain</Td>
                                     <Td>
                                         <Button 
                                             colorScheme='teal' 
@@ -174,7 +174,7 @@ const PatientAppointmentRecord = () => {
                                     <Td>9.</Td>
                                     <Td>09/10/2022</Td>
                                     <Td>Noolek</Td>
-                                    <Td>Low back pain</Td>
+                                    <Td>Lower back pain</Td>
                                     <Td>
                                         <Button 
                                             colorScheme='teal' 
@@ -204,7 +204,7 @@ const PatientAppointmentRecord = () => {
                                     <Td>11.</Td>
                                     <Td>11/10/2022</Td>
                                     <Td>Neer</Td>
-                                    <Td>Low back pain</Td>
+                                    <Td>Lower back pain</Td>
                                     <Td>
                                         <Button 
                                             colorScheme='teal' 
@@ -219,7 +219,7 @@ const PatientAppointmentRecord = () => {
                                     <Td>12.</Td>
                                     <Td>12/10/2022</Td>
                                     <Td>Pear</Td>
-                                    <Td>Low back pain</Td>
+                                    <Td>Lower back pain</Td>
                                     <Td>
                                         <Button 
                                             colorScheme='teal' 
@@ -234,7 +234,7 @@ const PatientAppointmentRecord = () => {
                                     <Td>13.</Td>
                                     <Td>13/10/2022</Td>
                                     <Td>Noolek</Td>
-                                    <Td>Low back pain</Td>
+                                    <Td>Lower back pain</Td>
                                     <Td>
                                         <Button 
                                             colorScheme='teal' 
@@ -249,7 +249,7 @@ const PatientAppointmentRecord = () => {
                                     <Td>14.</Td>
                                     <Td>14/10/2022</Td>
                                     <Td>Noolek</Td>
-                                    <Td>Low back pain</Td>
+                                    <Td>Lower back pain</Td>
                                     <Td>
                                         <Button 
                                             colorScheme='teal' 
@@ -264,7 +264,7 @@ const PatientAppointmentRecord = () => {
                                     <Td>15.</Td>
                                     <Td>15/10/2022</Td>
                                     <Td>Noolek</Td>
-                                    <Td>Low back pain</Td>
+                                    <Td>Lower back pain</Td>
                                     <Td>
                                         <Button 
                                             colorScheme='teal' 

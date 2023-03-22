@@ -1,37 +1,36 @@
 import React from "react";
 import {
-  Heading,
   Grid,
-  Image,
-  Flex,
   Text,
+  Flex,
+  Button,
+  Image,
+  VStack,
+  Heading,
+  HStack,
+  WrapItem,
+  Avatar,
   Card,
   CardBody,
   Stack,
-  Button,
-  WrapItem,
-  Avatar,
-  HStack,
-  VStack,
 } from "@chakra-ui/react";
-import Picture from "../../icons/Exercise/Picture.png";
-import Exercise1 from "../../icons/Exercise/Exercise1.png";
-import { MdOutlineNavigateNext } from "react-icons/md";
+import Picture from "../../../icons/Exercise/Picture.png";
+import Exercise1 from "../../../icons/Exercise/Exercise1.png";
 
-const GeneralExerciseInfo = () => {
+const PTPatientVideoRecord = () => {
   return (
     <Grid h="max" w="100%">
       <Heading size="lg" px={10} mt={8}>
         Exercise 1
       </Heading>
       <Grid px={10} py={8}>
-        <Image src={Picture} borderTopRadius="lg" w="100%" />
+        <Image src={Picture} borderTopRadius="lg" boxSize="100%" />
         <Flex
           flexDir="column"
           bgColor="gray.100"
           px={10}
           py={8}
-          borderBottomRadius="lg"
+          borderRadius="lg"
           boxShadow="lg"
         >
           <Heading size="lg" mt={8} mb={5}>
@@ -176,16 +175,15 @@ const GeneralExerciseInfo = () => {
           </Flex>
           <Flex flexDir="row" justifyContent="center">
             <Button
-              colorScheme="teal"
+              colorScheme="blue"
               variant="solid"
               mt={10}
               size="lg"
               height="60px"
               width="300px"
               mb={5}
-              leftIcon={<MdOutlineNavigateNext />}
             >
-              Start from begining
+              Video Record
             </Button>
           </Flex>
         </Flex>
@@ -194,4 +192,4 @@ const GeneralExerciseInfo = () => {
   );
 };
 
-export default GeneralExerciseInfo;
+export default PTPatientVideoRecord;

@@ -1,6 +1,6 @@
 import React from 'react'
-import TelemedicineCardInfo from '../../component/telemedicine/TelemedicineCardInfo'
-import TelemedicineHeader from '../../component/telemedicine/TelemedicineHeader'
+import TelemedicineCardInfo from '../../../component/telemedicine/TelemedicineCardInfo'
+import TelemedicineHeader from '../../../component/telemedicine/TelemedicineHeader'
 
 const TelemedicineSecondPage = () => {
     return (

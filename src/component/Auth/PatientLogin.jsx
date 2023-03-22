@@ -6,10 +6,10 @@ import {
   Input,
   Spinner,
   Button,
-  Link,
   InputGroup,
   InputLeftElement,
   Image,
+  InputRightElement,
 } from '@chakra-ui/react';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -68,29 +68,33 @@ const PatientLogin = () => {
       }
     }
   };
+  const [show, setShow] = React.useState(false)
+  const handleClick = () => setShow(!show)
 
   return (
     <>
-      <Grid w='100%' templateColumns='7fr 5fr' h='max' px={8} py={10}>
+      <Grid w='100%' templateColumns='7fr 5fr' h='max' px={10} py={10}>
         <GridItem
           w='100%'
           bgColor='gray.100'
           justifyContent='center'
           display='flex'
           alignItems='center'
+          borderLeftRadius='lg'
+          boxShadow='lg'
         >
           <form onSubmit={(e) => handleSubmit(e)}>
             <Flex flexDir='column' w='100%' alignItems='center'>
               <Text fontSize='3xl' fontWeight='bold' mb={8} px={24}>
-                PhysioPal
+                Sign in to PhysioPal
               </Text>
               <Text fontWeight='semibold' mb={6}>
                 {language === 'English' ? 'Your email account' : 'บัญชีของคุณ'}
               </Text>
-              <InputGroup>
+              <InputGroup size='lg'>
                 <InputLeftElement
                     pointerEvents='none'
-                    children={<MdEmail color='gray.300' />}
+                    children={<MdEmail color='gray.300'/>}
                 />
                 <Input
                 type='email'
@@ -103,13 +107,13 @@ const PatientLogin = () => {
                 ></Input>
               </InputGroup>
 
-              <InputGroup>
+              <InputGroup size='lg'>
                 <InputLeftElement
                   pointerEvents='none'
-                  children={<RiLockPasswordFill color='gray.300' />}
+                  children={<RiLockPasswordFill color='gray.300'/>}
                   />
                 <Input
-                  type='password'
+                  type={show ? 'text' : 'password'}
                   required
                   bgColor='white'
                   borderColor='gray.300'
@@ -117,6 +121,11 @@ const PatientLogin = () => {
                   placeholder={language === 'English' ? 'Password' : 'รหัสผ่าน'}
                   onChange={(e) => setPassword(e.target.value)}
                 ></Input>
+                <InputRightElement width='4.5rem' mr={2}>
+                    <Button h='1.75rem' size='sm' onClick={handleClick}>
+                      {show ? 'Hide' : 'Show'}
+                    </Button>
+                </InputRightElement>
               </InputGroup>
 
               {error ? (
@@ -134,6 +143,7 @@ const PatientLogin = () => {
                 color='white'
                 type='submit'
                 w={24}
+                size='lg'
                 _hover={{
                   textDecoration: 'none',
                   bg: 'teal.300',
@@ -156,13 +166,15 @@ const PatientLogin = () => {
           justifyContent='center'
           display='flex'
           alignItems='center'
+          borderRightRadius='lg'
+          boxShadow='lg'
         >
           <Flex flexDir='column' w='100%' alignItems='center'>
             <Image 
               src={SingInPicture} 
-              px={10}
-              mt={20}
-              mb={10}
+              px={20}
+              mt={24}
+              mb={6}
               />  
             <Text fontSize='3xl' fontWeight='bold' mb={8}>
               {language === 'English' ? 'Hello, Friend!' : 'สวัสดีเพื่อน!'}
@@ -172,7 +184,7 @@ const PatientLogin = () => {
                 ? 'Enter your personal detail'
                 : 'กรอกข้อมูลส่วนตัว'}
             </Text>
-            <Text fontWeight='boid' mb={6}>
+            <Text fontWeight='boid' mb={10}>
               {language === 'English'
                 ? 'and start your journey with us'
                 : 'และเริ่มต้นเส้นทางกับเรา'}
@@ -184,6 +196,7 @@ const PatientLogin = () => {
               variant='outline'
               borderColor='gray.200'
               mb={20}
+              size='lg'
               _hover={{
                 textDecoration: 'none',
                 bg: 'gray.200',
