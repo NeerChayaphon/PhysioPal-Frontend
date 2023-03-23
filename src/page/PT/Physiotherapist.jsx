@@ -9,7 +9,9 @@ const Physiotherapist = () => {
   const [call, setCall] = useState(null);
 
   useEffect(() => {
-    const newSocket = io('https://physiopal-telemed-api.azurewebsites.net/');
+    const newSocket = io(
+      'https://medical-consultation-api-production.up.railway.app'
+    );
     setSocket(newSocket); // set doctor socket
     connectUser(newSocket, id);
   }, [setSocket]);

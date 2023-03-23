@@ -8,7 +8,9 @@ const Patient = () => {
   const [onlinePhy, setOnlinePhy] = useState({});
 
   useEffect(() => {
-    const newSocket = io('https://physiopal-telemed-api.azurewebsites.net/'); // socket connect
+    const newSocket = io(
+      'https://medical-consultation-api-production.up.railway.app'
+    ); // socket connect
     setSocket(newSocket);
     getOnline(newSocket, setOnlinePhy);
   }, [setSocket]);
