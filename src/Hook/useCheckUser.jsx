@@ -14,32 +14,32 @@ function useCheckUser(role, navigateTo) {
       console.log(token);
       if (!token) {
         navigate(navigateTo);
-      }
-
-      if (user === null) {
-        try {
-          const response = await fetch(
-            'https://physiopal-api-production.up.railway.app/user/GetUserByJWT',
-            {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `${token}`,
-              },
+      } else {
+        if (user === null) {
+          try {
+            const response = await fetch(
+              'https://physiopal-api-production.up.railway.app/user/GetUserByJWT',
+              {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `${token}`,
+                },
+              }
+            );
+            const data = await response.json();
+            if (response.ok) {
+              dispatch(login(data));
+              checkRole(role, data);
+            } else {
+              navigate(navigateTo);
             }
-          );
-          const data = await response.json();
-          if (response.ok) {
-            dispatch(login(data));
-            checkRole(role, data);
-          } else {
+          } catch (error) {
             navigate(navigateTo);
           }
-        } catch (error) {
-          navigate(navigateTo);
+        } else {
+          checkRole(role, user);
         }
-      } else {
-        checkRole(role, user);
       }
     };
 

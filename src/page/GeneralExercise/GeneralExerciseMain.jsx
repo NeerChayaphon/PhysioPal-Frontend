@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import GeneralExerciseSet from './GeneralExerciseSet';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import Loading from '../../component/Loading/Loading';
 
 const GeneralExerciseMain = () => {
   const [data, setData] = useState(null);
@@ -61,7 +62,7 @@ const GeneralExerciseMain = () => {
   }, [id]);
 
   if (loading || data === null || data === undefined) {
-    return <div>Loading...</div>;
+    return <Loading />;
   } else {
     console.log(data.data.ExerciseSet[0]);
     return (

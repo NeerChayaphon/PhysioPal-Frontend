@@ -10,6 +10,7 @@ import { useStopwatch } from 'react-timer-hook';
 // import ExerciseSet from './exercise';
 import debounce from 'lodash/debounce';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import {
   Flex,
@@ -31,6 +32,10 @@ let secondsRemaining = 5;
 
 function Exercise({ ExerciseSet, Language }) {
   const navigate = useNavigate();
+
+  const user = useSelector((state) => state.user.data);
+
+  const token = sessionStorage.getItem('token');
 
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
@@ -592,6 +597,14 @@ function Exercise({ ExerciseSet, Language }) {
     }
   }, [isRest, setIsRest]);
 
+  useEffect(() => {
+    if (isFinish) {
+      addExerciseHistory(user.data._id, token, ExerciseSet._id);
+    }
+  }, [isFinish]);
+
+  console.log(ExerciseSet);
+
   return (
     <>
       <Flex palignItems='flex-start' flexDir='column' m={8}>
@@ -901,3 +914,23 @@ function Exercise({ ExerciseSet, Language }) {
 }
 
 export default Exercise;
+
+const addExerciseHistory = (id, token, exerciseId) => {
+  fetch(
+    `https://physiopal-api-production.up.railway.app/patient/exerciseHistory/${id}`,
+    {
+      method: 'POST',
+      body: JSON.stringify({
+        exercisetype: 'General',
+        exerciseSetId: exerciseId,
+        IsComplete: true,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `${token}`,
+      },
+    }
+  ).catch((error) => {
+    console.error('Error fetching data:', error);
+  });
+};

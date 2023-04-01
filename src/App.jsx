@@ -38,12 +38,12 @@ import GeneralExerciseMain from './page/GeneralExercise/GeneralExerciseMain';
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Home />,
-  },
-  {
-    path: 'homepage',
     element: <Homepage />,
   },
+  // {
+  //   path: 'homepage',
+  //   element: <Homepage />,
+  // },
   {
     path: 'patient/login',
     element: <PatientLoginPage />,

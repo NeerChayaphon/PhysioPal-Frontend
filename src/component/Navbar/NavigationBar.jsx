@@ -15,11 +15,11 @@ const NavigationBar = () => {
   const Links = [
     {
       name: language === 'English' ? 'Home' : 'หน้าหลัก',
-      url: '/##',
+      url: '/',
     },
     {
       name: 'General Exercise',
-      url: '/generalExercise/set/1',
+      url: '/patient/generalExercise',
     },
     {
       name: 'Telemedicine',
