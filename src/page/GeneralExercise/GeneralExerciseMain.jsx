@@ -2,8 +2,14 @@ import React, { useState, useEffect } from 'react';
 import GeneralExerciseSet from './GeneralExerciseSet';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import Loading from '../../component/Loading/Loading';
+import { useDispatch } from 'react-redux';
+import { addExerciseSet } from '../../slice/exerciseSet/exerciseSetSlice';
+import { useNavigate } from 'react-router-dom';
 
 const GeneralExerciseMain = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [id, setId] = useState(null);
@@ -11,6 +17,7 @@ const GeneralExerciseMain = () => {
   const token = sessionStorage.getItem('token');
   const params = useParams();
   const language = useSelector((state) => state.language.value);
+  const exerciseSet = useSelector((state) => state.exerciseSet.data);
 
   useEffect(() => {
     fetch('https://physiopal-api-production.up.railway.app/generalExercises', {
@@ -51,6 +58,7 @@ const GeneralExerciseMain = () => {
         .then((response) => response.json())
         .then((data) => {
           setData(data);
+          dispatch(addExerciseSet(data.data));
           setLoading(false);
         })
         .catch((error) => {
@@ -60,17 +68,25 @@ const GeneralExerciseMain = () => {
     }
   }, [id]);
 
-  if (loading || data === null || data === undefined) {
-    return <div>Loading...</div>;
-  } else {
-    console.log(data.data.ExerciseSet[0]);
-    return (
-      <GeneralExerciseSet
-        ExerciseSet={data.data}
-        Language={language === 'English' ? 'eng' : 'th'}
-      />
-    );
-  }
+  useEffect(() => {
+    if (!loading && data != null) {
+      navigate('/patient/generalExercise/session');
+    }
+  }, [loading]);
+
+  return <Loading />;
+
+  // if (loading || data === null || data === undefined) {
+  //   return <Loading />;
+  // } else {
+  //   console.log(data.data.ExerciseSet[0]);
+  //   return (
+  //     <GeneralExerciseSet
+  //       ExerciseSet={data.data}
+  //       Language={language === 'English' ? 'eng' : 'th'}
+  //     />
+  //   );
+  // }
 };
 
 export default GeneralExerciseMain;

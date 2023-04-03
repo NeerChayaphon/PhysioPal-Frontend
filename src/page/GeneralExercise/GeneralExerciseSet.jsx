@@ -10,6 +10,7 @@ import { useStopwatch } from 'react-timer-hook';
 // import ExerciseSet from './exercise';
 import debounce from 'lodash/debounce';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import {
   Flex,
@@ -23,14 +24,22 @@ import {
   Progress,
 } from '@chakra-ui/react';
 import { FaPlay } from 'react-icons/fa';
+import { useDispatch } from 'react-redux';
+import { incrementExercise } from '../../slice/exerciseSet/exerciseSetSlice';
 
 let skeletonColor = 'rgb(255,255,255)';
 let interval;
 let flag = false;
 let secondsRemaining = 5;
 
-function Exercise({ ExerciseSet, Language }) {
+function Exercise({ ExerciseSet, Language, ExerciseCount }) {
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
+
+  const user = useSelector((state) => state.user.data);
+
+  const token = sessionStorage.getItem('token');
 
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
@@ -45,7 +54,7 @@ function Exercise({ ExerciseSet, Language }) {
 
   const [exerciseIndex, setExerciseIndex] = useState(0);
   const [currentExercise, setCurrentExercise] = useState(
-    ExerciseSet.ExerciseSet[0]
+    ExerciseSet.ExerciseSet[ExerciseCount]
   );
   const [stepCount, setStepCount] = useState(0);
   const [currentStep, setCurrentStep] = useState(
@@ -387,11 +396,13 @@ function Exercise({ ExerciseSet, Language }) {
       setRestTime(5);
       setIsRest(true);
     } else {
-      if (exerciseIndex < ExerciseSet.ExerciseSet.length - 1) {
-        setRound(1);
-        setCurrentExercise(ExerciseSet.ExerciseSet[exerciseIndex + 1]);
-        setExerciseIndex(exerciseIndex + 1);
-        nextExerciseAudio.play();
+      if (ExerciseCount < ExerciseSet.ExerciseSet.length - 1) {
+        // setRound(1);
+        // setCurrentExercise(ExerciseSet.ExerciseSet[exerciseIndex + 1]);
+        // setExerciseIndex(exerciseIndex + 1);
+        // nextExerciseAudio.play();
+        dispatch(incrementExercise());
+        window.location.reload();
       } else {
         setIsFinish(true);
       }
@@ -422,11 +433,13 @@ function Exercise({ ExerciseSet, Language }) {
     // countAudio.pause();
     // countAudio.currentTime = 0;
 
-    if (exerciseIndex < ExerciseSet.ExerciseSet.length - 1) {
-      setRound(1);
-      setCurrentExercise(ExerciseSet.ExerciseSet[exerciseIndex + 1]);
-      setExerciseIndex(exerciseIndex + 1);
-      nextExerciseAudio.play();
+    if (ExerciseCount < ExerciseSet.ExerciseSet.length - 1) {
+      // setRound(1);
+      // setCurrentExercise(ExerciseSet.ExerciseSet[exerciseIndex + 1]);
+      // setExerciseIndex(exerciseIndex + 1);
+      // nextExerciseAudio.play();
+      dispatch(incrementExercise());
+      window.location.reload();
     } else {
       setIsFinish(true);
     }
@@ -447,7 +460,7 @@ function Exercise({ ExerciseSet, Language }) {
   }
 
   const startNextExercise = () => {
-    setCurrentExercise(ExerciseSet.ExerciseSet[exerciseIndex]);
+    setCurrentExercise(ExerciseSet.ExerciseSet[ExerciseCount]);
     setIsStartPose(true);
   };
 
@@ -591,6 +604,19 @@ function Exercise({ ExerciseSet, Language }) {
       }, 1000);
     }
   }, [isRest, setIsRest]);
+
+  useEffect(() => {
+    if (isFinish) {
+      addExerciseHistory(user.data._id, token, ExerciseSet._id);
+    }
+  }, [isFinish]);
+
+  useEffect(() => {
+    if (ExerciseCount > 0) {
+      nextExerciseAudio.play();
+    }
+  }, []);
+  // console.log(ExerciseSet);
 
   return (
     <>
@@ -782,12 +808,12 @@ function Exercise({ ExerciseSet, Language }) {
                    Let's take a break
                  </Text>
                )} */}
-              {!isStartPose && !isRest && exerciseIndex === 0 && (
+              {!isStartPose && !isRest && ExerciseCount === 0 && (
                 <Text fontSize='2xl' fontWeight='bold' mb={5}>
                   {Language === 'th' ? 'เริ่มต้นออกกำลังกาย' : 'Start exercise'}
                 </Text>
               )}
-              {!isStartPose && !isRest && exerciseIndex > 0 && (
+              {!isStartPose && !isRest && ExerciseCount > 0 && (
                 <Text fontSize='2xl' fontWeight='bold' mb={5}>
                   {Language === 'th' ? 'ท่าออกกำลังกายถัดไป' : 'Next exercise'}
                 </Text>
@@ -901,3 +927,23 @@ function Exercise({ ExerciseSet, Language }) {
 }
 
 export default Exercise;
+
+const addExerciseHistory = (id, token, exerciseId) => {
+  fetch(
+    `https://physiopal-api-production.up.railway.app/patient/exerciseHistory/${id}`,
+    {
+      method: 'POST',
+      body: JSON.stringify({
+        exercisetype: 'General',
+        exerciseSetId: exerciseId,
+        IsComplete: true,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `${token}`,
+      },
+    }
+  ).catch((error) => {
+    console.error('Error fetching data:', error);
+  });
+};

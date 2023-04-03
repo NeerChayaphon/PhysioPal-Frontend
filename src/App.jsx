@@ -34,16 +34,17 @@ import PTTherapeuticalExercise from './page/PT/PTDashboard/PTTherapeuticalExerci
 import PTTherapeuticalExerciseShopping from './page/PT/PTDashboard/PTTherapeuticalExerciseShopping';
 import PTNote from './page/PT/PTNote/PTNote';
 import GeneralExerciseMain from './page/GeneralExercise/GeneralExerciseMain';
+import GeneralExerciseSetMain from './page/GeneralExercise/GeneralExerciseSetMain';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Home />,
-  },
-  {
-    path: 'homepage',
     element: <Homepage />,
   },
+  // {
+  //   path: 'homepage',
+  //   element: <Homepage />,
+  // },
   {
     path: 'patient/login',
     element: <PatientLoginPage />,
@@ -63,6 +64,10 @@ const router = createBrowserRouter([
   {
     path: 'patient/generalExercise/set/:id',
     element: <GeneralExerciseMain />,
+  },
+  {
+    path: 'patient/generalExercise/session',
+    element: <GeneralExerciseSetMain />,
   },
   {
     path: 'patient/video-chat',

@@ -7,8 +7,9 @@ const Home = () => {
   useCheckUser('patient', '/patient/login');
   const user = useSelector((state) => state.user.data);
 
+  console.log(user);
+
   return <>{user && <div>{user.role}</div>}</>;
-  
 };
 
 export default Home;

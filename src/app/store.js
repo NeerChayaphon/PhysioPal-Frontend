@@ -1,6 +1,7 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import userReducer from '../slice/user/userSlice';
 import languageReducer from '../slice/language/languageSlice';
+import exerciseSetReducer from '../slice/exerciseSet/exerciseSetSlice';
 import storage from 'redux-persist/lib/storage';
 import { persistReducer, persistStore } from 'redux-persist';
 
@@ -12,6 +13,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   user: userReducer,
   language: languageReducer,
+  exerciseSet: exerciseSetReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

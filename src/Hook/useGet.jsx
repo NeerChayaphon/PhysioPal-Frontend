@@ -9,10 +9,18 @@ const useGet = (url) => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const token = sessionStorage.getItem('token');
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(url);
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `${token}`,
+          },
+        });
         const json = await response.json();
         setData(json);
       } catch (error) {
@@ -26,3 +34,5 @@ const useGet = (url) => {
 
   return { data, error, loading };
 };
+
+export default useGet;
