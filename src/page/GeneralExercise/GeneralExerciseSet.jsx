@@ -24,14 +24,18 @@ import {
   Progress,
 } from '@chakra-ui/react';
 import { FaPlay } from 'react-icons/fa';
+import { useDispatch } from 'react-redux';
+import { incrementExercise } from '../../slice/exerciseSet/exerciseSetSlice';
 
 let skeletonColor = 'rgb(255,255,255)';
 let interval;
 let flag = false;
 let secondsRemaining = 5;
 
-function Exercise({ ExerciseSet, Language }) {
+function Exercise({ ExerciseSet, Language, ExerciseCount }) {
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
 
   const user = useSelector((state) => state.user.data);
 
@@ -50,7 +54,7 @@ function Exercise({ ExerciseSet, Language }) {
 
   const [exerciseIndex, setExerciseIndex] = useState(0);
   const [currentExercise, setCurrentExercise] = useState(
-    ExerciseSet.ExerciseSet[0]
+    ExerciseSet.ExerciseSet[ExerciseCount]
   );
   const [stepCount, setStepCount] = useState(0);
   const [currentStep, setCurrentStep] = useState(
@@ -392,11 +396,13 @@ function Exercise({ ExerciseSet, Language }) {
       setRestTime(5);
       setIsRest(true);
     } else {
-      if (exerciseIndex < ExerciseSet.ExerciseSet.length - 1) {
-        setRound(1);
-        setCurrentExercise(ExerciseSet.ExerciseSet[exerciseIndex + 1]);
-        setExerciseIndex(exerciseIndex + 1);
-        nextExerciseAudio.play();
+      if (ExerciseCount < ExerciseSet.ExerciseSet.length - 1) {
+        // setRound(1);
+        // setCurrentExercise(ExerciseSet.ExerciseSet[exerciseIndex + 1]);
+        // setExerciseIndex(exerciseIndex + 1);
+        // nextExerciseAudio.play();
+        dispatch(incrementExercise());
+        window.location.reload();
       } else {
         setIsFinish(true);
       }
@@ -427,11 +433,13 @@ function Exercise({ ExerciseSet, Language }) {
     // countAudio.pause();
     // countAudio.currentTime = 0;
 
-    if (exerciseIndex < ExerciseSet.ExerciseSet.length - 1) {
-      setRound(1);
-      setCurrentExercise(ExerciseSet.ExerciseSet[exerciseIndex + 1]);
-      setExerciseIndex(exerciseIndex + 1);
-      nextExerciseAudio.play();
+    if (ExerciseCount < ExerciseSet.ExerciseSet.length - 1) {
+      // setRound(1);
+      // setCurrentExercise(ExerciseSet.ExerciseSet[exerciseIndex + 1]);
+      // setExerciseIndex(exerciseIndex + 1);
+      // nextExerciseAudio.play();
+      dispatch(incrementExercise());
+      window.location.reload();
     } else {
       setIsFinish(true);
     }
@@ -452,7 +460,7 @@ function Exercise({ ExerciseSet, Language }) {
   }
 
   const startNextExercise = () => {
-    setCurrentExercise(ExerciseSet.ExerciseSet[exerciseIndex]);
+    setCurrentExercise(ExerciseSet.ExerciseSet[ExerciseCount]);
     setIsStartPose(true);
   };
 
@@ -603,7 +611,12 @@ function Exercise({ ExerciseSet, Language }) {
     }
   }, [isFinish]);
 
-  console.log(ExerciseSet);
+  useEffect(() => {
+    if (ExerciseCount > 0) {
+      nextExerciseAudio.play();
+    }
+  }, []);
+  // console.log(ExerciseSet);
 
   return (
     <>
@@ -795,12 +808,12 @@ function Exercise({ ExerciseSet, Language }) {
                    Let's take a break
                  </Text>
                )} */}
-              {!isStartPose && !isRest && exerciseIndex === 0 && (
+              {!isStartPose && !isRest && ExerciseCount === 0 && (
                 <Text fontSize='2xl' fontWeight='bold' mb={5}>
                   {Language === 'th' ? 'เริ่มต้นออกกำลังกาย' : 'Start exercise'}
                 </Text>
               )}
-              {!isStartPose && !isRest && exerciseIndex > 0 && (
+              {!isStartPose && !isRest && ExerciseCount > 0 && (
                 <Text fontSize='2xl' fontWeight='bold' mb={5}>
                   {Language === 'th' ? 'ท่าออกกำลังกายถัดไป' : 'Next exercise'}
                 </Text>
