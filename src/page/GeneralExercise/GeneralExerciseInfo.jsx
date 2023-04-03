@@ -21,9 +21,11 @@ import { MdOutlineNavigateNext } from 'react-icons/md';
 import { useParams } from 'react-router-dom';
 import useGet from '../../Hook/useGet';
 import Loading from '../../component/Loading/Loading';
+import { useSelector } from 'react-redux';
 
 const GeneralExerciseInfo = () => {
   const { id } = useParams();
+  const language = useSelector((state) => state.language.value);
   const [exerciseData, setExerciseData] = useState(null);
   const [loadingEx, setLoadingEx] = useState(true);
   const token = sessionStorage.getItem('token');
@@ -64,8 +66,9 @@ const GeneralExerciseInfo = () => {
     return (
       <Grid h='max' w='100%'>
         <Heading size='lg' px={10} mt={8}>
-          {exerciseData != null &&
-            exerciseData.data.Details.En_Description.Name}
+          {exerciseData != null && language === 'English'
+            ? exerciseData.data.Details.En_Description.Name
+            : exerciseData.data.Details.Th_Description.Name}
         </Heading>
         <Grid px={10} py={8}>
           <Image src={Picture} borderTopRadius='lg' w='100%' />
@@ -106,7 +109,9 @@ const GeneralExerciseInfo = () => {
 
             <Flex flexDir='column'>
               <Heading size='lg' mt={8} mb={5}>
-                Exercise
+                {exerciseData != null && language === 'English'
+                  ? 'Exercise'
+                  : 'ท่าออกกำลังกาย'}
               </Heading>
               <Grid templateColumns='repeat(2, 1fr)' gap={6}>
                 {exerciseData.data.ExerciseSet.map((item, index) => {
@@ -129,7 +134,9 @@ const GeneralExerciseInfo = () => {
                       <Stack>
                         <CardBody boxSize='md'>
                           <Heading size='md'>
-                            {item.exercise.Details.En_Description.Name}
+                            {exerciseData != null && language === 'English'
+                              ? item.exercise.Details.En_Description.Name
+                              : item.exercise.Details.Th_Description.Name}
                           </Heading>
                           <Text py='2'>
                             Lorem ipsum dolor sit amet, consectetur adipiscing
@@ -156,7 +163,9 @@ const GeneralExerciseInfo = () => {
                 leftIcon={<MdOutlineNavigateNext />}
                 onClick={() => navigate(`/patient/generalExercise/set/${id}`)}
               >
-                Start from begining
+                {exerciseData != null && language === 'English'
+                  ? 'Start from begining'
+                  : 'เริ่มออกกำลังกาย'}
               </Button>
             </Flex>
           </Flex>
