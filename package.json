@@ -22,7 +22,9 @@
     "lodash.debounce": "^4.0.8",
     "match-sorter": "^6.3.1",
     "microsoft-cognitiveservices-speech-sdk": "^1.25.1",
+    "peerjs": "^1.4.7",
     "react": "^18.2.0",
+    "react-audio-player": "^0.17.0",
     "react-countdown": "^2.3.3",
     "react-dom": "^18.2.0",
     "react-icon": "^1.0.0",
@@ -35,6 +37,7 @@
     "redux-persist": "^6.0.0",
     "socket.io-client": "^4.5.3",
     "sort-by": "^1.2.0",
+    "use-sound": "^4.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

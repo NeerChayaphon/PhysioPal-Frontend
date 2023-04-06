@@ -70,7 +70,7 @@ const router = createBrowserRouter([
     element: <GeneralExerciseSetMain />,
   },
   {
-    path: 'patient/video-chat',
+    path: 'call/:id',
     element: <VideoChat />,
   },
   {
