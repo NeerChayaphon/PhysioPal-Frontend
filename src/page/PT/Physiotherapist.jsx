@@ -2,11 +2,27 @@ import React from 'react';
 import io from 'socket.io-client';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { Button } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
+import ringtone from '../../utils/music/ringtone.mp3';
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+} from '@chakra-ui/react';
 
 const Physiotherapist = () => {
   const { id } = useParams();
   const [socket, setSocket] = useState(null); // socket
   const [call, setCall] = useState(null);
+  const token = sessionStorage.getItem('token');
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const newSocket = io(
@@ -15,7 +31,62 @@ const Physiotherapist = () => {
     setSocket(newSocket); // set doctor socket
     connectUser(newSocket, id);
   }, [setSocket]);
-  return <div>Physiotherapist {id}</div>;
+  // retrieve call from patient
+  if (socket) {
+    socket.on('retrieve', (message) => {
+      setCall(message);
+      console.log(message);
+    });
+  }
+
+  const callAudio = new Audio(ringtone);
+
+  useEffect(() => {
+    if (call != null) {
+      callAudio.play();
+    }
+  }, [call]);
+
+  // answer call
+  const answerCall = () => {
+    callAudio.pause();
+    var delayInMilliseconds = 1000; //2 second
+    socket.emit('answerCall', call.from, true);
+    addTelemedicineHistory(token, id, call.patient._id, id);
+    setTimeout(function () {
+      // history.push({
+      //   pathname: `/call/${call.url}`,
+      //   state: {type: 'doctor', user: call.patient},
+      // });
+      navigate(`/call/${id}`, {
+        state: { type: 'physiotherapist', user: call.patient._id },
+      });
+      console.log('answer call');
+    }, delayInMilliseconds);
+  };
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  return (
+    <>
+      <Modal isOpen={call}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Incoming call</ModalHeader>
+          <ModalCloseButton />
+          {/* <ModalBody>
+            Patient
+          </ModalBody> */}
+
+          <ModalFooter>
+            <Button colorScheme='blue' mr={3} onClick={answerCall}>
+              Answer
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+      <div>Physiotherapist {id}</div>
+    </>
+  );
 };
 
 const connectUser = (socket, userid) => {
@@ -25,3 +96,21 @@ const connectUser = (socket, userid) => {
 };
 
 export default Physiotherapist;
+
+const addTelemedicineHistory = (token, roomID, patient, physiotherapist) => {
+  fetch(`https://physiopal-api-production.up.railway.app/telemedicine`, {
+    method: 'POST',
+    body: JSON.stringify({
+      roomID,
+      patient,
+      physiotherapist,
+      date: new Date(),
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `${token}`,
+    },
+  }).catch((error) => {
+    console.error('Error fetching data:', error);
+  });
+};

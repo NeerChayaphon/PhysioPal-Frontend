@@ -1,333 +1,258 @@
-import {useRef, useState} from 'react';
+// Video consultation page
+import React from 'react';
+import { useEffect, useState, useRef } from 'react';
+import Peer from 'peerjs';
+import io from 'socket.io-client';
+// import endCallIcon from '../../img/endcall.png';
+// import medicalIcon from '../../img/medical-report-white.png';
+// import useTokenCheck from '../../helper/tokenCheck';
+import { Link, useParams } from 'react-router-dom';
+import { Box, Flex, Button, Image } from '@chakra-ui/react';
+import { useLocation } from 'react-router-dom';
 
-import firebase from 'firebase/app';
-import 'firebase/firestore';
+const VideoChat = () => {
+  const { id: userId } = useParams();
+  // User auth
+  // useTokenCheck(); // ***** Don't forget
+  // const location = useLocation();
+  // const { type, user } = location.state;
 
-import {ReactComponent as HangupIcon} from '../../../icons/hangup.svg';
-import {ReactComponent as MoreIcon} from '../../../icons/more-vertical.svg';
-import {ReactComponent as CopyIcon} from '../../../icons/copy.svg';
+  // eslint-disable-next-line
+  const [socket, setSocket] = useState(null); // socket
+  const [stream, setStream] = useState(); // video WebRTC
+  const [callAccepted, setCallAccepted] = useState(false);
+  const userVideo = useRef(); // your video
+  const otherVideo = useRef(); // other video
 
-import '../../../App.css';
-import {
-  Button,
-  Flex,
-  VStack,
-  HStack,
-  Input,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  Container,
-  Text,
-  Grid,
-  GridItem,
-} from '@chakra-ui/react';
-import Navbar from '../../../component/navbar';
+  // video feature
+  const [isMute, setMute] = useState(false);
+  const [isVideoOff, setVideoOff] = useState(false);
 
-// Initialize Firebase
-const firebaseConfig = {
-  apiKey: 'AIzaSyCz5Ogt06un7xuw6x37Hqh30lW5tMEDKVQ',
-  authDomain: 'seniorproject-29016.firebaseapp.com',
-  projectId: 'seniorproject-29016',
-  storageBucket: 'seniorproject-29016.appspot.com',
-  messagingSenderId: '852375355889',
-  appId: '1:852375355889:web:43ce018d8217c616950450',
-  measurementId: 'G-P4JCWP3LRW',
-};
+  const location = useLocation();
+  console.log('location', location);
 
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
+  useEffect(() => {
+    const newSocket = io(
+      'https://medical-consultation-api-production.up.railway.app'
+    ); // connect socket
+    setSocket(newSocket);
 
-const firestore = firebase.firestore();
+    const myPeer = new Peer(); // create peer
+    const peers = {};
+    navigator.mediaDevices
+      .getUserMedia({
+        video: true,
+        audio: true,
+      })
+      .then((stream) => {
+        setStream(stream);
+        if (userVideo.current) {
+          userVideo.current.srcObject = stream;
+        }
+        // call
+        myPeer.on('call', (call) => {
+          call.answer(stream);
+          setCallAccepted(true);
 
-// Initialize WebRTC
-const servers = {
-  iceServers: [
-    {
-      urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'],
-    },
-  ],
-  iceCandidatePoolSize: 10,
-};
+          // sent user's video to other
+          call.on('stream', (userVideoStream) => {
+            if (otherVideo.current) {
+              otherVideo.current.srcObject = userVideoStream;
+            }
+          });
+        });
 
-const pc = new RTCPeerConnection(servers);
-
-function VideoChat() {
-  const [currentPage, setCurrentPage] = useState('home');
-  const [joinCode, setJoinCode] = useState('');
-
-  return (
-    <>
-      <Navbar />
-      <Flex alignItems='flex-start' flexDir='column' m={8}>
-        <Text textColor='black' fontWeight='bold' fontSize='xl' mb={4}>
-          Telemedicine
-        </Text>
-
-        {/* <HStack w='full' alignItems='flex-start' bg='blue.50'>
-  
-        </HStack> */}
-        {currentPage === 'home' ? (
-          <Menu
-            joinCode={joinCode}
-            setJoinCode={setJoinCode}
-            setPage={setCurrentPage}
-          />
-        ) : (
-          <Videos
-            mode={currentPage}
-            callId={joinCode}
-            setPage={setCurrentPage}
-          />
-        )}
-      </Flex>
-    </>
-  );
-}
-
-function Menu({joinCode, setJoinCode, setPage}) {
-  return (
-    <Grid w='100%' templateColumns='6fr 6fr' h='xl'>
-      <GridItem
-        w='100%'
-        bgColor='gray.100'
-        justifyContent='center'
-        display='flex'
-        alignItems='center'
-      >
-        <VStack>
-          <Button bgColor="teal.400" color="white" onClick={() => setPage('create')}>Create Call</Button>
-        </VStack>
-      </GridItem>
-      <GridItem
-        w='100%'
-        bgColor='gray.200'
-        justifyContent='center'
-        display='flex'
-        flexDir='column'
-        alignItems='center'
-      >
-        <VStack>
-          <Input
-            value={joinCode}
-            onChange={(e) => setJoinCode(e.target.value)}
-            placeholder='Join with code'
-            bgColor="white"
-          ></Input>
-          <Button  bgColor="teal.400" color="white" onClick={() => setPage('join')}>Answer</Button>
-        </VStack>
-      </GridItem>
-    </Grid>
-  );
-}
-
-function Videos({mode, callId, setPage}) {
-  const [webcamActive, setWebcamActive] = useState(false);
-  const [roomId, setRoomId] = useState(callId);
-
-  const localRef = useRef();
-  const remoteRef = useRef();
-
-  const setupSources = async () => {
-    const localStream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: true,
-    });
-    const remoteStream = new MediaStream();
-
-    localStream.getTracks().forEach((track) => {
-      pc.addTrack(track, localStream);
-    });
-
-    pc.ontrack = (event) => {
-      event.streams[0].getTracks().forEach((track) => {
-        remoteStream.addTrack(track);
+        // user connection
+        newSocket.on('user-connected', (userId) => {
+          connectToNewUser(userId, stream);
+        });
       });
-    };
 
-    localRef.current.srcObject = localStream;
-    remoteRef.current.srcObject = remoteStream;
+    // other user disconnect
+    newSocket.on('user-disconnected', (userId) => {
+      if (peers[userId]) peers[userId].close();
+      setCallAccepted(false);
+    });
 
-    setWebcamActive(true);
+    // join doctor consultation room
+    myPeer.on('open', (id) => {
+      newSocket.emit('join-room', userId, id);
+    });
 
-    if (mode === 'create') {
-      const callDoc = firestore.collection('calls').doc();
-      const offerCandidates = callDoc.collection('offerCandidates');
-      const answerCandidates = callDoc.collection('answerCandidates');
-
-      setRoomId(callDoc.id);
-
-      pc.onicecandidate = (event) => {
-        event.candidate && offerCandidates.add(event.candidate.toJSON());
-      };
-
-      const offerDescription = await pc.createOffer();
-      await pc.setLocalDescription(offerDescription);
-
-      const offer = {
-        sdp: offerDescription.sdp,
-        type: offerDescription.type,
-      };
-
-      await callDoc.set({offer});
-
-      callDoc.onSnapshot((snapshot) => {
-        const data = snapshot.data();
-        if (!pc.currentRemoteDescription && data?.answer) {
-          const answerDescription = new RTCSessionDescription(data.answer);
-          pc.setRemoteDescription(answerDescription);
+    function connectToNewUser(userId, stream) {
+      const call = myPeer.call(userId, stream);
+      setCallAccepted(true);
+      // sent user's video to other
+      call.on('stream', (userVideoStream) => {
+        if (otherVideo.current) {
+          otherVideo.current.srcObject = userVideoStream;
         }
       });
-
-      answerCandidates.onSnapshot((snapshot) => {
-        snapshot.docChanges().forEach((change) => {
-          if (change.type === 'added') {
-            const candidate = new RTCIceCandidate(change.doc.data());
-            pc.addIceCandidate(candidate);
-          }
-        });
+      call.on('close', () => {
+        setCallAccepted(false);
       });
-    } else if (mode === 'join') {
-      const callDoc = firestore.collection('calls').doc(callId);
-      const answerCandidates = callDoc.collection('answerCandidates');
-      const offerCandidates = callDoc.collection('offerCandidates');
-
-      pc.onicecandidate = (event) => {
-        event.candidate && answerCandidates.add(event.candidate.toJSON());
-      };
-
-      const callData = (await callDoc.get()).data();
-
-      const offerDescription = callData.offer;
-      await pc.setRemoteDescription(
-        new RTCSessionDescription(offerDescription)
-      );
-
-      const answerDescription = await pc.createAnswer();
-      await pc.setLocalDescription(answerDescription);
-
-      const answer = {
-        type: answerDescription.type,
-        sdp: answerDescription.sdp,
-      };
-
-      await callDoc.update({answer});
-
-      offerCandidates.onSnapshot((snapshot) => {
-        snapshot.docChanges().forEach((change) => {
-          if (change.type === 'added') {
-            let data = change.doc.data();
-            pc.addIceCandidate(new RTCIceCandidate(data));
-          }
-        });
-      });
+      peers[userId] = call;
     }
+  }, [userId]);
 
-    pc.onconnectionstatechange = (event) => {
-      if (pc.connectionState === 'disconnected') {
-        hangUp();
-      }
-    };
+  let UserVideo;
+  if (stream) {
+    UserVideo = (
+      <video
+        className='w-auto rounded-3xl'
+        playsInline
+        muted
+        ref={userVideo}
+        autoPlay
+      />
+    );
+  }
+  let PartnerVideo;
+  if (callAccepted) {
+    PartnerVideo = (
+      <video
+        className='w-full rounded-3xl'
+        playsInline
+        ref={otherVideo}
+        autoPlay
+      />
+    );
+  }
+
+  const mute = () => {
+    const enabled = stream.getAudioTracks()[0].enabled;
+    if (enabled) {
+      stream.getAudioTracks()[0].enabled = false;
+      setMute(true);
+    } else {
+      stream.getAudioTracks()[0].enabled = true;
+      setMute(false);
+    }
   };
-
-  const hangUp = async () => {
-    pc.close();
-
-    if (roomId) {
-      let roomRef = firestore.collection('calls').doc(roomId);
-      await roomRef
-        .collection('answerCandidates')
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            doc.ref.delete();
-          });
-        });
-      await roomRef
-        .collection('offerCandidates')
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            doc.ref.delete();
-          });
-        });
-
-      await roomRef.delete();
+  const videoControl = () => {
+    const enabled = stream.getVideoTracks()[0].enabled;
+    if (enabled) {
+      stream.getVideoTracks()[0].enabled = false;
+      setVideoOff(true);
+    } else {
+      stream.getVideoTracks()[0].enabled = true;
+      setVideoOff(false);
     }
-
-    window.location.reload();
   };
 
   return (
-    <>
-      <Grid w='100%' templateColumns='6fr 6fr' h='xl'>
-        <GridItem
-          w='100%'
-          bgColor='gray.100'
-          justifyContent='center'
-          display='flex'
-          alignItems='center'
-        >
-          <video id='myVideo' ref={localRef} autoPlay muted />
-        </GridItem>
-        <GridItem
-          w='100%'
-          bgColor='gray.200'
-          justifyContent='center'
-          display='flex'
-          flexDir='column'
-          alignItems='center'
-        >
-          <video id='myVideo' ref={remoteRef} autoPlay />
-        </GridItem>
-      </Grid>
-      <HStack
-        className='buttonsContainer'
+    <Box>
+      <Flex
+        h='100vh'
+        overflow='auto'
+        bg='gray.100'
+        p='4'
         alignItems='center'
-        justifyContent='center'
+        mx='6'
+        my='2'
       >
-        <HStack>
-          <Button
-            onClick={hangUp}
-            disabled={!webcamActive}
-            className='hangup button'
-          >
-            <HangupIcon />
-          </Button>
-          <Button
-            leftIcon={<MoreIcon />}
-            onClick={() => {
-              navigator.clipboard.writeText(roomId);
-            }}
-          >
-            <CopyIcon /> Copy joining code
-          </Button>
-        </HStack>
-      </HStack>
-      <Modal isOpen={!webcamActive}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>
-            Turn on your camera and microphone and start the call
-          </ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Button variant='ghost' onClick={setupSources}>
-              Start
+        <Box
+          w='50%'
+          h='lg'
+          shadow='lg'
+          rounded='lg'
+          borderRight={{ base: 'none', lg: '1px solid gray.200' }}
+          bg='#B5E3FE'
+          p='4'
+        >
+          {UserVideo}
+        </Box>
+        <Box
+          w='50%'
+          h='lg'
+          shadow='lg'
+          rounded='lg'
+          borderRight={{ base: 'none', lg: '1px solid gray.200' }}
+          bg='#FFCCD0'
+          p='4'
+          ml='4'
+        >
+          {PartnerVideo || <Box />}
+        </Box>
+      </Flex>
+      <Flex mx='2' p='4' gap='2' mt='8'>
+        <Box w='75%'>
+          <Flex justify='start' gap='2'>
+            <Button
+              onClick={mute}
+              h='12'
+              w='12'
+              rounded='lg'
+              bg='purple.500'
+              _hover={{ bg: 'purple.700' }}
+            >
+              {isMute ? (
+                <i className='text-white fas fa-microphone-slash'></i>
+              ) : (
+                <i className='text-white  fa fa-microphone'></i>
+              )}
+              Mute/Unmute
             </Button>
-            <Button variant='ghost' onClick={() => setPage('home')}>
-              Cancel
+            <Button
+              onClick={videoControl}
+              h='12'
+              w='12'
+              rounded='lg'
+              bg='purple.500'
+              _hover={{ bg: 'purple.700' }}
+            >
+              {isVideoOff ? (
+                <i className='text-white fas fa-video-slash'></i>
+              ) : (
+                <i className='text-white fas fa-video'></i>
+              )}
+              Turn on/off video
             </Button>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-    </>
+            {/* {type === 'doctor' && (
+              <Link
+                to={{ pathname: `/manageMedicalRecord/${user.id}` }}
+                target='_blank'
+                rel='noopener noreferrer'
+                h='12'
+                py='1'
+                px='4'
+                display='inline-flex'
+                rounded='lg'
+                bg='indigo.500'
+                _hover={{ bg: 'indigo.600' }}
+                alignItems='center'
+              >
+                <Image src={medicalIcon} alt='' w='8' mr='-3' py='1' />
+                <Box ml='5' py='2' fontSize='base' color='white'>
+                  Medical Record
+                </Box>
+              </Link>
+            )} */}
+          </Flex>
+        </Box>
+        <Box w='25%'>
+          <Flex justify='end' gap='2'>
+            <Button
+              display='inline-flex'
+              h='12'
+              w='12'
+              bg='red.400'
+              _hover={{ bg: 'red.500' }}
+              fontWeight='bold'
+              rounded='lg'
+              // alignItems='center'
+              // justifyContent='center'
+              py='2'
+              px='2'
+            >
+              End call
+              {/* <Image src={endCallIcon} alt='' /> */}
+            </Button>
+          </Flex>
+        </Box>
+      </Flex>
+    </Box>
   );
-}
+};
 
 export default VideoChat;

@@ -23,7 +23,7 @@ const NavigationBar = () => {
     },
     {
       name: 'Telemedicine',
-      url: '/####',
+      url: '/patient/telemedicine',
     },
     {
       name: 'My Exercise',
