@@ -121,6 +121,18 @@ const Navbar = ({ Links, HomePageLink, User, UserLinks, SignoutLink }) => {
                           </Link>
                         </MenuItem>
                       ))}
+
+                      <MenuItem>
+                        <Link
+                          w='full'
+                          _hover={{
+                            textDecoration: 'none',
+                          }}
+                          href='/patient/profile'
+                        >
+                          Profile
+                        </Link>
+                      </MenuItem>
                       <MenuItem onClick={() => dispatch(setThai())}>
                         THAI
                       </MenuItem>
