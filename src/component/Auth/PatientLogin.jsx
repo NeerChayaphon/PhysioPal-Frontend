@@ -68,8 +68,8 @@ const PatientLogin = () => {
       }
     }
   };
-  const [show, setShow] = React.useState(false)
-  const handleClick = () => setShow(!show)
+  const [show, setShow] = React.useState(false);
+  const handleClick = () => setShow(!show);
 
   return (
     <>
@@ -93,25 +93,25 @@ const PatientLogin = () => {
               </Text>
               <InputGroup size='lg'>
                 <InputLeftElement
-                    pointerEvents='none'
-                    children={<MdEmail color='gray.300'/>}
+                  pointerEvents='none'
+                  children={<MdEmail color='gray.300' />}
                 />
                 <Input
-                type='email'
-                required
-                bgColor='white'
-                borderColor='gray.300'
-                mb={6}
-                placeholder={language === 'English' ? 'Email' : 'อีเมล'}
-                onChange={(e) => setEmail(e.target.value)}
+                  type='email'
+                  required
+                  bgColor='white'
+                  borderColor='gray.300'
+                  mb={6}
+                  placeholder={language === 'English' ? 'Email' : 'อีเมล'}
+                  onChange={(e) => setEmail(e.target.value)}
                 ></Input>
               </InputGroup>
 
               <InputGroup size='lg'>
                 <InputLeftElement
                   pointerEvents='none'
-                  children={<RiLockPasswordFill color='gray.300'/>}
-                  />
+                  children={<RiLockPasswordFill color='gray.300' />}
+                />
                 <Input
                   type={show ? 'text' : 'password'}
                   required
@@ -122,9 +122,9 @@ const PatientLogin = () => {
                   onChange={(e) => setPassword(e.target.value)}
                 ></Input>
                 <InputRightElement width='4.5rem' mr={2}>
-                    <Button h='1.75rem' size='sm' onClick={handleClick}>
-                      {show ? 'Hide' : 'Show'}
-                    </Button>
+                  <Button h='1.75rem' size='sm' onClick={handleClick}>
+                    {show ? 'Hide' : 'Show'}
+                  </Button>
                 </InputRightElement>
               </InputGroup>
 
@@ -170,12 +170,7 @@ const PatientLogin = () => {
           boxShadow='lg'
         >
           <Flex flexDir='column' w='100%' alignItems='center'>
-            <Image 
-              src={SingInPicture} 
-              px={20}
-              mt={24}
-              mb={6}
-              />  
+            <Image src={SingInPicture} px={20} mt={24} mb={6} />
             <Text fontSize='3xl' fontWeight='bold' mb={8}>
               {language === 'English' ? 'Hello, Friend!' : 'สวัสดีเพื่อน!'}
             </Text>

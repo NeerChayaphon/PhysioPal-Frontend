@@ -1,180 +1,143 @@
-import React from 'react'
-import { 
-    Grid, 
-    GridItem, 
-    Text, 
-    Flex, 
-    Input, 
-    Button, 
-    Image,
-    VStack,
-    Heading,
-    HStack,
-    WrapItem,
-    Avatar,
-    Card,
-    CardBody,
-    Stack,
-  } from '@chakra-ui/react';
+import React from 'react';
+import {
+  Grid,
+  GridItem,
+  Text,
+  Flex,
+  Input,
+  Button,
+  Image,
+  VStack,
+  Heading,
+  HStack,
+  WrapItem,
+  Avatar,
+  Card,
+  CardBody,
+  Stack,
+} from '@chakra-ui/react';
 import Picture from '../../../icons/Exercise/Picture.png';
 import Exercise1 from '../../../icons/Exercise/Exercise1.png';
+import { useLocation } from 'react-router-dom';
+import Loading from '../../../component/Loading/Loading';
+import useGet from '../../../Hook/useGet';
+import { useSelector } from 'react-redux';
 
 const PatientVideoRecord = () => {
-    return (
-        <Grid h='max' w='100%'>
-            <Heading size='lg' px={10} mt={8}>Exercise 1</Heading>
-            <Grid px={10} py={8} >
-                <Image
-                    src={Picture}
-                    borderTopRadius='lg'
-                    w='100%'
-                />
-                <Flex flexDir='column' bgColor='gray.100' px={10} py={8} borderBottomRadius='lg' boxShadow='lg'>
-                    <Heading size='lg' mt={8} mb={5}>Physiotherapist</Heading>
+  const location = useLocation();
+  const {
+    data: exerciseData,
+    error,
+    loading,
+  } = useGet(
+    `https://physiopal-api-production.up.railway.app/generalExercise/join/${location.state.exerciseSet.ExerciseSetId}`
+  );
 
-                    <HStack>
-                        <WrapItem>
-                            <Avatar size='xl' name='Dan Abrahmov' src='https://bit.ly/dan-abramov' />
-                        </WrapItem>
-                        <VStack alignItems='start' pl={4}>
-                            <Heading size='md'>DR. KAMADO TANJIRO</Heading>
-                            <Text fontSize='20px'>Physioterapist, arm</Text>
-                        </VStack>
-                    </HStack>
+  const language = useSelector((state) => state.language.value);
 
-                    <Flex flexDir='column'>
-                        <Heading size='lg' mt={8} mb={5}>Exercise</Heading>
-                        <Grid templateColumns='repeat(2, 1fr)' gap={6}>
-                            <Card
-                                direction={{ base: 'column', sm: 'row' }}
-                                overflow='hidden'
-                                variant='outline'
-                                boxShadow='lg'
-                                w='max'
-                                >
-                                <Image
-                                    objectFit='cover'
-                                    maxW={{ base: '100%', sm: '200px' }}
-                                    src={Exercise1}
-                                />
-                                <Stack>
-                                    <CardBody boxSize='md'>
-                                        <Heading size='md'>Exercise 1</Heading>
-                                        <Text py='2'>
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. <br/>
-                                        Etiam eu turpis molestie, dictum est a, mattis tellus.
-                                        </Text>
-                                    </CardBody>
-                                </Stack>
-                            </Card>
-                            <Card
-                                direction={{ base: 'column', sm: 'row' }}
-                                overflow='hidden'
-                                variant='outline'
-                                boxShadow='lg'
-                                w='max'
-                                >
-                                <Image
-                                    objectFit='cover'
-                                    maxW={{ base: '100%', sm: '200px' }}
-                                    src={Exercise1}
-                                />
-                                <Stack>
-                                    <CardBody boxSize='md'>
-                                        <Heading size='md'>Exercise 1</Heading>
-                                        <Text py='2'>
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. <br/>
-                                        Etiam eu turpis molestie, dictum est a, mattis tellus.
-                                        </Text>
-                                    </CardBody>
-                                </Stack>
-                            </Card>
-                            <Card
-                                direction={{ base: 'column', sm: 'row' }}
-                                overflow='hidden'
-                                variant='outline'
-                                boxShadow='lg'
-                                w='max'
-                                >
-                                <Image
-                                    objectFit='cover'
-                                    maxW={{ base: '100%', sm: '200px' }}
-                                    src={Exercise1}
-                                />
-                                <Stack>
-                                    <CardBody boxSize='md'>
-                                        <Heading size='md'>Exercise 1</Heading>
-                                        <Text py='2'>
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. <br/>
-                                        Etiam eu turpis molestie, dictum est a, mattis tellus.
-                                        </Text>
-                                    </CardBody>
-                                </Stack>
-                            </Card>
-                            <Card
-                                direction={{ base: 'column', sm: 'row' }}
-                                overflow='hidden'
-                                variant='outline'
-                                boxShadow='lg'
-                                w='max'
-                                >
-                                <Image
-                                    objectFit='cover'
-                                    maxW={{ base: '100%', sm: '200px' }}
-                                    src={Exercise1}
-                                />
-                                <Stack>
-                                    <CardBody boxSize='md'>
-                                        <Heading size='md'>Exercise 1</Heading>
-                                        <Text py='2'>
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. <br/>
-                                        Etiam eu turpis molestie, dictum est a, mattis tellus.
-                                        </Text>
-                                    </CardBody>
-                                </Stack>
-                            </Card>
-                            <Card
-                                direction={{ base: 'column', sm: 'row' }}
-                                overflow='hidden'
-                                variant='outline'
-                                boxShadow='lg'
-                                w='max'
-                                >
-                                <Image
-                                    objectFit='cover'
-                                    maxW={{ base: '100%', sm: '200px' }}
-                                    src={Exercise1}
-                                />
-                                <Stack>
-                                    <CardBody boxSize='md'>
-                                        <Heading size='md'>Exercise 1</Heading>
-                                        <Text py='2'>
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. <br/>
-                                        Etiam eu turpis molestie, dictum est a, mattis tellus.
-                                        </Text>
-                                    </CardBody>
-                                </Stack>
-                            </Card>
-                        </Grid>
-                    </Flex>
-                    <Flex flexDir='row' justifyContent='center'>
-                        <Button 
-                            colorScheme='teal' 
-                            variant='solid'
-                            mt={10}
-                            size='lg'
-                            height='60px'
-                            width='300px'
-                            mb={5}
-                            >
-                                Video Record
-                        </Button>
-                    </Flex>
-                </Flex>
-                
+  if (
+    location.state === undefined ||
+    loading === true ||
+    exerciseData === null
+  ) {
+    return <Loading />;
+  }
+
+  console.log(location.state);
+
+  console.log(exerciseData);
+
+  return (
+    <Grid h='max' w='100%'>
+      <Heading size='lg' px={10} mt={8}>
+        {exerciseData != null && language === 'English'
+          ? exerciseData.data.Details.En_Description.Name
+          : exerciseData.data.Details.Th_Description.Name}
+      </Heading>
+      <Grid px={10} py={8}>
+        <Image src={Picture} borderTopRadius='lg' w='100%' />
+        {/* <Image
+          src={
+            exerciseData.data.ExerciseSet[0].exercise.Steps[
+              exerciseData.data.ExerciseSet[0].exercise.Steps.length - 1
+            ].Image
+          }
+          borderTopRadius='lg'
+          w='40%'
+        /> */}
+        <Flex
+          flexDir='column'
+          bgColor='gray.100'
+          px={10}
+          py={8}
+          borderBottomRadius='lg'
+          boxShadow='lg'
+        >
+          {/* <Heading size='lg' mt={8} mb={5}>
+            Physiotherapist
+          </Heading> */}
+
+          {/* <HStack>
+            <WrapItem>
+              <Avatar
+                size='xl'
+                name='Dan Abrahmov'
+                src='https://bit.ly/dan-abramov'
+              />
+            </WrapItem>
+            <VStack alignItems='start' pl={4}>
+              <Heading size='md'>DR. KAMADO TANJIRO</Heading>
+              <Text fontSize='20px'>Physioterapist, arm</Text>
+            </VStack>
+          </HStack> */}
+
+          <Flex flexDir='column'>
+            <Heading size='lg' mt={8} mb={5}>
+              {exerciseData != null && language === 'English'
+                ? 'Exercise'
+                : 'ท่าออกกำลังกาย'}
+            </Heading>
+            <Grid templateColumns='repeat(2, 1fr)' gap={6}>
+              {exerciseData.data.ExerciseSet.map((item, index) => {
+                return (
+                  <Card
+                    direction={{ base: 'column', sm: 'row' }}
+                    overflow='hidden'
+                    variant='outline'
+                    boxShadow='lg'
+                    w='max'
+                  >
+                    <Image
+                      objectFit='cover'
+                      maxW={{ base: '80%', sm: '150px' }}
+                      src={
+                        item.exercise.Steps[item.exercise.Steps.length - 1]
+                          .Image
+                      }
+                    />
+                    <Stack>
+                      <CardBody boxSize='md'>
+                        <Heading size='md'>
+                          {exerciseData != null && language === 'English'
+                            ? item.exercise.Details.En_Description.Name
+                            : item.exercise.Details.Th_Description.Name}
+                        </Heading>
+                        <Text py='2'>
+                          Lorem ipsum dolor sit amet, consectetur adipiscing
+                          elit. <br />
+                          Etiam eu turpis molestie, dictum est a, mattis tellus.
+                        </Text>
+                      </CardBody>
+                    </Stack>
+                  </Card>
+                );
+              })}
             </Grid>
-        </Grid>
-    )
-}
+          </Flex>
+        </Flex>
+      </Grid>
+    </Grid>
+  );
+};
 
-export default PatientVideoRecord
+export default PatientVideoRecord;
