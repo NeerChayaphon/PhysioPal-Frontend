@@ -103,7 +103,7 @@ const Navbar = ({ Links, HomePageLink, User, UserLinks, SignoutLink }) => {
                       rightIcon={<ChevronDownIcon />}
                     >
                       <Text fontWeight='normal' fontSize='md'>
-                        {User.data.Name.En_Name}
+                        {/* {User.data.Name.En_Name} */}
                       </Text>
                     </MenuButton>
                     <MenuList>

@@ -30,7 +30,7 @@ const PatientVideoRecord = () => {
     error,
     loading,
   } = useGet(
-    `https://physiopal-api-production.up.railway.app/generalExercise/join/${location.state.exerciseSet.ExerciseSetId}`
+    `https://physiopal-api-deploy-production.up.railway.app/generalExercise/join/${location.state.exerciseSet.ExerciseSetId}`
   );
 
   const language = useSelector((state) => state.language.value);

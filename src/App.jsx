@@ -35,6 +35,9 @@ import PTTherapeuticalExerciseShopping from './page/PT/PTDashboard/PTTherapeutic
 import PTNote from './page/PT/PTNote/PTNote';
 import GeneralExerciseMain from './page/GeneralExercise/GeneralExerciseMain';
 import GeneralExerciseSetMain from './page/GeneralExercise/GeneralExerciseSetMain';
+import TherapeuticExerciseInfo from './page/GeneralExercise copy/TherapeuticExerciseInfo';
+import TherapeuticExerciseMain from './page/GeneralExercise copy/TherapeuticExerciseMain';
+import TherapeuticExerciseSetMain from './page/GeneralExercise copy/TherapeuticExerciseSetMain';
 
 const router = createBrowserRouter([
   {
@@ -113,6 +116,18 @@ const router = createBrowserRouter([
     path: 'patient/myExercise',
     element: <MyExercise />,
   },
+  {
+    path: 'patient/therapeuticExercise/info/:id',
+    element: <TherapeuticExerciseInfo />,
+  },
+  {
+    path: 'patient/therapeuticExercise/set/:id',
+    element: <TherapeuticExerciseMain />,
+  },
+  {
+    path: 'patient/therapeuticExercise/session',
+    element: <TherapeuticExerciseSetMain />,
+  },
   // End for Patient
 
   //Start for Doctor
@@ -149,11 +164,11 @@ const router = createBrowserRouter([
     element: <PTPatientVideoRecord />,
   },
   {
-    path: 'physiotherapist/dashboard/:id',
+    path: 'physiotherapist/appointment/:id',
     element: <PTAppointmentDetail />,
   },
   {
-    path: 'physiotherapist/dashboard/:id/therapeutical',
+    path: 'physiotherapist/appointment/therapeutical/:id',
     element: <PTTherapeuticalExercise />,
   },
   {

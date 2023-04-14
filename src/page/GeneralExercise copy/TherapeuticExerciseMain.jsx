@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import GeneralExerciseSet from './GeneralExerciseSet';
+import GeneralExerciseSet from './TherapeuticExerciseSet';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Loading from '../../component/Loading/Loading';
@@ -7,49 +7,23 @@ import { useDispatch } from 'react-redux';
 import { addExerciseSet } from '../../slice/exerciseSet/exerciseSetSlice';
 import { useNavigate } from 'react-router-dom';
 
-const GeneralExerciseMain = () => {
+const TherapeuticExerciseMain = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [id, setId] = useState(null);
+  const { id } = useParams();
 
   const token = sessionStorage.getItem('token');
-  const params = useParams();
   const language = useSelector((state) => state.language.value);
   const exerciseSet = useSelector((state) => state.exerciseSet.data);
-
-  useEffect(() => {
-    fetch(
-      'https://physiopal-api-deploy-production.up.railway.app/generalExercises',
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `${token}`,
-        },
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(params.id);
-        // remove this later
-        if (params.id - 1 < data.data.length) {
-          setId(data.data[params.id - 1]._id);
-        }
-        console.log('try another id');
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
-  }, []);
 
   // create useEffect that operates on id
   useEffect(() => {
     if (id !== null) {
       console.log(id);
       fetch(
-        `https://physiopal-api-deploy-production.up.railway.app/generalExercise/join/${id}`,
+        `https://physiopal-api-deploy-production.up.railway.app/therapeuticExercise/join/${id}`,
         {
           method: 'GET',
           headers: {
@@ -73,7 +47,7 @@ const GeneralExerciseMain = () => {
 
   useEffect(() => {
     if (!loading && data != null) {
-      navigate('/patient/generalExercise/session');
+      navigate('/patient/therapeuticExercise/session');
     }
   }, [loading]);
 
@@ -92,4 +66,4 @@ const GeneralExerciseMain = () => {
   // }
 };
 
-export default GeneralExerciseMain;
+export default TherapeuticExerciseMain;

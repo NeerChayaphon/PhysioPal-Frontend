@@ -25,7 +25,7 @@ const PatientAppointmentDetail = () => {
     error: PTerror,
     loading: PTLoading,
   } = useGet(
-    `https://physiopal-api-production.up.railway.app/physiotherapists`
+    `https://physiopal-api-deploy-production.up.railway.app/physiotherapists`
   );
 
   const location = useLocation();
@@ -36,7 +36,7 @@ const PatientAppointmentDetail = () => {
     error: PatientError,
     loading: PatientLoading,
   } = useGet(
-    `https://physiopal-api-production.up.railway.app/patient/${location.state.appointment.Patient}`
+    `https://physiopal-api-deploy-production.up.railway.app/patient/${location.state.appointment.Patient}`
   );
 
   console.log(Patient);

@@ -28,7 +28,7 @@ const PatientAppointmentRecord = () => {
   const user = useSelector((state) => state.user.data);
   const language = useSelector((state) => state.language.value);
   const { data, error, loading } = useGet(
-    `https://physiopal-api-production.up.railway.app/appointments/patient/${user.data._id}`
+    `https://physiopal-api-deploy-production.up.railway.app/appointments/patient/${user.data._id}`
   );
 
   const {
@@ -36,7 +36,7 @@ const PatientAppointmentRecord = () => {
     error: PTerror,
     loading: PTLoading,
   } = useGet(
-    `https://physiopal-api-production.up.railway.app/physiotherapists`
+    `https://physiopal-api-deploy-production.up.railway.app/physiotherapists`
   );
 
   const navigate = useNavigate();
@@ -80,39 +80,44 @@ const PatientAppointmentRecord = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {data.data.map((item, index) => {
-                  return (
-                    <Tr>
-                      <Td>{index + 1}.</Td>
-                      <Td>{new Date(item.Date).toISOString().substr(0, 10)}</Td>
-                      <Td>
-                        {
-                          PT.data.find(
-                            (obj) => obj._id === item.Physiotherapist
-                          ).Details.En_Description.Name
-                        }
-                      </Td>
-                      <Td>{item.Injury}</Td>
-                      <Td>
-                        <Button
-                          colorScheme='teal'
-                          variant='solid'
-                          size='xs'
-                          onClick={() =>
-                            navigate(
-                              `/patient/profile/appointment/${index + 1}`,
-                              {
-                                state: { appointment: item },
-                              }
-                            )
+                {data.data != null &&
+                  data.data.map((item, index) => {
+                    return (
+                      <Tr>
+                        <Td>{index + 1}.</Td>
+                        <Td>
+                          {new Date(item.Date).toISOString().substr(0, 10)}
+                        </Td>
+                        <Td>
+                          {
+                            PT.data.find(
+                              (obj) => obj._id === item.Physiotherapist
+                            ).Details.En_Description.Name
                           }
-                        >
-                          {language === 'English' ? 'View more' : 'ดูเพิ่มเติม'}
-                        </Button>
-                      </Td>
-                    </Tr>
-                  );
-                })}
+                        </Td>
+                        <Td>{item.Injury}</Td>
+                        <Td>
+                          <Button
+                            colorScheme='teal'
+                            variant='solid'
+                            size='xs'
+                            onClick={() =>
+                              navigate(
+                                `/patient/profile/appointment/${index + 1}`,
+                                {
+                                  state: { appointment: item },
+                                }
+                              )
+                            }
+                          >
+                            {language === 'English'
+                              ? 'View more'
+                              : 'ดูเพิ่มเติม'}
+                          </Button>
+                        </Td>
+                      </Tr>
+                    );
+                  })}
               </Tbody>
             </Table>
           </TableContainer>

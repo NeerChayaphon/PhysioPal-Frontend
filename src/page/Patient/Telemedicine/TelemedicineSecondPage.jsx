@@ -23,7 +23,7 @@ const TelemedicineSecondPage = () => {
 
   useEffect(() => {
     fetch(
-      `https://physiopal-api-production.up.railway.app/physiotherapist/${id}`,
+      `https://physiopal-api-deploy-production.up.railway.app/physiotherapist/${id}`,
       {
         method: 'GET',
         headers: {

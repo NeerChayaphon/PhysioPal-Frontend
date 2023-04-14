@@ -98,7 +98,7 @@ const connectUser = (socket, userid) => {
 export default Physiotherapist;
 
 const addTelemedicineHistory = (token, roomID, patient, physiotherapist) => {
-  fetch(`https://physiopal-api-production.up.railway.app/telemedicine`, {
+  fetch(`https://physiopal-api-deploy-production.up.railway.app/telemedicine`, {
     method: 'POST',
     body: JSON.stringify({
       roomID,

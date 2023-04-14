@@ -54,13 +54,16 @@ const PatientProfileInfo = () => {
   const [address, setAddress] = useState('');
 
   useEffect(() => {
-    fetch('https://physiopal-api-production.up.railway.app/user/GetUserByJWT', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `${token}`,
-      },
-    })
+    fetch(
+      'https://physiopal-api-deploy-production.up.railway.app/user/GetUserByJWT',
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `${token}`,
+        },
+      }
+    )
       .then((response) => response.json())
       .then((data) => {
         setUser(data);
@@ -124,7 +127,7 @@ const PatientProfileInfo = () => {
     }
 
     fetch(
-      `https://physiopal-api-production.up.railway.app/patient/${tempUser._id}`,
+      `https://physiopal-api-deploy-production.up.railway.app/patient/${tempUser._id}`,
       {
         method: 'PUT',
         body: JSON.stringify(tempData),
@@ -366,7 +369,7 @@ const PatientProfileInfo = () => {
                   size='lg'
                   onClick={() => setReadOnly(true)}
                 >
-                  {language === 'English' ? 'Cancel' : 'ยาเลิก'}
+                  {language === 'English' ? 'Cancel' : 'ยกเลิก'}
                 </Button>
                 <Button
                   colorScheme='teal'

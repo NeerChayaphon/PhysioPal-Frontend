@@ -64,7 +64,14 @@ const NavigationBar = () => {
         />
       );
     } else if (user.role === 'physiotherapist') {
-      return <Navbar Links={[]} />;
+      return (
+        <Navbar
+          Links={Links}
+          User={user}
+          UserLinks={Links}
+          SignoutLink={'/patient/login'}
+        />
+      );
     }
   } else {
     return <Navbar Links={[]} />;
