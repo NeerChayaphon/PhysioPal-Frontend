@@ -20,10 +20,11 @@ import { useParams } from 'react-router-dom';
 import useGet from '../../../Hook/useGet';
 import { useSelector } from 'react-redux';
 import Loading from '../../../component/Loading/Loading';
+import { useCookie } from 'react-use';
 
 const PTAppointmentDetail = () => {
   const language = useSelector((state) => state.language.value);
-  const token = sessionStorage.getItem('token');
+  const [token, updateToken, deleteToken] = useCookie('token');
   const { id } = useParams();
   const [patient, setPatient] = useState(null);
 

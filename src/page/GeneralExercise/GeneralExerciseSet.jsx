@@ -26,6 +26,8 @@ import {
 import { FaPlay } from 'react-icons/fa';
 import { useDispatch } from 'react-redux';
 import { incrementExercise } from '../../slice/exerciseSet/exerciseSetSlice';
+import { useCookie } from 'react-use';
+import useCheckUser from '../../Hook/useCheckUser';
 
 let skeletonColor = 'rgb(255,255,255)';
 let interval;
@@ -34,12 +36,13 @@ let secondsRemaining = 5;
 
 function Exercise({ ExerciseSet, Language, ExerciseCount }) {
   const navigate = useNavigate();
+  useCheckUser('patient', '/patient/login');
 
   const dispatch = useDispatch();
 
   const user = useSelector((state) => state.user.data);
 
-  const token = sessionStorage.getItem('token');
+  const [token, updateToken, deleteToken] = useCookie('token');
 
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);

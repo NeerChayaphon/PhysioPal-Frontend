@@ -30,9 +30,12 @@ import { MdArrowDropDown } from 'react-icons/md';
 import PatientProfileMenu from '../../../component/PatientProfile/PatientProfileMenu';
 import Loading from '../../../component/Loading/Loading';
 import { useSelector } from 'react-redux';
+import { useCookie } from 'react-use';
+import useCheckUser from '../../../Hook/useCheckUser';
 
 const PatientProfileInfo = () => {
-  const token = sessionStorage.getItem('token');
+  useCheckUser('patient', '/patient/login');
+  const [token, updateToken, deleteToken] = useCookie('token');
 
   const language = useSelector((state) => state.language.value);
 
@@ -116,7 +119,6 @@ const PatientProfileInfo = () => {
       email: tempUser.Email,
       exerciseHistory: tempUser.ExerciseHistory,
       name: tempUser.Name,
-      password: tempUser.Password,
       phone: tempUser.Phone,
       photo: tempUser.Photo,
       gender: tempUser.Gender,
@@ -378,8 +380,13 @@ const PatientProfileInfo = () => {
                   size='lg'
                   onClick={editPatient}
                 >
-                  {loadEdit && <Spinner />}
-                  {!loadEdit && language === 'English' ? 'Save' : 'บันทึก'}
+                  {loadEdit ? (
+                    <Spinner />
+                  ) : language === 'English' ? (
+                    'Save'
+                  ) : (
+                    'บันทึก'
+                  )}
                 </Button>
               </Flex>
             )}

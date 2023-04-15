@@ -11,6 +11,7 @@ import { useStopwatch } from 'react-timer-hook';
 import debounce from 'lodash/debounce';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useCookie } from 'react-use';
 
 import {
   Flex,
@@ -39,7 +40,7 @@ function Exercise({ ExerciseSet, Language, ExerciseCount }) {
 
   const user = useSelector((state) => state.user.data);
 
-  const token = sessionStorage.getItem('token');
+  const [token, updateToken, deleteToken] = useCookie('token');
 
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);

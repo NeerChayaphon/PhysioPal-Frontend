@@ -15,12 +15,13 @@ import {
   ModalCloseButton,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useCookie } from 'react-use';
 
 const Physiotherapist = () => {
   const { id } = useParams();
   const [socket, setSocket] = useState(null); // socket
   const [call, setCall] = useState(null);
-  const token = sessionStorage.getItem('token');
+  const [token, updateToken, deleteToken] = useCookie('token');
 
   const navigate = useNavigate();
 

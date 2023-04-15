@@ -29,6 +29,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../slice/user/userSlice';
 import { setEnglish, setThai } from '../../slice/language/languageSlice';
+import { useCookie } from 'react-use';
 
 const Links = [
   'Home',
@@ -41,6 +42,7 @@ const Links = [
 const Navbar = ({ Links, HomePageLink, User, UserLinks, SignoutLink }) => {
   const dispatch = useDispatch();
   const refresh = () => window.location.reload(true);
+  const [token, updateToken, deleteToken] = useCookie('token');
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   if (HomePageLink === undefined) {
@@ -49,7 +51,10 @@ const Navbar = ({ Links, HomePageLink, User, UserLinks, SignoutLink }) => {
 
   const signout = () => {
     dispatch(logout());
-    sessionStorage.removeItem('token');
+    deleteToken();
+    window.location.reload();
+    // window.location.replace('https://codefrontend.com');
+
     // refresh();
   };
   return (

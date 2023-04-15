@@ -20,6 +20,7 @@ import GetUserInfo from '../../utils/Auth/GetUserInfo';
 import { MdEmail } from 'react-icons/md';
 import { RiLockPasswordFill } from 'react-icons/ri';
 import SingInPicture from '../../icons/Exercise/SingInPicture.png';
+import { useCookie } from 'react-use';
 
 const PatientLogin = () => {
   const [email, setEmail] = React.useState('');
@@ -30,6 +31,8 @@ const PatientLogin = () => {
 
   const dispatch = useDispatch();
   const language = useSelector((state) => state.language.value);
+
+  const [token, updateToken, deleteToken] = useCookie('token');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -51,7 +54,7 @@ const PatientLogin = () => {
         );
         const data = await response.json();
         if (response.ok) {
-          sessionStorage.setItem('token', data.token);
+          updateToken(data.token);
 
           const userData = await GetUserInfo(data.token);
           if (userData) {

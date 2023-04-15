@@ -2,16 +2,16 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../slice/user/userSlice';
+import { useCookie } from 'react-use';
 
 function useCheckUser(role, navigateTo) {
   const user = useSelector((state) => state.user.data);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [token, updateToken, deleteToken] = useCookie('token');
 
   useEffect(() => {
     const fetchUser = async () => {
-      const token = sessionStorage.getItem('token');
-      console.log(token);
       if (!token) {
         navigate(navigateTo);
       } else {

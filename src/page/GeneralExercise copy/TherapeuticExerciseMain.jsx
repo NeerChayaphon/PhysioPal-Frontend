@@ -6,6 +6,7 @@ import Loading from '../../component/Loading/Loading';
 import { useDispatch } from 'react-redux';
 import { addExerciseSet } from '../../slice/exerciseSet/exerciseSetSlice';
 import { useNavigate } from 'react-router-dom';
+import { useCookie } from 'react-use';
 
 const TherapeuticExerciseMain = () => {
   const dispatch = useDispatch();
@@ -14,7 +15,7 @@ const TherapeuticExerciseMain = () => {
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
 
-  const token = sessionStorage.getItem('token');
+  const [token, updateToken, deleteToken] = useCookie('token');
   const language = useSelector((state) => state.language.value);
   const exerciseSet = useSelector((state) => state.exerciseSet.data);
 

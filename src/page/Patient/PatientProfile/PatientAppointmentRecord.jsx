@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Grid,
   GridItem,
@@ -23,13 +23,37 @@ import { useSelector } from 'react-redux';
 import useGet from '../../../Hook/useGet';
 import Loading from '../../../component/Loading/Loading';
 import { useNavigate } from 'react-router-dom';
+import useCheckUser from '../../../Hook/useCheckUser';
+import { useCookie } from 'react-use';
 
 const PatientAppointmentRecord = () => {
+  useCheckUser('patient', '/patient/login');
   const user = useSelector((state) => state.user.data);
   const language = useSelector((state) => state.language.value);
-  const { data, error, loading } = useGet(
-    `https://physiopal-api-deploy-production.up.railway.app/appointments/patient/${user.data._id}`
-  );
+  const [data, setData] = useState(null);
+  const [token, updateToken, deleteToken] = useCookie('token');
+
+  useEffect(() => {
+    if (user) {
+      fetch(
+        `https://physiopal-api-deploy-production.up.railway.app/appointments/patient/${user.data._id}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `${token}`,
+          },
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          setData(data);
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error);
+        });
+    }
+  }, [user]);
 
   const {
     data: PT,
@@ -54,7 +78,7 @@ const PatientAppointmentRecord = () => {
       <GridItem bgColor='teal.100' w='100%'>
         <PatientProfileMenu />
       </GridItem>
-      {loading || data === null || PTLoading || PT === null ? (
+      {data === null || PTLoading || PT === null ? (
         <Loading />
       ) : (
         <GridItem w='100%' bgColor='gray.100' px={10} py={10}>

@@ -22,14 +22,18 @@ import { useParams } from 'react-router-dom';
 import useGet from '../../Hook/useGet';
 import Loading from '../../component/Loading/Loading';
 import { useSelector } from 'react-redux';
+import useCheckUser from '../../Hook/useCheckUser';
+import { useCookie } from 'react-use';
 
 const GeneralExerciseInfo = () => {
   const { id } = useParams();
   const language = useSelector((state) => state.language.value);
   const [exerciseData, setExerciseData] = useState(null);
   const [loadingEx, setLoadingEx] = useState(true);
-  const token = sessionStorage.getItem('token');
+  const [token, updateToken, deleteToken] = useCookie('token');
   const navigate = useNavigate();
+
+  useCheckUser('patient', '/patient/login');
   const { data, error, loading } = useGet(
     'https://physiopal-api-deploy-production.up.railway.app/generalExercises'
   );

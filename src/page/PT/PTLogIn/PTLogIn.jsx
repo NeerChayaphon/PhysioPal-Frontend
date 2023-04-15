@@ -20,6 +20,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import GetUserInfo from '../../../utils/Auth/GetUserInfo';
 import { login } from '../../../slice/user/userSlice';
+import { useCookie } from 'react-use';
 
 const PTLogIn = () => {
   const language = useSelector((state) => state.language.value);
@@ -31,6 +32,8 @@ const PTLogIn = () => {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
+
+  const [token, updateToken, deleteToken] = useCookie('token');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -52,7 +55,7 @@ const PTLogIn = () => {
         );
         const data = await response.json();
         if (response.ok) {
-          sessionStorage.setItem('token', data.token);
+          updateToken(data.token);
 
           const userData = await GetUserInfo(data.token);
           if (userData) {

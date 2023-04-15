@@ -19,7 +19,10 @@ import { useLocation } from 'react-router-dom';
 import Loading from '../../../component/Loading/Loading';
 import useGet from '../../../Hook/useGet';
 import { useSelector } from 'react-redux';
+import useCheckUser from '../../../Hook/useCheckUser';
+
 const PatientAppointmentDetail = () => {
+  useCheckUser('patient', '/patient/login');
   const {
     data: PT,
     error: PTerror,

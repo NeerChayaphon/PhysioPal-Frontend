@@ -22,8 +22,10 @@ import { useLocation } from 'react-router-dom';
 import Loading from '../../../component/Loading/Loading';
 import useGet from '../../../Hook/useGet';
 import { useSelector } from 'react-redux';
+import useCheckUser from '../../../Hook/useCheckUser';
 
 const PatientVideoRecord = () => {
+  useCheckUser('patient', '/patient/login');
   const location = useLocation();
   const {
     data: exerciseData,
