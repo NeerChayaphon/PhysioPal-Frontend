@@ -143,10 +143,10 @@ const GeneralExerciseInfo = () => {
                               : item.exercise.Details.Th_Description.Name}
                           </Heading>
                           <Text py='2'>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit. <br />
-                            Etiam eu turpis molestie, dictum est a, mattis
-                            tellus.
+                            {exerciseData != null && language === 'English'
+                              ? item.exercise.Details.En_Description.Description
+                              : item.exercise.Details.Th_Description
+                                  .Description}
                           </Text>
                         </CardBody>
                       </Stack>

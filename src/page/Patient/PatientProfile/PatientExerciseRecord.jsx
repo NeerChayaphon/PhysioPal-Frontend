@@ -109,10 +109,10 @@ const PatientExerciseRecord = () => {
               bgColor='white'
             >
               <Table
-                variant='striped'
-                colorScheme='teal'
+                variant='simple'
                 bgColor='white'
                 borderRadius='lg'
+                size='md'
               >
                 <Thead>
                   <Tr>
@@ -130,12 +130,12 @@ const PatientExerciseRecord = () => {
                       )}
                     </Th>
                     <Th> {language === 'English' ? 'TYPE' : 'ประเภท'} </Th>
-                    <Th>
+                    {/* <Th>
                       {' '}
                       {language === 'English'
                         ? 'PHYSIOTHERAPIST'
                         : 'นักกายภาพบำบัด'}{' '}
-                    </Th>
+                    </Th> */}
                     <Th> {language === 'English' ? 'DATE' : 'วันที่'}</Th>
                     <Th> {language === 'English' ? 'STATUS' : 'สถานะ'}</Th>
                     <Th> {language === 'English' ? 'RECORD' : 'บันทึก'} </Th>
@@ -161,11 +161,11 @@ const PatientExerciseRecord = () => {
                             {item.ExerciseType} <br />
                             Exercise
                           </Td>
-                          <Td>
-                            {item.Physiotherapist != undefined
+                          {/* <Td>
+                            {item.Physiotherapist != null
                               ? item.Physiotherapist
                               : '-'}
-                          </Td>
+                          </Td> */}
                           <Td>
                             {new Date(item.Date).toISOString().substr(0, 10)}
                           </Td>
@@ -179,7 +179,10 @@ const PatientExerciseRecord = () => {
                                 navigate(
                                   `/patient/profile/exercise/${index + 1}`,
                                   {
-                                    state: { exerciseSet: item },
+                                    state: {
+                                      exerciseSet: item,
+                                      type: item.ExerciseType,
+                                    },
                                   }
                                 )
                               }
