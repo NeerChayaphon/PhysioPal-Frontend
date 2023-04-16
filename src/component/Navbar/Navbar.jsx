@@ -89,7 +89,7 @@ const Navbar = ({ Links, HomePageLink, User, Language }) => {
                 display={{ base: 'none', md: 'flex' }}
               >
                 {Links.map((link) => (
-                  <NavLink key={link.name} link={link.url} isPTPage>
+                  <NavLink key={link.name} link={link.url} isPTPage={isPTPage}>
                     {' '}
                     <Text fontWeight='medium'>{link.name}</Text>
                   </NavLink>
