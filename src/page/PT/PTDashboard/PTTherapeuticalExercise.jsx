@@ -54,8 +54,10 @@ import useGet from '../../../Hook/useGet';
 import { useSelector } from 'react-redux';
 import Loading from '../../../component/Loading/Loading';
 import { useCookie } from 'react-use';
+import useCheckUser from '../../../Hook/useCheckUser';
 
 const PTTherapeuticalExercise = () => {
+  useCheckUser('physiotherapist', '/physiotherapist/login');
   const language = useSelector((state) => state.language.value);
   const [token, updateToken, deleteToken] = useCookie('token');
   const { id } = useParams();

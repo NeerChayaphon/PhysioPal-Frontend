@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Grid,
   GridItem,
@@ -23,13 +23,39 @@ import Profile1 from '../../../icons/Exercise/Profile1.png';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import useGet from '../../../Hook/useGet';
+import useCheckUser from '../../../Hook/useCheckUser';
+import { useCookie } from 'react-use';
 
 const PTDashboard = () => {
+  useCheckUser('physiotherapist', '/physiotherapist/login');
   const user = useSelector((state) => state.user.data);
   const language = useSelector((state) => state.language.value);
-  const { data, error, loading } = useGet(
-    `https://physiopal-api-deploy-production.up.railway.app/appointments/physiotherapist/${user.data._id}`
-  );
+
+  const [data, setData] = useState(null);
+
+  const [token, updateToken, deleteToken] = useCookie('token');
+
+  useEffect(() => {
+    if (user) {
+      fetch(
+        `https://physiopal-api-deploy-production.up.railway.app/appointments/physiotherapist/${user.data._id}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `${token}`,
+          },
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          setData(data);
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error);
+        });
+    }
+  }, [user]);
 
   const {
     data: Patient,
