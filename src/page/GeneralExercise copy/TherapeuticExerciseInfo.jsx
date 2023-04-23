@@ -22,11 +22,10 @@ import { useParams } from 'react-router-dom';
 import useGet from '../../Hook/useGet';
 import Loading from '../../component/Loading/Loading';
 import { useSelector, useDispatch } from 'react-redux';
-import useCheckUser from '../../Hook/useCheckUser';
 import { useCookie } from 'react-use';
 import { removeExerciseStatus } from '../../slice/exerciseSet/exerciseStatusSlice';
 
-const GeneralExerciseInfo = () => {
+const TherapeuticExerciseInfo = () => {
   const { id } = useParams();
   const language = useSelector((state) => state.language.value);
   const [exerciseData, setExerciseData] = useState(null);
@@ -37,38 +36,30 @@ const GeneralExerciseInfo = () => {
 
   dispatch(removeExerciseStatus());
 
-  useCheckUser('patient', '/patient/login');
-  const { data, error, loading } = useGet(
-    'https://physiopal-api-deploy-production.up.railway.app/generalExercises'
-  );
-
   useEffect(() => {
-    if (data != null) {
-      fetch(
-        `https://physiopal-api-deploy-production.up.railway.app/generalExercise/join/${
-          data.data[id - 1]._id
-        }`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `${token}`,
-          },
-        }
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          setExerciseData(data);
-          setLoadingEx(false);
-        })
-        .catch((error) => {
-          console.error('Error fetching data:', error);
-          setLoadingEx(false);
-        });
-    }
-  }, [data]);
+    fetch(
+      `https://physiopal-api-deploy-production.up.railway.app/therapeuticExercise/join/${id}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `${token}`,
+        },
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        setExerciseData(data);
+        setLoadingEx(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+        setLoadingEx(false);
+      });
+  }, []);
 
-  if (loading || loadingEx) {
+  console.log(exerciseData);
+  if (loadingEx || exerciseData == null) {
     return <Loading />;
   } else {
     return (
@@ -169,7 +160,9 @@ const GeneralExerciseInfo = () => {
                 width='300px'
                 mb={5}
                 leftIcon={<MdOutlineNavigateNext />}
-                onClick={() => navigate(`/patient/generalExercise/set/${id}`)}
+                onClick={() =>
+                  navigate(`/patient/therapeuticExercise/set/${id}`)
+                }
               >
                 {exerciseData != null && language === 'English'
                   ? 'Start from begining'
@@ -183,4 +176,4 @@ const GeneralExerciseInfo = () => {
   }
 };
 
-export default GeneralExerciseInfo;
+export default TherapeuticExerciseInfo;

@@ -1,292 +1,158 @@
-import React from 'react'
-import { 
-    Grid, 
-    GridItem, 
-    Text, 
-    Flex, 
-    Input, 
-    Button, 
-    Table,
-    Thead,
-    Tbody,
-    Tfoot,
-    Tr,
-    Th,
-    Td,
-    TableCaption,
-    TableContainer,
-    VStack,
-  } from '@chakra-ui/react';
-  import PTViewPatientProfileMenu from '../../../component/PTViewPatientProfile/PTViewPatientProfileMenu';
+import React, { useState, useEffect } from 'react';
+import {
+  Grid,
+  GridItem,
+  Text,
+  Flex,
+  Input,
+  Button,
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  TableContainer,
+  VStack,
+} from '@chakra-ui/react';
+import PatientProfileMenu from '../../../component/PatientProfile/PatientProfileMenu';
+
+import { useSelector } from 'react-redux';
+import useGet from '../../../Hook/useGet';
+import Loading from '../../../component/Loading/Loading';
+import { useNavigate, useParams } from 'react-router-dom';
+import useCheckUser from '../../../Hook/useCheckUser';
+import { useCookie } from 'react-use';
+import PTViewPatientProfileMenu from '../../../component/PTViewPatientProfile/PTViewPatientProfileMenu';
 
 const PTPatientAppointment = () => {
-  return (
-    <Grid h='max' w='100%' templateColumns='2fr 10fr'>
-    <GridItem bgColor='blue.100' w='100%'>
-        <PTViewPatientProfileMenu/>
-    </GridItem>
-    <GridItem
-        w='100%'
-        bgColor='gray.100'
-        px={10}
-        py={10}
-        >
-            <VStack>
-                <Text fontSize='3xl' fontWeight='bold' mb={8}>
-                    Appointment Record
-                </Text>
-            </VStack>
-            <TableContainer borderRadius='lg' boxShadow='lg'>
-                <Table variant='simple' bgColor='white' borderRadius='lg'>
-                    {/* <TableCaption>Imperial to metric conversion factors</TableCaption> */}
-                    <Thead>
-                        <Tr>
-                            <Th>NO.</Th>
-                            <Th>DATE</Th>
-                            <Th>PHYSIOTHERAPIST</Th>
-                            <Th>ILLNESS</Th>
-                            <Th>RECORD</Th>
-                        </Tr>
-                    </Thead>
-                    <Tbody>
-                        <Tr>
-                            <Td>1.</Td>
-                            <Td>01/10/2022</Td>
-                            <Td>Neer</Td>
-                            <Td>Lower back pain</Td>
-                            <Td>
-                                <Button 
-                                    colorScheme='blue' 
-                                    variant='solid'
-                                    size='xs'
-                                    >
-                                        View more
-                                </Button>  
-                            </Td>    
-                        </Tr>
-                        <Tr>
-                            <Td>2.</Td>
-                            <Td>02/10/2022</Td>
-                            <Td>Pear</Td>
-                            <Td>Lower back pain</Td>
-                            <Td>
-                                <Button 
-                                    colorScheme='blue' 
-                                    variant='solid'
-                                    size='xs'
-                                    >
-                                        View more
-                                </Button>  
-                            </Td>     
-                        </Tr>
-                        <Tr>
-                            <Td>3.</Td>
-                            <Td>03/10/2022</Td>
-                            <Td>Noolek</Td>
-                            <Td>Low back pain</Td>
-                            <Td>
-                                <Button 
-                                    colorScheme='blue' 
-                                    variant='solid'
-                                    size='xs'
-                                    >
-                                        View more
-                                </Button>  
-                            </Td>      
-                        </Tr>
-                        <Tr>
-                            <Td>4.</Td>
-                            <Td>04/10/2022</Td>
-                            <Td>Noolek</Td>
-                            <Td>Lower back pain</Td>
-                            <Td>
-                                <Button 
-                                    colorScheme='blue' 
-                                    variant='solid'
-                                    size='xs'
-                                    >
-                                        View more
-                                </Button>  
-                            </Td>     
-                        </Tr>
-                        <Tr>
-                            <Td>5.</Td>
-                            <Td>05/10/2022</Td>
-                            <Td>Noolek</Td>
-                            <Td>Lower back pain</Td>
-                            <Td>
-                                <Button 
-                                    colorScheme='blue' 
-                                    variant='solid'
-                                    size='xs'
-                                    >
-                                        View more
-                                </Button>  
-                            </Td>      
-                        </Tr>
-                        <Tr>
-                            <Td>6.</Td>
-                            <Td>06/10/2022</Td>
-                            <Td>Neer</Td>
-                            <Td>Lower back pain</Td>
-                            <Td>
-                                <Button 
-                                    colorScheme='blue' 
-                                    variant='solid'
-                                    size='xs'
-                                    >
-                                        View more
-                                </Button>  
-                            </Td>         
-                        </Tr>
-                        <Tr>
-                            <Td>7.</Td>
-                            <Td>07/10/2022</Td>
-                            <Td>Pear</Td>
-                            <Td>Lower back pain</Td>
-                            <Td>
-                                <Button 
-                                    colorScheme='blue' 
-                                    variant='solid'
-                                    size='xs'
-                                    >
-                                        View more
-                                </Button>  
-                            </Td>      
-                        </Tr>
-                        <Tr>
-                            <Td>8.</Td>
-                            <Td>08/10/2022</Td>
-                            <Td>Noolek</Td>
-                            <Td>Lower back pain</Td>
-                            <Td>
-                                <Button 
-                                    colorScheme='blue' 
-                                    variant='solid'
-                                    size='xs'
-                                    >
-                                        View more
-                                </Button>  
-                            </Td>       
-                        </Tr>
-                        <Tr>
-                            <Td>9.</Td>
-                            <Td>09/10/2022</Td>
-                            <Td>Noolek</Td>
-                            <Td>Lower back pain</Td>
-                            <Td>
-                                <Button 
-                                    colorScheme='blue' 
-                                    variant='solid'
-                                    size='xs'
-                                    >
-                                        View more
-                                </Button>  
-                            </Td>      
-                        </Tr>
-                        <Tr>
-                            <Td>10.</Td>
-                            <Td>10/10/2022</Td>
-                            <Td>Pear</Td>
-                            <Td>Low back pain</Td>
-                            <Td>
-                                <Button 
-                                    colorScheme='blue' 
-                                    variant='solid'
-                                    size='xs'
-                                    >
-                                        View more
-                                </Button>  
-                            </Td>       
-                        </Tr>
-                        <Tr>
-                            <Td>11.</Td>
-                            <Td>11/10/2022</Td>
-                            <Td>Neer</Td>
-                            <Td>Lower back pain</Td>
-                            <Td>
-                                <Button 
-                                    colorScheme='blue' 
-                                    variant='solid'
-                                    size='xs'
-                                    >
-                                        View more
-                                </Button>  
-                            </Td>          
-                        </Tr>
-                        <Tr>
-                            <Td>12.</Td>
-                            <Td>12/10/2022</Td>
-                            <Td>Pear</Td>
-                            <Td>Lower back pain</Td>
-                            <Td>
-                                <Button 
-                                    colorScheme='blue' 
-                                    variant='solid'
-                                    size='xs'
-                                    >
-                                        View more
-                                </Button>  
-                            </Td>      
-                        </Tr>
-                        <Tr>
-                            <Td>13.</Td>
-                            <Td>13/10/2022</Td>
-                            <Td>Noolek</Td>
-                            <Td>Lower back pain</Td>
-                            <Td>
-                                <Button 
-                                    colorScheme='blue' 
-                                    variant='solid'
-                                    size='xs'
-                                    >
-                                        View more
-                                </Button>  
-                            </Td>    
-                        </Tr>
-                        <Tr>
-                            <Td>14.</Td>
-                            <Td>14/10/2022</Td>
-                            <Td>Noolek</Td>
-                            <Td>Lower back pain</Td>
-                            <Td>
-                                <Button 
-                                    colorScheme='blue' 
-                                    variant='solid'
-                                    size='xs'
-                                    >
-                                        View more
-                                </Button>  
-                            </Td>      
-                        </Tr>
-                        <Tr>
-                            <Td>15.</Td>
-                            <Td>15/10/2022</Td>
-                            <Td>Noolek</Td>
-                            <Td>Lower back pain</Td>
-                            <Td>
-                                <Button 
-                                    colorScheme='blue' 
-                                    variant='solid'
-                                    size='xs'
-                                    >
-                                        View more
-                                </Button>  
-                            </Td>      
-                        </Tr>
-                    </Tbody>
-                    {/* <Tfoot>
-                        <Tr>
-                            <Th>To convert</Th>
-                            <Th>into</Th>
-                            <Th isNumeric>multiply by</Th>
-                        </Tr>
-                    </Tfoot> */}
-                </Table>
-            </TableContainer>     
-    </GridItem>
-</Grid>
-  )
-}
+  useCheckUser('physiotherapist', '/physiotherapist/login');
+  const user = useSelector((state) => state.user.data);
+  const language = useSelector((state) => state.language.value);
+  const [data, setData] = useState(null);
+  const [token, updateToken, deleteToken] = useCookie('token');
+  const { id } = useParams();
 
-export default PTPatientAppointment
+  useEffect(() => {
+    if (user) {
+      fetch(
+        `https://physiopal-api-deploy-production.up.railway.app/appointments/patient/${id}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `${token}`,
+          },
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          setData(data);
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error);
+        });
+    }
+  }, [user]);
+
+  const {
+    data: PT,
+    error: PTerror,
+    loading: PTLoading,
+  } = useGet(
+    `https://physiopal-api-deploy-production.up.railway.app/physiotherapists`
+  );
+
+  const navigate = useNavigate();
+
+  //   const getPT = (id) => {
+  //     PT.data.filter((i) => {
+  //       return i._id == '642a74197d8009ecc9e31edc';
+  //     });
+  //   };
+
+  //   console.log(getPT('642a74197d8009ecc9e31edc'));
+
+  return (
+    <Grid h='100%' w='100%' templateColumns='2fr 10fr'>
+      <GridItem bgColor='blue.100' w='100%'>
+        <PTViewPatientProfileMenu />
+      </GridItem>
+      {data === null || PTLoading || PT === null ? (
+        <Loading />
+      ) : (
+        <GridItem w='100%' bgColor='gray.100' px={10} py={10}>
+          <VStack>
+            <Text fontSize='3xl' fontWeight='bold' mb={8}>
+              {language === 'English' ? 'Appointment Record' : 'การนัดหมาย'}
+            </Text>
+          </VStack>
+          <TableContainer borderRadius='lg' boxShadow='lg'>
+            <Table variant='simple' bgColor='white' borderRadius='lg' size='md'>
+              {/* <TableCaption>Imperial to metric conversion factors</TableCaption> */}
+              <Thead>
+                <Tr>
+                  <Th>{language === 'English' ? 'NO' : 'ลำดับ'}</Th>
+                  <Th>{language === 'English' ? 'DATE' : 'วันที่'}</Th>
+                  <Th>
+                    {language === 'English'
+                      ? 'PHYSIOTHERAPIST'
+                      : 'นักกายภาำบำบัด'}
+                  </Th>
+                  <Th>{language === 'English' ? 'ILLNESS' : 'อาการ'}</Th>
+                  <Th>{language === 'English' ? 'RECORD' : 'การบันทัก'}</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {data.data != null &&
+                  data.data.map((item, index) => {
+                    return (
+                      <Tr>
+                        <Td>{index + 1}.</Td>
+                        <Td>
+                          {new Date(item.Date).toISOString().substr(0, 10)}
+                        </Td>
+                        <Td>
+                          {
+                            PT.data.find(
+                              (obj) => obj._id === item.Physiotherapist
+                            ).Details.En_Description.Name
+                          }
+                        </Td>
+                        <Td>{item.Injury}</Td>
+                        <Td>
+                          <Button
+                            colorScheme='blue'
+                            variant='solid'
+                            size='xs'
+                            onClick={() =>
+                              navigate(
+                                `/physiotherapist/patientappointment/details/${
+                                  index + 1
+                                }`,
+                                {
+                                  state: { appointment: item },
+                                }
+                              )
+                            }
+                          >
+                            {language === 'English'
+                              ? 'View more'
+                              : 'ดูเพิ่มเติม'}
+                          </Button>
+                        </Td>
+                      </Tr>
+                    );
+                  })}
+              </Tbody>
+            </Table>
+          </TableContainer>
+        </GridItem>
+      )}
+    </Grid>
+  );
+};
+
+export default PTPatientAppointment;

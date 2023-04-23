@@ -6,10 +6,11 @@ import Loading from '../../../component/Loading/Loading';
 import io from 'socket.io-client';
 import { Button } from '@chakra-ui/react';
 import { useSelector } from 'react-redux';
+import { useCookie } from 'react-use';
 
 const TelemedicineSecondPage = () => {
   const { id } = useParams();
-  const token = sessionStorage.getItem('token');
+  const [token, updateToken, deleteToken] = useCookie('token');
   const [loading, setLoading] = useState(true);
   const [onlinePhy, setOnlinePhy] = useState(null);
 
@@ -23,7 +24,7 @@ const TelemedicineSecondPage = () => {
 
   useEffect(() => {
     fetch(
-      `https://physiopal-api-production.up.railway.app/physiotherapist/${id}`,
+      `https://physiopal-api-deploy-production.up.railway.app/physiotherapist/${id}`,
       {
         method: 'GET',
         headers: {

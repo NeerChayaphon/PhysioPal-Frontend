@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Grid,
   GridItem,
@@ -8,151 +8,196 @@ import {
   Button,
   Image,
   VStack,
-  Textarea,
   FormControl,
   FormLabel,
   InputGroup,
-} from "@chakra-ui/react";
-import PTViewPatientProfileMenu from "../../../component/PTViewPatientProfile/PTViewPatientProfileMenu";
-import Profile1 from "../../../icons/Exercise/Profile1.png";
+  Textarea,
+} from '@chakra-ui/react';
+import PatientProfileMenu from '../../../component/PatientProfile/PatientProfileMenu';
+import Profile1 from '../../../icons/Exercise/Profile1.png';
+import { useLocation } from 'react-router-dom';
+import Loading from '../../../component/Loading/Loading';
+import useGet from '../../../Hook/useGet';
+import { useSelector } from 'react-redux';
+import useCheckUser from '../../../Hook/useCheckUser';
+import PTViewPatientProfileMenu from '../../../component/PTViewPatientProfile/PTViewPatientProfileMenu';
 
 const PTPatientAppointmentDetail = () => {
+  useCheckUser('physiotherapist', '/physiotherapist/login');
+  const {
+    data: PT,
+    error: PTerror,
+    loading: PTLoading,
+  } = useGet(
+    `https://physiopal-api-deploy-production.up.railway.app/physiotherapists`
+  );
+
+  const location = useLocation();
+
+  const language = useSelector((state) => state.language.value);
+  const {
+    data: Patient,
+    error: PatientError,
+    loading: PatientLoading,
+  } = useGet(
+    `https://physiopal-api-deploy-production.up.railway.app/patient/${location.state.appointment.Patient}`
+  );
+
+  console.log(Patient);
+
   return (
-    <Grid h="max" w="100%" templateColumns="2fr 10fr">
-      <GridItem bgColor="blue.100" w="100%">
+    <Grid h='max' w='100%' templateColumns='2fr 10fr'>
+      <GridItem bgColor='blue.100' w='100%'>
         <PTViewPatientProfileMenu />
       </GridItem>
-      <GridItem w="100%" bgColor="gray.100">
-        <VStack>
-          <Text fontSize="3xl" fontWeight="bold" py={10} px={10}>
-            Appointment Detail
-          </Text>
-        </VStack>
-        <Grid templateColumns="5fr 7fr">
-          <GridItem px={3} py={10}>
-            <VStack spacing={10}>
-              <Image borderRadius="full" boxSize="xxs" src={Profile1} />
-              <Text fontSize="20px" fontWeight="bold">
-                Kamado Nezuko
-              </Text>
-            </VStack>
-          </GridItem>
-          <GridItem px={6} mt={5}>
-            <FormControl>
-              <FormLabel>Date appointment</FormLabel>
-              <InputGroup size="lg">
-                <Input
-                  variant="filled"
-                  type="name"
-                  // value={input}
-                  // onChange={handleInputChange}
-                  placeholder="Monday"
+      {location.state === undefined ||
+      PatientLoading ||
+      Patient === null ||
+      PTLoading ||
+      PT === null ? (
+        <Loading />
+      ) : (
+        <GridItem w='100%' bgColor='gray.100'>
+          <VStack>
+            <Text fontSize='3xl' fontWeight='bold' py={10} px={10}>
+              {language === 'English' ? 'Appointment' : 'รายละเอียดการนัดหมาย'}
+            </Text>
+          </VStack>
+          <Grid templateColumns='5fr 7fr'>
+            <GridItem px={3} py={10}>
+              <VStack spacing={10}>
+                <Image borderRadius='full' boxSize='xxs' src={Profile1} />
+                <Text fontSize='20px' fontWeight='bold'>
+                  {Patient.data.Name}
+                </Text>
+              </VStack>
+            </GridItem>
+            <GridItem px={6} mt={5}>
+              <FormControl>
+                <FormLabel>
+                  {language === 'English'
+                    ? 'Date appointment'
+                    : 'วันการนัดหมาย'}
+                </FormLabel>
+                <InputGroup size='lg'>
+                  <Input
+                    variant='filled'
+                    type='name'
+                    // value={input}
+                    // onChange={handleInputChange}
+                    defaultValue={new Date(location.state.appointment.Date)
+                      .toISOString()
+                      .substr(0, 10)}
+                    required
+                    bgColor='white'
+                    mb={4}
+                    w='lg'
+                    boxShadow='lg'
+                    readOnly={true}
+                  />
+                </InputGroup>
+              </FormControl>
+              <FormControl>
+                <FormLabel>
+                  {language === 'English' ? 'Time appointment' : 'เวลานัด'}
+                </FormLabel>
+                <InputGroup size='lg'>
+                  <Input
+                    variant='filled'
+                    type='name'
+                    // value={input}
+                    // onChange={handleInputChange}
+                    defaultValue={new Date(
+                      location.state.appointment.Date
+                    ).toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      second: '2-digit',
+                    })}
+                    required
+                    bgColor='white'
+                    mb={4}
+                    w='lg'
+                    boxShadow='lg'
+                    readOnly={true}
+                  />
+                </InputGroup>
+              </FormControl>
+              <FormControl>
+                <FormLabel>
+                  {language === 'English'
+                    ? 'Physiotherapist'
+                    : 'นักกายภาพบำบัด/เเพทย์'}
+                </FormLabel>
+                <InputGroup size='lg'>
+                  <Input
+                    variant='filled'
+                    type='name'
+                    // value={input}
+                    // onChange={handleInputChange}
+                    defaultValue={
+                      language === 'English'
+                        ? PT.data.find(
+                            (obj) =>
+                              obj._id ===
+                              location.state.appointment.Physiotherapist
+                          ).Details.En_Description.Name
+                        : PT.data.find(
+                            (obj) =>
+                              obj._id ===
+                              location.state.appointment.Physiotherapist
+                          ).Details.Th_Description.Name
+                    }
+                    required
+                    bgColor='white'
+                    mb={4}
+                    w='lg'
+                    boxShadow='lg'
+                    readOnly={true}
+                  />
+                </InputGroup>
+              </FormControl>
+              <FormControl>
+                <FormLabel>
+                  {language === 'English' ? 'Illness' : 'อาการ'}
+                </FormLabel>
+                <InputGroup size='lg'>
+                  <Input
+                    variant='filled'
+                    type='name'
+                    // value={input}
+                    // onChange={handleInputChange}
+                    defaultValue={location.state.appointment.Injury}
+                    required
+                    bgColor='white'
+                    mb={4}
+                    w='lg'
+                    boxShadow='lg'
+                    readOnly={true}
+                  />
+                </InputGroup>
+              </FormControl>
+              <FormControl>
+                <FormLabel>
+                  {language === 'English'
+                    ? 'Description and Treatment'
+                    : 'คำอธิบายและการรักษา'}
+                </FormLabel>
+                <Textarea
+                  defaultValue={location.state.appointment.Treatment}
                   required
-                  bgColor="white"
-                  mb={4}
-                  w="lg"
-                  boxShadow="lg"
+                  bgColor='white'
+                  mb={12}
+                  w='lg'
+                  h='sm'
+                  boxShadow='lg'
+                  readOnly={true}
                 />
-              </InputGroup>
-            </FormControl>
-            <FormControl>
-              <FormLabel>Time appointment</FormLabel>
-              <InputGroup size="lg">
-                <Input
-                  variant="filled"
-                  type="name"
-                  // value={input}
-                  // onChange={handleInputChange}
-                  placeholder="11.00 - 11.30"
-                  required
-                  bgColor="white"
-                  mb={4}
-                  w="lg"
-                  boxShadow="lg"
-                />
-              </InputGroup>
-            </FormControl>
-            <FormControl>
-              <FormLabel>Illness</FormLabel>
-              <InputGroup size="lg">
-                <Input
-                  variant="filled"
-                  type="name"
-                  // value={input}
-                  // onChange={handleInputChange}
-                  placeholder="Lower back pain"
-                  required
-                  bgColor="white"
-                  mb={4}
-                  w="lg"
-                  boxShadow="lg"
-                />
-              </InputGroup>
-            </FormControl>
-            <FormControl>
-              <FormLabel>Description</FormLabel>
-              <Textarea
-                placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sit
-                fusce quis suspendisse erat. Feugiat ipsum fusce ante nec
-                feugiat nunc, convallis suscipit. Ornare sit scelerisque nunc
-                eu, id auctor quis amet. Faucibus eget dictumst odio dolor
-                vivamus maecenas suspendisse egestas. Aliquam a ultricies nulla
-                lacus, ut. Adipiscing sed cras velit dui cras bibendum laoreet
-                velit. Imperdiet scelerisque rhoncus in molestie. Pellentesque
-                ullamcorper nulla non sed. Dignissim euismod feugiat sagittis
-                morbi vel purus. Sed amet, libero feugiat fames ultrices.
-                Ridiculus elementum ut viverra gravida ut facilisi at suscipit
-                sem. Vel consequat orci, vitae laoreet faucibus donec. Eu, quis
-                at ac ultrices. Amet est porttitor dictum aliquam ac."
-                required
-                bgColor="white"
-                mb={12}
-                w="lg"
-                h="sm"
-                boxShadow="lg"
-              />
-            </FormControl>
-            <Flex flexDir="row" mb={5}>
-              <Button
-                colorScheme="teal"
-                variant="solid"
-                mt={10}
-                size="lg"
-                //height='60px'
-                width="100px"
-                mb={5}
-                mr={6}
-              >
-                Edit
-              </Button>
-
-              {/* <Button 
-                                    colorScheme='red' 
-                                    variant='solid'
-                                    mt={10}
-                                    size='lg'
-                                    //height='60px'
-                                    width='100px'
-                                    mb={5}
-                                    mr={6}
-                                >
-                                    Cancel
-                                </Button>
-                                <Button 
-                                    colorScheme='teal' 
-                                    variant='solid'
-                                    mt={10}
-                                    size='lg'
-                                    //height='60px'
-                                    width='100px'
-                                    mb={5}
-                                >
-                                    Confirm
-                                </Button> */}
-            </Flex>
-          </GridItem>
-        </Grid>
-      </GridItem>
+              </FormControl>
+            </GridItem>
+          </Grid>
+        </GridItem>
+      )}
     </Grid>
   );
 };

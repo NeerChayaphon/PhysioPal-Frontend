@@ -8,7 +8,7 @@ import io from 'socket.io-client';
 // import useTokenCheck from '../../helper/tokenCheck';
 import { Link, useParams } from 'react-router-dom';
 import { Box, Flex, Button, Image } from '@chakra-ui/react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const VideoChat = () => {
   const { id: userId } = useParams();
@@ -23,6 +23,7 @@ const VideoChat = () => {
   const [callAccepted, setCallAccepted] = useState(false);
   const userVideo = useRef(); // your video
   const otherVideo = useRef(); // other video
+  const navigate = useNavigate();
 
   // video feature
   const [isMute, setMute] = useState(false);
@@ -180,8 +181,6 @@ const VideoChat = () => {
           <Flex justify='start' gap='2'>
             <Button
               onClick={mute}
-              h='12'
-              w='12'
               rounded='lg'
               bg='purple.500'
               _hover={{ bg: 'purple.700' }}
@@ -195,8 +194,6 @@ const VideoChat = () => {
             </Button>
             <Button
               onClick={videoControl}
-              h='12'
-              w='12'
               rounded='lg'
               bg='purple.500'
               _hover={{ bg: 'purple.700' }}
@@ -208,6 +205,21 @@ const VideoChat = () => {
               )}
               Turn on/off video
             </Button>
+            {location.state.type === 'physiotherapist' && (
+              <Button
+                onClick={() =>
+                  window.open(
+                    `/physiotherapist/appointment/${location.state.appointment}`,
+                    '_blank'
+                  )
+                }
+                rounded='lg'
+                bg='purple.500'
+                _hover={{ bg: 'purple.700' }}
+              >
+                Appointment
+              </Button>
+            )}
             {/* {type === 'doctor' && (
               <Link
                 to={{ pathname: `/manageMedicalRecord/${user.id}` }}
