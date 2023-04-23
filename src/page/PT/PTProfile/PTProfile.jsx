@@ -36,10 +36,10 @@ import { uploadFile } from 'react-s3';
 import AWS from 'aws-sdk';
 import PTMenu from '../../../component/PTViewPatientProfile/PTMenu';
 
-const S3_BUCKET = 'pt-physiopal';
-const REGION = 'ap-southeast-1';
-const ACCESS_KEY = 'AKIATQSDAKTD4TTFOLM6';
-const SECRET_ACCESS_KEY = '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';
+const S3_BUCKET = process.env.REACT_APP_S3_BUCKET_PT;
+const REGION = process.env.REACT_APP_REGION;
+const ACCESS_KEY = process.env.REACT_APP_ACCESS_KEY;
+const SECRET_ACCESS_KEY = process.env.REACT_APP_SECRET_ACCESS_KEY;
 
 AWS.config.update({
   accessKeyId: ACCESS_KEY,
