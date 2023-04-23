@@ -39,7 +39,10 @@ const NavigationBar = () => {
     },
     {
       name: language === 'English' ? 'Telemedicine' : 'การแพทย์ทางไกล',
-      url: '/physiotherapist/telemedicine',
+      url:
+        userData !== null
+          ? `/physiotherapist/watting-room/${userData.data._id}`
+          : '',
     },
   ];
 

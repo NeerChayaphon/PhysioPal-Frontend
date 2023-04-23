@@ -6,7 +6,7 @@ import { TbPhysotherapist } from 'react-icons/tb';
 import { BiLogOut } from 'react-icons/bi';
 import { useNavigate, useParams } from 'react-router-dom';
 
-const PTViewPatientProfileMenu = () => {
+const PTMenu = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   return (
@@ -21,9 +21,9 @@ const PTViewPatientProfileMenu = () => {
           w='100%'
           h='50px'
           justifyContent='start'
-          onClick={() => navigate(`/physiotherapist/patientprofile/${id}`)}
+          onClick={() => navigate(`/physiotherapist/dashboard`)}
         >
-          Profile
+          Past Appointment
         </Button>
         <Button
           leftIcon={<CgFileDocument />}
@@ -34,26 +34,13 @@ const PTViewPatientProfileMenu = () => {
           w='100%'
           h='50px'
           justifyContent='start'
-          onClick={() => navigate(`/physiotherapist/patientappointment/${id}`)}
+          onClick={() => navigate(`/physiotherapist/profile`)}
         >
-          Appointment Record
-        </Button>
-        <Button
-          leftIcon={<TbPhysotherapist />}
-          bgColor='blue.100'
-          _hover={{ bg: useColorModeValue('blue.300', 'white') }}
-          variant='solid'
-          mb={3}
-          w='100%'
-          h='50px'
-          justifyContent='start'
-          onClick={() => navigate(`/physiotherapist/patientexercise/${id}`)}
-        >
-          Exercise Record
+          Profile
         </Button>
       </Box>
     </Flex>
   );
 };
 
-export default PTViewPatientProfileMenu;
+export default PTMenu;

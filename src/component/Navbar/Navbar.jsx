@@ -118,17 +118,36 @@ const Navbar = ({ Links, HomePageLink, User, Language }) => {
                       <Text fontWeight='normal' fontSize='md'></Text>
                     </MenuButton>
                     <MenuList>
-                      <MenuItem>
-                        <Link
-                          w='full'
-                          _hover={{
-                            textDecoration: 'none',
-                          }}
-                          href='/patient/profile'
-                        >
-                          {Language === 'English' ? 'Profile' : 'ข้อมูลส่วนตัว'}
-                        </Link>
-                      </MenuItem>
+                      {!isPTPage && (
+                        <MenuItem>
+                          <Link
+                            w='full'
+                            _hover={{
+                              textDecoration: 'none',
+                            }}
+                            href='/patient/profile'
+                          >
+                            {Language === 'English'
+                              ? 'Profile'
+                              : 'ข้อมูลส่วนตัว'}
+                          </Link>
+                        </MenuItem>
+                      )}
+                      {isPTPage && (
+                        <MenuItem>
+                          <Link
+                            w='full'
+                            _hover={{
+                              textDecoration: 'none',
+                            }}
+                            href='/physiotherapist/profile'
+                          >
+                            {Language === 'English'
+                              ? 'Profile'
+                              : 'ข้อมูลส่วนตัว'}
+                          </Link>
+                        </MenuItem>
+                      )}
                       <MenuItem
                         onClick={
                           Language === 'English'

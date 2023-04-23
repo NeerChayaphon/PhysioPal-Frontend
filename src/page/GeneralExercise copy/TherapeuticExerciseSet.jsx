@@ -12,6 +12,7 @@ import debounce from 'lodash/debounce';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useCookie } from 'react-use';
+import { addExerciseStatus } from '../../slice/exerciseSet/exerciseStatusSlice';
 
 import {
   Flex,
@@ -37,6 +38,7 @@ function Exercise({ ExerciseSet, Language, ExerciseCount }) {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
+  const exerciseStatus = useSelector((state) => state.exerciseStatus.data);
 
   const user = useSelector((state) => state.user.data);
 
@@ -402,9 +404,21 @@ function Exercise({ ExerciseSet, Language, ExerciseCount }) {
         // setCurrentExercise(ExerciseSet.ExerciseSet[exerciseIndex + 1]);
         // setExerciseIndex(exerciseIndex + 1);
         // nextExerciseAudio.play();
+        dispatch(
+          addExerciseStatus({
+            exerciseId: currentExercise.exercise._id,
+            status: 'done',
+          })
+        );
         dispatch(incrementExercise());
         window.location.reload();
       } else {
+        dispatch(
+          addExerciseStatus({
+            exerciseId: currentExercise.exercise._id,
+            status: 'done',
+          })
+        );
         setIsFinish(true);
       }
     }
@@ -439,9 +453,21 @@ function Exercise({ ExerciseSet, Language, ExerciseCount }) {
       // setCurrentExercise(ExerciseSet.ExerciseSet[exerciseIndex + 1]);
       // setExerciseIndex(exerciseIndex + 1);
       // nextExerciseAudio.play();
+      dispatch(
+        addExerciseStatus({
+          exerciseId: currentExercise.exercise._id,
+          status: 'skipped',
+        })
+      );
       dispatch(incrementExercise());
       window.location.reload();
     } else {
+      dispatch(
+        addExerciseStatus({
+          exerciseId: currentExercise.exercise._id,
+          status: 'skipped',
+        })
+      );
       setIsFinish(true);
     }
 
@@ -608,7 +634,7 @@ function Exercise({ ExerciseSet, Language, ExerciseCount }) {
 
   useEffect(() => {
     if (isFinish) {
-      addExerciseHistory(user.data._id, token, ExerciseSet._id);
+      addExerciseHistory(user.data._id, token, ExerciseSet._id, exerciseStatus);
     }
   }, [isFinish]);
 
@@ -929,7 +955,7 @@ function Exercise({ ExerciseSet, Language, ExerciseCount }) {
 
 export default Exercise;
 
-const addExerciseHistory = (id, token, exerciseId) => {
+const addExerciseHistory = (id, token, exerciseId, exerciseStatus) => {
   fetch(
     `https://physiopal-api-deploy-production.up.railway.app/patient/exerciseHistory/${id}`,
     {
@@ -938,6 +964,7 @@ const addExerciseHistory = (id, token, exerciseId) => {
         exercisetype: 'General',
         exerciseSetId: exerciseId,
         IsComplete: true,
+        exerciseStatus: exerciseStatus,
       }),
       headers: {
         'Content-Type': 'application/json',

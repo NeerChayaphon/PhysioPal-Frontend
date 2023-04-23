@@ -134,10 +134,29 @@ const PatientVideoRecord = () => {
                             : item.exercise.Details.Th_Description.Name}
                         </Heading>
                         <Text py='2'>
-                          Lorem ipsum dolor sit amet, consectetur adipiscing
-                          elit. <br />
-                          Etiam eu turpis molestie, dictum est a, mattis tellus.
+                          {exerciseData != null && language === 'English'
+                            ? item.exercise.Details.En_Description.Description
+                            : item.exercise.Details.Th_Description.Description}
                         </Text>
+
+                        {location.state.status && (
+                          <Flex
+                            flexDir='row'
+                            alignItems='center'
+                            justifyContent='center'
+                            w='30%'
+                            borderRadius='md'
+                            bgColor={
+                              location.state.status[index].Status === 'skipped'
+                                ? 'red.200'
+                                : 'blue.200'
+                            }
+                          >
+                            <Text fontSize='sm' w='105px'>
+                              Status: {location.state.status[index].Status}
+                            </Text>
+                          </Flex>
+                        )}
                       </CardBody>
                     </Stack>
                   </Card>

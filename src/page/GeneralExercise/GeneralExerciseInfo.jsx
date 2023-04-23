@@ -21,9 +21,10 @@ import { MdOutlineNavigateNext } from 'react-icons/md';
 import { useParams } from 'react-router-dom';
 import useGet from '../../Hook/useGet';
 import Loading from '../../component/Loading/Loading';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import useCheckUser from '../../Hook/useCheckUser';
 import { useCookie } from 'react-use';
+import { removeExerciseStatus } from '../../slice/exerciseSet/exerciseStatusSlice';
 
 const GeneralExerciseInfo = () => {
   const { id } = useParams();
@@ -32,6 +33,9 @@ const GeneralExerciseInfo = () => {
   const [loadingEx, setLoadingEx] = useState(true);
   const [token, updateToken, deleteToken] = useCookie('token');
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  dispatch(removeExerciseStatus());
 
   useCheckUser('patient', '/patient/login');
   const { data, error, loading } = useGet(

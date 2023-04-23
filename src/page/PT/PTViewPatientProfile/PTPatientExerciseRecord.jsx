@@ -1,324 +1,244 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
 import {
   Grid,
   GridItem,
   Text,
-  Flex,
-  Input,
   Button,
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,
   TableCaption,
   TableContainer,
   VStack,
-} from "@chakra-ui/react";
-import PTViewPatientProfileMenu from "../../../component/PTViewPatientProfile/PTViewPatientProfileMenu";
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+} from '@chakra-ui/react';
+import PatientProfileMenu from '../../../component/PatientProfile/PatientProfileMenu';
+import { useSelector } from 'react-redux';
+import Loading from '../../../component/Loading/Loading';
+import useGet from '../../../Hook/useGet';
+import { useNavigate, useParams } from 'react-router-dom';
+import useCheckUser from '../../../Hook/useCheckUser';
+import { useCookie } from 'react-use';
+import PTViewPatientProfileMenu from '../../../component/PTViewPatientProfile/PTViewPatientProfileMenu';
 
 const PTPatientExerciseRecord = () => {
+  useCheckUser('physiotherapist', '/physiotherapist/login');
+  const user = useSelector((state) => state.user.data);
+  const language = useSelector((state) => state.language.value);
+  const [userState, setUserState] = useState(null);
+  const [token, updateToken, deleteToken] = useCookie('token');
+  const { id } = useParams();
+
+  const [TE, setTE] = useState(null);
+  console.log(TE);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      fetch(
+        `https://physiopal-api-deploy-production.up.railway.app/patient/${id}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `${token}`,
+          },
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          setUserState(data);
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error);
+        });
+
+      fetch(
+        `https://physiopal-api-deploy-production.up.railway.app/appointments/therapeuticExercise/${id}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `${token}`,
+          },
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          setTE(data);
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error);
+        });
+    }
+  }, [user]);
+
+  const {
+    data: generalExercises,
+    error: generalExercisesError,
+    loading: generalExercisesLoading,
+  } = useGet(
+    `https://physiopal-api-deploy-production.up.railway.app/generalExercises`
+  );
+
+  const {
+    data: therapeuticExercise,
+    error: therapeuticExercisesError,
+    loading: therapeuticExercisesLoading,
+  } = useGet(
+    `https://physiopal-api-deploy-production.up.railway.app/therapeuticExercises`
+  );
+
+  const {
+    data: PT,
+    error: PTerror,
+    loading: PTLoading,
+  } = useGet(
+    `https://physiopal-api-deploy-production.up.railway.app/physiotherapists`
+  );
+
+  // if (therapeuticExercise) {
+  //   console.log(
+  //     therapeuticExercise.data.find(
+  //       (obj) => obj._id === userState.data.ExerciseHistory[1].ExerciseSetId
+  //     ).Details.En_Description.Name
+  //   );
+  // }
+
+  // if (generalExercises) {
+  //   console.log(
+  //     generalExercises.data.find(
+  //       (obj) => obj._id === userState.data.ExerciseHistory[2].ExerciseSetId
+  //     ).Details.En_Description.Name
+  //   );
+  // }
+
   return (
-    <Grid h="max" w="100%" templateColumns="2fr 10fr">
-      <GridItem bgColor="blue.100" w="100%">
+    <Grid h='max' w='100%' templateColumns='2fr 10fr'>
+      <GridItem bgColor='blue.100' w='100%'>
         <PTViewPatientProfileMenu />
       </GridItem>
-      <GridItem w="100%" bgColor="gray.100" px={10} py={10}>
-        <VStack>
-          <Text fontSize="3xl" fontWeight="bold" mb={8}>
-            Exercise Record
-          </Text>
-        </VStack>
-        <TableContainer borderRadius="lg" boxShadow="lg" px={2} py={2}>
-          <Table
-            variant="striped"
-            colorScheme="blue"
-            bgColor="white"
-            borderRadius="lg"
+      {userState !== null &&
+      generalExercises !== null &&
+      therapeuticExercise !== null &&
+      TE !== null &&
+      PT !== null ? (
+        <GridItem w='100%' bgColor='gray.100' px={10} py={10}>
+          <TableContainer
+            borderRadius='lg'
+            boxShadow='sm'
+            px={2}
+            py={2}
+            bgColor='white'
           >
-            <Thead>
-              <Tr>
-                <Th>NO.</Th>
-                <Th>
-                  EXERCISE <br /> SET
-                </Th>
-                <Th>TYPE</Th>
-                <Th>PHYSIOTHERAPIST</Th>
-                <Th>DATE</Th>
-                <Th>STATUS</Th>
-                <Th>RECORD</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              <Tr>
-                <Td>1.</Td>
-                <Td>Set 1</Td>
-                <Td>
-                  General
-                  <br /> Exercise
-                </Td>
-                <Td>-</Td>
-                <Td>01/10/2022</Td>
-                <Td>Unfinish</Td>
-                <Td>
-                  <Button colorScheme="blue" variant="solid" size="xs">
-                    View Detail
-                  </Button>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>2.</Td>
-                <Td>Set 2</Td>
-                <Td>
-                  Therapeutical
-                  <br /> Exercise
-                </Td>
-                <Td>Neer</Td>
-                <Td>02/10/2022</Td>
-                <Td>finish</Td>
-                <Td>
-                  <Button colorScheme="blue" variant="solid" size="xs">
-                    View Detail
-                  </Button>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>3.</Td>
-                <Td>Set 1</Td>
-                <Td>
-                  Therapeutical
-                  <br /> Exercise
-                </Td>
-                <Td>Noolek</Td>
-                <Td>03/10/2022</Td>
-                <Td>Unfinish</Td>
-                <Td>
-                  <Button colorScheme="blue" variant="solid" size="xs">
-                    View Detail
-                  </Button>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>4.</Td>
-                <Td>Set 2</Td>
-                <Td>
-                  Therapeutical
-                  <br /> Exercise
-                </Td>
-                <Td>Pear</Td>
-                <Td>04/10/2022</Td>
-                <Td>finish</Td>
-                <Td>
-                  <Button colorScheme="blue" variant="solid" size="xs">
-                    View Detail
-                  </Button>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>5.</Td>
-                <Td>Set 1</Td>
-                <Td>
-                  General <br />
-                  Exercise
-                </Td>
-                <Td>-</Td>
-                <Td>05/10/2022</Td>
-                <Td>Unfinish</Td>
-                <Td>
-                  <Button colorScheme="blue" variant="solid" size="xs">
-                    View Detail
-                  </Button>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>6.</Td>
-                <Td>Set 1</Td>
-                <Td>
-                  General <br />
-                  Exercise
-                </Td>
-                <Td>-</Td>
-                <Td>06/10/2022</Td>
-                <Td>Unfinish</Td>
-                <Td>
-                  <Button colorScheme="blue" variant="solid" size="xs">
-                    View Detail
-                  </Button>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>7.</Td>
-                <Td>Set 2</Td>
-                <Td>
-                  Therapeutical
-                  <br /> Exercise
-                </Td>
-                <Td>Neer</Td>
-                <Td>07/10/2022</Td>
-                <Td>finish</Td>
-                <Td>
-                  <Button colorScheme="blue" variant="solid" size="xs">
-                    View Detail
-                  </Button>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>8.</Td>
-                <Td>Set 1</Td>
-                <Td>
-                  Therapeutical <br />
-                  Exercise
-                </Td>
-                <Td>Pear</Td>
-                <Td>08/10/2022</Td>
-                <Td>Unfinish</Td>
-                <Td>
-                  <Button colorScheme="blue" variant="solid" size="xs">
-                    View Detail
-                  </Button>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>9.</Td>
-                <Td>Set 4</Td>
-                <Td>
-                  Therapeutical
-                  <br /> Exercise
-                </Td>
-                <Td>Noolek</Td>
-                <Td>09/10/2022</Td>
-                <Td>finish</Td>
-                <Td>
-                  <Button colorScheme="blue" variant="solid" size="xs">
-                    View Detail
-                  </Button>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>10.</Td>
-                <Td>Set 1</Td>
-                <Td>
-                  General
-                  <br /> Exercise
-                </Td>
-                <Td>-</Td>
-                <Td>10/10/2022</Td>
-                <Td>Unfinish</Td>
-                <Td>
-                  <Button colorScheme="blue" variant="solid" size="xs">
-                    View Detail
-                  </Button>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>11.</Td>
-                <Td>Set 1</Td>
-                <Td>
-                  General
-                  <br /> Exercise
-                </Td>
-                <Td>-</Td>
-                <Td>11/10/2022</Td>
-                <Td>Unfinish</Td>
-                <Td>
-                  <Button colorScheme="blue" variant="solid" size="xs">
-                    View Detail
-                  </Button>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>12.</Td>
-                <Td>Set 2</Td>
-                <Td>
-                  Therapeutical
-                  <br /> Exercise
-                </Td>
-                <Td>Neer</Td>
-                <Td>12/10/2022</Td>
-                <Td>finish</Td>
-                <Td>
-                  <Button colorScheme="blue" variant="solid" size="xs">
-                    View Detail
-                  </Button>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>13.</Td>
-                <Td>Set 1</Td>
-                <Td>
-                  Therapeutical
-                  <br /> Exercise
-                </Td>
-                <Td>Pear</Td>
-                <Td>13/10/2022</Td>
-                <Td>Unfinish</Td>
-                <Td>
-                  <Button colorScheme="blue" variant="solid" size="xs">
-                    View Detail
-                  </Button>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>14.</Td>
-                <Td>Set 4</Td>
-                <Td>
-                  Therapeutical
-                  <br /> Exercise
-                </Td>
-                <Td>Noolek</Td>
-                <Td>14/10/2022</Td>
-                <Td>finish</Td>
-                <Td>
-                  <Button colorScheme="blue" variant="solid" size="xs">
-                    View Detail
-                  </Button>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>15.</Td>
-                <Td>Set 1</Td>
-                <Td>
-                  General
-                  <br /> Exercise
-                </Td>
-                <Td>-</Td>
-                <Td>15/10/2022</Td>
-                <Td>Unfinish</Td>
-                <Td>
-                  <Button colorScheme="blue" variant="solid" size="xs">
-                    View Detail
-                  </Button>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>16.</Td>
-                <Td>Set 1</Td>
-                <Td>
-                  General
-                  <br /> Exercise
-                </Td>
-                <Td>-</Td>
-                <Td>16/10/2022</Td>
-                <Td>Unfinish</Td>
-                <Td>
-                  <Button colorScheme="blue" variant="solid" size="xs">
-                    View Detail
-                  </Button>
-                </Td>
-              </Tr>
-            </Tbody>
-            {/* <Tfoot>
-                            <Tr>
-                                <Th>To convert</Th>
-                                <Th>into</Th>
-                                <Th isNumeric>multiply by</Th>
-                            </Tr>
-                            </Tfoot> */}
-          </Table>
-        </TableContainer>
-      </GridItem>
+            <Table variant='simple' bgColor='white' borderRadius='lg' size='md'>
+              <Thead>
+                <Tr>
+                  <Th>
+                    {' '}
+                    {language === 'English' ? 'NO.' : 'บันทึกการออกกำลังกาย'}
+                  </Th>
+                  <Th>
+                    {language === 'English' ? (
+                      <>
+                        EXERCISE <br /> SET
+                      </>
+                    ) : (
+                      'เชตออกกำลังกาย'
+                    )}
+                  </Th>
+                  <Th> {language === 'English' ? 'TYPE' : 'ประเภท'} </Th>
+                  {/* <Th>
+                      {' '}
+                      {language === 'English'
+                        ? 'PHYSIOTHERAPIST'
+                        : 'นักกายภาพบำบัด'}{' '}
+                    </Th> */}
+                  <Th> {language === 'English' ? 'DATE' : 'วันที่'}</Th>
+                  <Th> {language === 'English' ? 'STATUS' : 'สถานะ'}</Th>
+                  <Th> {language === 'English' ? 'RECORD' : 'บันทึก'} </Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {userState.data.ExerciseHistory ? (
+                  userState.data.ExerciseHistory.map((item, index) => {
+                    return (
+                      <Tr>
+                        <Td>{index + 1}.</Td>
+                        <Td>
+                          {item.ExerciseType === 'General'
+                            ? generalExercises.data.find(
+                                (obj) => obj._id === item.ExerciseSetId
+                              ).Details.En_Description.Name
+                            : therapeuticExercise.data.find(
+                                (obj) => obj._id === item.ExerciseSetId
+                              ).Details.En_Description.Name}
+                        </Td>
+
+                        <Td>
+                          {item.ExerciseType} <br />
+                          Exercise
+                        </Td>
+                        {/* <Td>
+                            {item.Physiotherapist != null
+                              ? item.Physiotherapist
+                              : '-'}
+                          </Td> */}
+                        <Td>
+                          {new Date(item.Date).toISOString().substr(0, 10)}
+                        </Td>
+                        <Td>{item.IsComplete ? 'Finished' : 'UnFinish'}</Td>
+                        <Td>
+                          <Button
+                            colorScheme='blue'
+                            variant='solid'
+                            size='xs'
+                            onClick={() =>
+                              navigate(
+                                `/physiotherapist/patientexercise/details/${
+                                  index + 1
+                                }`,
+                                {
+                                  state: {
+                                    exerciseSet: item,
+                                    type: item.ExerciseType,
+                                    status: item.ExerciseStatus
+                                      ? item.ExerciseStatus
+                                      : null,
+                                  },
+                                }
+                              )
+                            }
+                          >
+                            {language === 'English'
+                              ? 'View Detail'
+                              : 'ดูเพิ่มเติม'}
+                          </Button>
+                        </Td>
+                      </Tr>
+                    );
+                  })
+                ) : (
+                  <>No Data Found</>
+                )}
+              </Tbody>
+            </Table>
+          </TableContainer>
+        </GridItem>
+      ) : (
+        <Loading />
+      )}
     </Grid>
   );
 };

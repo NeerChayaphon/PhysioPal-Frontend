@@ -16,7 +16,7 @@ import {
 } from '@chakra-ui/react';
 import PTDashboardMenu from '../../../component/PTDashboard/PTDashboardMenu';
 import Profile1 from '../../../icons/Exercise/Profile1.png';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import useGet from '../../../Hook/useGet';
 import { useSelector } from 'react-redux';
 import Loading from '../../../component/Loading/Loading';
@@ -35,6 +35,8 @@ const PTAppointmentDetail = () => {
 
   const [injury, setInjury] = useState('');
   const [treatment, setTreatment] = useState('');
+
+  const navigate = useNavigate();
 
   const {
     data: appointment,
@@ -137,6 +139,11 @@ const PTAppointmentDetail = () => {
                   mt={10}
                   size='lg'
                   mb={5}
+                  onClick={() =>
+                    navigate(
+                      `/physiotherapist/patientprofile/${patient.data._id}`
+                    )
+                  }
                 >
                   View patient profile
                 </Button>

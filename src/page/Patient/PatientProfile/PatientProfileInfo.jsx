@@ -32,9 +32,49 @@ import Loading from '../../../component/Loading/Loading';
 import { useSelector } from 'react-redux';
 import { useCookie } from 'react-use';
 import useCheckUser from '../../../Hook/useCheckUser';
+import { uploadFile } from 'react-s3';
+import AWS from 'aws-sdk';
+
+const S3_BUCKET = 'patient-physiopal';
+const REGION = 'ap-southeast-1';
+const ACCESS_KEY = 'AKIATQSDAKTD4TTFOLM6';
+const SECRET_ACCESS_KEY = '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';
+
+AWS.config.update({
+  accessKeyId: ACCESS_KEY,
+  secretAccessKey: SECRET_ACCESS_KEY,
+});
+
+const myBucket = new AWS.S3({
+  params: { Bucket: S3_BUCKET },
+  region: REGION,
+});
 
 const PatientProfileInfo = () => {
   useCheckUser('patient', '/patient/login');
+
+  const [progress, setProgress] = useState(0);
+
+  const uploadFile = (file) => {
+    const params = {
+      ACL: 'public-read',
+      Body: file,
+      Bucket: S3_BUCKET,
+      Key: file.name,
+    };
+
+    myBucket
+      .putObject(params)
+      .on('httpUploadProgress', (evt) => {
+        setProgress(Math.round((evt.loaded / evt.total) * 100));
+      })
+      .send((err) => {
+        if (err) console.log(err);
+      });
+
+    editPatientPhoto(`http://d13jd1pynk5gjd.cloudfront.net/${file.name}`);
+  };
+
   const [token, updateToken, deleteToken] = useCookie('token');
 
   const language = useSelector((state) => state.language.value);
@@ -84,13 +124,18 @@ const PatientProfileInfo = () => {
     const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/jpg'];
     const selected = event.target.files[0];
 
+    uploadFile(selected);
+
     if (selected && ALLOWED_TYPES.includes(selected.type)) {
       let reader = new FileReader();
       reader.onloadend = () => setUserProfile(reader.result);
       return reader.readAsDataURL(selected);
     }
+
     onOpen();
   };
+
+  console.log(user);
 
   const editPatient = () => {
     let tempUser = user.data;
@@ -98,7 +143,6 @@ const PatientProfileInfo = () => {
     if (name !== '') {
       tempUser.Name = name;
     }
-
     if (email !== '') {
       tempUser.Email = email;
     }
@@ -149,6 +193,43 @@ const PatientProfileInfo = () => {
       });
   };
 
+  const editPatientPhoto = (photo) => {
+    let tempUser = user.data;
+
+    setLoadEdit(true);
+
+    let tempData = {
+      address: tempUser.Address,
+      congenitalDisease: tempUser.CongenitalDisease,
+      email: tempUser.Email,
+      exerciseHistory: tempUser.ExerciseHistory,
+      name: tempUser.Name,
+      phone: tempUser.Phone,
+      photo: photo,
+      gender: tempUser.Gender,
+    };
+
+    fetch(
+      `https://physiopal-api-deploy-production.up.railway.app/patient/${tempUser._id}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify(tempData),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `${token}`,
+        },
+      }
+    )
+      .then(() => {
+        setLoadEdit(false);
+        setReadOnly(true);
+      })
+      .catch((error) => {
+        setLoadEdit(false);
+        console.error('Error fetching data:', error);
+      });
+  };
+
   return (
     <Grid h='max' w='100%' templateColumns='2fr 10fr'>
       <GridItem bgColor='teal.100' w='100%'>
@@ -169,7 +250,13 @@ const PatientProfileInfo = () => {
                 size='2xl'
                 cursor='pointer'
                 onClick={openChooseImage}
-                src={userProfile ? userProfile : '/img/tim-cook.jpg'}
+                src={
+                  userProfile
+                    ? userProfile
+                    : user.data.Photo
+                    ? user.data.Photo
+                    : '/img/tim-cook.jpg'
+                }
                 mb={6}
               >
                 {/* ปุ่มกดเพื่อเปลี่ยนรูป */}

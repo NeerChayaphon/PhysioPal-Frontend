@@ -57,7 +57,7 @@ const router = createBrowserRouter([
     element: <PatientRegisterPage />,
   },
   {
-    path: 'patient/physiotherapist/:id',
+    path: 'physiotherapist/watting-room/:id',
     element: <Physiotherapist />,
   },
   {
@@ -144,23 +144,23 @@ const router = createBrowserRouter([
     element: <PTDashboard />,
   },
   {
-    path: 'physiotherapist/patientprofile',
+    path: 'physiotherapist/patientprofile/:id',
     element: <PTViewPatientProfile />,
   },
   {
-    path: 'physiotherapist/patientappointment',
+    path: 'physiotherapist/patientappointment/:id',
     element: <PTPatientAppointment />,
   },
   {
-    path: 'physiotherapist/patientappointment/:id',
+    path: 'physiotherapist/patientappointment/details/:id',
     element: <PTPatientAppointmentDetail />,
   },
   {
-    path: 'physiotherapist/patientexercise',
+    path: 'physiotherapist/patientexercise/:id',
     element: <PTPatientExerciseRecord />,
   },
   {
-    path: 'physiotherapist/patientexercise/:id',
+    path: 'physiotherapist/patientexercise/details/:id',
     element: <PTPatientVideoRecord />,
   },
   {
