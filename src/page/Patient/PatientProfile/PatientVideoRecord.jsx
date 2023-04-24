@@ -22,37 +22,48 @@ import { useLocation } from 'react-router-dom';
 import Loading from '../../../component/Loading/Loading';
 import useGet from '../../../Hook/useGet';
 import { useSelector } from 'react-redux';
+import useCheckUser from '../../../Hook/useCheckUser';
 
 const PatientVideoRecord = () => {
+  useCheckUser('patient', '/patient/login');
   const location = useLocation();
   const {
     data: exerciseData,
     error,
     loading,
   } = useGet(
-    `https://physiopal-api-production.up.railway.app/generalExercise/join/${location.state.exerciseSet.ExerciseSetId}`
+    `https://physiopal-api-deploy-production.up.railway.app/generalExercise/join/${location.state.exerciseSet.ExerciseSetId}`
+  );
+
+  const {
+    data: TE,
+    error: TEerror,
+    loading: TEloading,
+  } = useGet(
+    `https://physiopal-api-deploy-production.up.railway.app/therapeuticExercise/join/${location.state.exerciseSet.ExerciseSetId}`
   );
 
   const language = useSelector((state) => state.language.value);
 
+  const exerciseSetData = location.state.type === 'General' ? exerciseData : TE;
+
   if (
     location.state === undefined ||
     loading === true ||
-    exerciseData === null
+    TEloading ||
+    exerciseSetData === null
   ) {
     return <Loading />;
   }
 
-  console.log(location.state);
-
-  console.log(exerciseData);
+  console.log(exerciseSetData);
 
   return (
     <Grid h='max' w='100%'>
       <Heading size='lg' px={10} mt={8}>
-        {exerciseData != null && language === 'English'
-          ? exerciseData.data.Details.En_Description.Name
-          : exerciseData.data.Details.Th_Description.Name}
+        {exerciseSetData != null && language === 'English'
+          ? exerciseSetData.data.Details.En_Description.Name
+          : exerciseSetData.data.Details.Th_Description.Name}
       </Heading>
       <Grid px={10} py={8}>
         <Image src={Picture} borderTopRadius='lg' w='100%' />
@@ -93,12 +104,12 @@ const PatientVideoRecord = () => {
 
           <Flex flexDir='column'>
             <Heading size='lg' mt={8} mb={5}>
-              {exerciseData != null && language === 'English'
+              {exerciseSetData != null && language === 'English'
                 ? 'Exercise'
                 : 'ท่าออกกำลังกาย'}
             </Heading>
             <Grid templateColumns='repeat(2, 1fr)' gap={6}>
-              {exerciseData.data.ExerciseSet.map((item, index) => {
+              {exerciseSetData.data.ExerciseSet.map((item, index) => {
                 return (
                   <Card
                     direction={{ base: 'column', sm: 'row' }}
@@ -118,15 +129,34 @@ const PatientVideoRecord = () => {
                     <Stack>
                       <CardBody boxSize='md'>
                         <Heading size='md'>
-                          {exerciseData != null && language === 'English'
+                          {exerciseSetData != null && language === 'English'
                             ? item.exercise.Details.En_Description.Name
                             : item.exercise.Details.Th_Description.Name}
                         </Heading>
                         <Text py='2'>
-                          Lorem ipsum dolor sit amet, consectetur adipiscing
-                          elit. <br />
-                          Etiam eu turpis molestie, dictum est a, mattis tellus.
+                          {exerciseData != null && language === 'English'
+                            ? item.exercise.Details.En_Description.Description
+                            : item.exercise.Details.Th_Description.Description}
                         </Text>
+
+                        {location.state.status && (
+                          <Flex
+                            flexDir='row'
+                            alignItems='center'
+                            justifyContent='center'
+                            w='30%'
+                            borderRadius='md'
+                            bgColor={
+                              location.state.status[index].Status === 'skipped'
+                                ? 'red.200'
+                                : 'blue.200'
+                            }
+                          >
+                            <Text fontSize='sm' w='105px'>
+                              Status: {location.state.status[index].Status}
+                            </Text>
+                          </Flex>
+                        )}
                       </CardBody>
                     </Stack>
                   </Card>

@@ -19,13 +19,16 @@ import { useLocation } from 'react-router-dom';
 import Loading from '../../../component/Loading/Loading';
 import useGet from '../../../Hook/useGet';
 import { useSelector } from 'react-redux';
+import useCheckUser from '../../../Hook/useCheckUser';
+
 const PatientAppointmentDetail = () => {
+  useCheckUser('patient', '/patient/login');
   const {
     data: PT,
     error: PTerror,
     loading: PTLoading,
   } = useGet(
-    `https://physiopal-api-production.up.railway.app/physiotherapists`
+    `https://physiopal-api-deploy-production.up.railway.app/physiotherapists`
   );
 
   const location = useLocation();
@@ -36,7 +39,7 @@ const PatientAppointmentDetail = () => {
     error: PatientError,
     loading: PatientLoading,
   } = useGet(
-    `https://physiopal-api-production.up.railway.app/patient/${location.state.appointment.Patient}`
+    `https://physiopal-api-deploy-production.up.railway.app/patient/${location.state.appointment.Patient}`
   );
 
   console.log(Patient);
