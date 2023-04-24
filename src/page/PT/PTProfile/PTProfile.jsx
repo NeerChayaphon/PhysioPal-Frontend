@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef } from 'react';
 import {
   Grid,
   GridItem,
@@ -19,307 +19,529 @@ import {
   ModalOverlay,
   useDisclosure,
   VStack,
-  Box,
-  useColorModeValue,
-  openChooseImage,
   FormControl,
+  FormErrorMessage,
+  FormHelperText,
   FormLabel,
-} from "@chakra-ui/react";
-import { BsPeople } from "react-icons/bs";
-import { BiLogOut } from "react-icons/bi";
-import { MdArrowDropDown } from "react-icons/md";
+  Spinner,
+} from '@chakra-ui/react';
+import { useState } from 'react';
+import { MdArrowDropDown } from 'react-icons/md';
+import PatientProfileMenu from '../../../component/PatientProfile/PatientProfileMenu';
+import Loading from '../../../component/Loading/Loading';
+import { useSelector } from 'react-redux';
+import { useCookie } from 'react-use';
+import useCheckUser from '../../../Hook/useCheckUser';
+import { uploadFile } from 'react-s3';
+import AWS from 'aws-sdk';
+import PTMenu from '../../../component/PTViewPatientProfile/PTMenu';
+
+const S3_BUCKET = process.env.REACT_APP_S3_BUCKET_PT;
+const REGION = process.env.REACT_APP_REGION;
+const ACCESS_KEY = process.env.REACT_APP_ACCESS_KEY;
+const SECRET_ACCESS_KEY = process.env.REACT_APP_SECRET_ACCESS_KEY;
+
+AWS.config.update({
+  accessKeyId: ACCESS_KEY,
+  secretAccessKey: SECRET_ACCESS_KEY,
+});
+
+const myBucket = new AWS.S3({
+  params: { Bucket: S3_BUCKET },
+  region: REGION,
+});
 
 const PTProfile = () => {
+  useCheckUser('physiotherapist', '/physiotherapist/login');
+
+  const [progress, setProgress] = useState(0);
+
+  const uploadFile = (file) => {
+    const params = {
+      ACL: 'public-read',
+      Body: file,
+      Bucket: S3_BUCKET,
+      Key: file.name,
+    };
+
+    myBucket
+      .putObject(params)
+      .on('httpUploadProgress', (evt) => {
+        setProgress(Math.round((evt.loaded / evt.total) * 100));
+      })
+      .send((err) => {
+        if (err) console.log(err);
+      });
+
+    editPatientPhoto(`http://d17fv2iisozkp.cloudfront.net/${file.name}`);
+  };
+
+  const [token, updateToken, deleteToken] = useCookie('token');
+
+  const language = useSelector((state) => state.language.value);
+
+  const [user, setUser] = useState(null);
+
+  const [readOnly, setReadOnly] = useState(true);
+  const [loadEdit, setLoadEdit] = useState(false);
+
   const [userProfile, setUserProfile] = useState(null);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const profileImage = useRef(null);
+
+  const [EN_name, setEN_name] = useState('');
+  const [TH_name, setTH_name] = useState('');
+  const [specialization, setSpecialization] = useState('');
+  const [background, setBackground] = useState('');
+  const [hospital, setHospital] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [phone, setPhone] = useState('');
+
+  useEffect(() => {
+    fetch(
+      'https://physiopal-api-deploy-production.up.railway.app/user/GetUserByJWT',
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `${token}`,
+        },
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        setUser(data);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
 
   const openChooseImage = () => {
     profileImage.current.click();
   };
 
   const changeProfileImage = (event) => {
-    const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/jpg"];
+    const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/jpg'];
     const selected = event.target.files[0];
+
+    uploadFile(selected);
 
     if (selected && ALLOWED_TYPES.includes(selected.type)) {
       let reader = new FileReader();
       reader.onloadend = () => setUserProfile(reader.result);
       return reader.readAsDataURL(selected);
     }
+
     onOpen();
   };
-  return (
-    <Grid h="max" w="100%" templateColumns="2fr 10fr">
-      <GridItem bgColor="blue.100" w="100%">
-        <Box w="100%" px={4} py={4}>
-          <Button
-            leftIcon={<BsPeople />}
-            bgColor="blue.100"
-            _hover={{ bg: useColorModeValue("blue.400", "white") }}
-            variant="solid"
-            mb={3}
-            w="100%"
-            h="50px"
-            justifyContent="start"
-          >
-            Profile
-          </Button>
-          <Button
-            leftIcon={<BiLogOut />}
-            bgColor="blue.100"
-            _hover={{ bg: useColorModeValue("blue.400", "white") }}
-            variant="solid"
-            mb={3}
-            w="100%"
-            h="50px"
-            justifyContent="start"
-          >
-            Log out
-          </Button>
-        </Box>
-      </GridItem>
-      <GridItem bgColor="gray.100" w="100%">
-        <Flex flexDir="column" w="100%" alignItems="center" py={10} px={10}>
-          <VStack>
-            <Text fontSize="3xl" fontWeight="bold" mb={2} mt={5}>
-              Profile
-            </Text>
-          </VStack>
-          <VStack spacing={3} py={5}>
-            <Avatar
-              size="2xl"
-              cursor="pointer"
-              onClick={openChooseImage}
-              src={userProfile ? userProfile : "/img/tim-cook.jpg"}
-              mb={6}
-            >
-              {/* ปุ่มกดเพื่อเปลี่ยนรูป */}
-              <AvatarBadge bg="teal.300" boxSize="0.9em">
-                <svg width="0.4em" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z"
-                  />
-                </svg>
-              </AvatarBadge>
-            </Avatar>
-            <input
-              hidden
-              type="file"
-              ref={profileImage}
-              onChange={changeProfileImage}
-            />
-            <Modal isOpen={isOpen} onClose={onClose}>
-              <ModalOverlay />
-              <ModalContent>
-                <ModalHeader>Something went wrong</ModalHeader>
-                <ModalCloseButton />
-                <ModalBody>
-                  <Text>File not supported!</Text>
-                  <HStack mt={1}>
-                    <Text color="brand.cadet" fontSize="sm">
-                      Supported types:
-                    </Text>
-                    <Badge colorScheme="green">PNG</Badge>
-                    <Badge colorScheme="green">JPG</Badge>
-                    <Badge colorScheme="green">JPEG</Badge>
-                  </HStack>
-                </ModalBody>
 
-                {/* <ModalFooter>
+  const editPatient = () => {
+    let tempUser = user.data;
+
+    if (EN_name !== '') {
+      tempUser.Details.En_Description.Name = EN_name;
+    }
+    if (TH_name !== '') {
+      tempUser.Details.Th_Description.Name = TH_name;
+    }
+    if (email !== '') {
+      tempUser.email = email;
+    }
+    if (phone !== '') {
+      tempUser.phone = phone;
+    }
+    if (specialization !== '') {
+      tempUser.Details.En_Description.Specialization = specialization;
+      tempUser.Details.Th_Description.Specialization = specialization;
+    }
+    if (background !== '') {
+      tempUser.Details.En_Description.Background = background;
+      tempUser.Details.Th_Description.Background = background;
+    }
+    if (hospital !== '') {
+      tempUser.Details.En_Description.Hospital = hospital;
+      tempUser.Details.Th_Description.Hospital = hospital;
+    }
+    setLoadEdit(true);
+
+    let tempData = {
+      email: tempUser.email,
+      name: tempUser.Name,
+      phone: tempUser.phone,
+      photo: tempUser.photo,
+      details: {
+        En_Description: {
+          Name: tempUser.Details.En_Description.Name,
+          Specialization: tempUser.Details.En_Description.Specialization,
+          Background: tempUser.Details.En_Description.Background,
+          Hospital: tempUser.Details.En_Description.Hospital,
+        },
+        Th_Description: {
+          Name: tempUser.Details.Th_Description.Name,
+          Specialization: tempUser.Details.Th_Description.Specialization,
+          Background: tempUser.Details.Th_Description.Background,
+          Hospital: tempUser.Details.Th_Description.Hospital,
+        },
+      },
+    };
+
+    if (password !== '') {
+      tempData.password = password;
+    }
+
+    fetch(
+      `https://physiopal-api-deploy-production.up.railway.app/physiotherapist/${tempUser._id}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify(tempData),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `${token}`,
+        },
+      }
+    )
+      .then(() => {
+        setLoadEdit(false);
+        setReadOnly(true);
+      })
+      .catch((error) => {
+        setLoadEdit(false);
+        console.error('Error fetching data:', error);
+      });
+  };
+
+  const editPatientPhoto = (photo) => {
+    let tempUser = user.data;
+
+    setLoadEdit(true);
+
+    let tempData = {
+      email: tempUser.email,
+      name: tempUser.Name,
+      phone: tempUser.phone,
+      photo: photo,
+      details: {
+        En_Description: {
+          Name: tempUser.Details.En_Description.Name,
+          Specialization: tempUser.Details.En_Description.Specialization,
+          Background: tempUser.Details.En_Description.Background,
+          Hospital: tempUser.Details.En_Description.Hospital,
+        },
+        Th_Description: {
+          Name: tempUser.Details.Th_Description.Name,
+          Specialization: tempUser.Details.Th_Description.Specialization,
+          Background: tempUser.Details.Th_Description.Background,
+          Hospital: tempUser.Details.Th_Description.Hospital,
+        },
+      },
+    };
+
+    fetch(
+      `https://physiopal-api-deploy-production.up.railway.app/physiotherapist/${tempUser._id}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify(tempData),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `${token}`,
+        },
+      }
+    )
+      .then(() => {
+        setLoadEdit(false);
+        setReadOnly(true);
+      })
+      .catch((error) => {
+        setLoadEdit(false);
+        console.error('Error fetching data:', error);
+      });
+  };
+
+  console.log(user);
+
+  return (
+    <Grid h='max' w='100%' templateColumns='2fr 10fr'>
+      <GridItem bgColor='blue.100' w='100%'>
+        <PTMenu />
+      </GridItem>
+      {user === null ? (
+        <Loading />
+      ) : (
+        <GridItem w='100%' bgColor='gray.100'>
+          <Flex flexDir='column' w='100%' alignItems='center' py={10} px={10}>
+            <VStack>
+              <Text fontSize='3xl' fontWeight='bold' mb={2} mt={5}>
+                {language === 'English' ? 'Profile' : 'ข้อมูลส่วนตัว'}
+              </Text>
+            </VStack>
+            <VStack spacing={3} py={5}>
+              <Avatar
+                size='2xl'
+                cursor='pointer'
+                onClick={openChooseImage}
+                src={
+                  userProfile
+                    ? userProfile
+                    : user.data.photo
+                    ? user.data.photo
+                    : '/img/tim-cook.jpg'
+                }
+                mb={6}
+              >
+                {/* ปุ่มกดเพื่อเปลี่ยนรูป */}
+                <AvatarBadge bg='blue.300' boxSize='0.9em'>
+                  <svg width='0.4em' fill='currentColor' viewBox='0 0 20 20'>
+                    <path
+                      fillRule='evenodd'
+                      clipRule='evenodd'
+                      d='M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z'
+                    />
+                  </svg>
+                </AvatarBadge>
+              </Avatar>
+              <input
+                hidden
+                type='file'
+                ref={profileImage}
+                onChange={changeProfileImage}
+              />
+              <Modal isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay />
+                <ModalContent>
+                  <ModalHeader>Something went wrong</ModalHeader>
+                  <ModalCloseButton />
+                  <ModalBody>
+                    <Text>File not supported!</Text>
+                    <HStack mt={1}>
+                      <Text color='brand.cadet' fontSize='sm'>
+                        Supported types:
+                      </Text>
+                      <Badge colorScheme='green'>PNG</Badge>
+                      <Badge colorScheme='green'>JPG</Badge>
+                      <Badge colorScheme='green'>JPEG</Badge>
+                    </HStack>
+                  </ModalBody>
+
+                  {/* <ModalFooter>
                                 <Button onClick={onClose}>Close</Button>
                                 </ModalFooter> */}
-              </ModalContent>
-            </Modal>
-          </VStack>
-          <Flex flexDir="row" gap={14} w="100%" px="20">
-            <Flex flexDir="column">
-              <Text fontSize="15px" mb={2}>
-                First Name
-              </Text>
-              <Input
-                variant="filled"
-                type="name"
-                placeholder="Nezuko"
-                required
-                bgColor="white"
-                mb={6}
-                boxShadow="lg"
-                w="md"
-                size="lg"
-              />
+                </ModalContent>
+              </Modal>
+            </VStack>
+            <Flex flexDir='row' gap={14} w='100%' px='20'>
+              <FormControl>
+                <FormLabel>
+                  {language === 'English'
+                    ? 'Name (English)'
+                    : 'ชื่อ-สกุล (ภาษาอังกฤษ)'}
+                </FormLabel>
+                <Input
+                  variant='filled'
+                  type='name'
+                  defaultValue={user.data.Details.En_Description.Name}
+                  required
+                  bgColor='white'
+                  mb={6}
+                  w='100%'
+                  boxShadow='lg'
+                  size='lg'
+                  readOnly={readOnly}
+                  onChange={(e) => setEN_name(e.target.value)}
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel>
+                  {language === 'English'
+                    ? 'Name (Thai)'
+                    : 'ชื่อ-สกุล (ภาษาไทย)  '}
+                </FormLabel>
+                <Input
+                  variant='filled'
+                  type='name'
+                  defaultValue={user.data.Details.Th_Description.Name}
+                  required
+                  bgColor='white'
+                  mb={6}
+                  w='100%'
+                  boxShadow='lg'
+                  size='lg'
+                  readOnly={readOnly}
+                  onChange={(e) => setTH_name(e.target.value)}
+                />
+              </FormControl>
             </Flex>
-            <Flex flexDir="column">
-              <Text fontSize="15px" mb={2}>
-                Last Name
-              </Text>
-              <Input
-                variant="filled"
-                type="name"
-                placeholder="Kamado"
-                required
-                bgColor="white"
-                mb={6}
-                boxShadow="lg"
-                w="md"
-                size="lg"
-              />
+            <Flex flexDir='row' gap={14} w='100%' px='20'>
+              <FormControl>
+                <FormLabel>
+                  {language === 'English' ? 'Email' : 'อีเมล'}
+                </FormLabel>
+                <Input
+                  variant='filled'
+                  type='email'
+                  defaultValue={user.data.email}
+                  required
+                  bgColor='white'
+                  mb={6}
+                  w='md'
+                  boxShadow='lg'
+                  size='lg'
+                  readOnly={readOnly}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel>
+                  {language === 'English' ? 'Password' : 'รหัสผ่าน'}
+                </FormLabel>
+                <Input
+                  variant='filled'
+                  type='password'
+                  defaultValue='xxxxxxxxx'
+                  required
+                  bgColor='white'
+                  mb={6}
+                  w='md'
+                  boxShadow='lg'
+                  size='lg'
+                  readOnly={readOnly}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </FormControl>
             </Flex>
-          </Flex>
-          <Flex flexDir="row" gap={14} w="100%" px="20">
-            <Flex flexDir="column">
-              <Text fontSize="15px" mb={2}>
-                Email
-              </Text>
-              <Input
-                variant="filled"
-                type="email"
-                placeholder="example1234@gmail.com"
-                required
-                bgColor="white"
-                mb={6}
-                boxShadow="lg"
-                w="md"
-                size="lg"
-              />
+            <Flex flexDir='row' gap={14} w='100%' px='20'>
+              <FormControl>
+                <FormLabel>
+                  {language === 'English' ? 'Phone' : 'เบอร์โทรศัพท์'}
+                </FormLabel>
+                <Input
+                  variant='filled'
+                  type='tel'
+                  defaultValue={user.data.phone}
+                  required
+                  bgColor='white'
+                  mb={6}
+                  w='md'
+                  boxShadow='lg'
+                  size='lg'
+                  readOnly={readOnly}
+                  onChange={(e) => setPhone(e.target.value)}
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel>
+                  {language === 'English' ? 'Specialization' : 'เเผนก'}
+                </FormLabel>
+                <Input
+                  variant='filled'
+                  type='address'
+                  defaultValue={
+                    language === 'English'
+                      ? user.data.Details.En_Description.Specialization
+                      : user.data.Details.Th_Description.Specialization
+                  }
+                  required
+                  bgColor='white'
+                  mb={6}
+                  w='md'
+                  boxShadow='lg'
+                  size='lg'
+                  readOnly={readOnly}
+                  onChange={(e) => setSpecialization(e.target.value)}
+                />
+              </FormControl>
             </Flex>
-            <Flex flexDir="column">
-              <Text fontSize="15px" mb={2}>
-                Password
-              </Text>
-              <Input
-                variant="filled"
-                type="password"
-                placeholder="xxxxxxxxx"
-                required
-                bgColor="white"
-                mb={6}
-                boxShadow="lg"
-                w="md"
-                size="lg"
-              />
+            <Flex flexDir='column' w='100%' px='20'>
+              <FormControl>
+                <FormLabel>
+                  {language === 'English' ? 'Background' : 'ประวัติ'}
+                </FormLabel>
+                <Input
+                  variant='filled'
+                  type='address'
+                  defaultValue={
+                    language === 'English'
+                      ? user.data.Details.En_Description.Background
+                      : user.data.Details.Th_Description.Background
+                  }
+                  required
+                  bgColor='white'
+                  mb={6}
+                  w='100%'
+                  boxShadow='lg'
+                  size='lg'
+                  readOnly={readOnly}
+                  onChange={(e) => setBackground(e.target.value)}
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel>
+                  {language === 'English' ? 'Hospital' : 'โรงพยาบาล'}
+                </FormLabel>
+                <Input
+                  variant='filled'
+                  type='address'
+                  defaultValue={
+                    language === 'English'
+                      ? user.data.Details.En_Description.Hospital
+                      : user.data.Details.Th_Description.Hospital
+                  }
+                  required
+                  bgColor='white'
+                  mb={6}
+                  w='100%'
+                  boxShadow='lg'
+                  size='lg'
+                  readOnly={readOnly}
+                  onChange={(e) => setHospital(e.target.value)}
+                />
+              </FormControl>
             </Flex>
+            {readOnly ? (
+              <Flex flexDir='row' gap={8} mb={10}>
+                <Button
+                  colorScheme='blue'
+                  variant='outline'
+                  mt={10}
+                  size='lg'
+                  onClick={() => setReadOnly(false)}
+                >
+                  {language === 'English' ? 'Edit' : 'แก้ไข'}
+                </Button>
+              </Flex>
+            ) : (
+              <Flex flexDir='row' gap={8} mb={10}>
+                <Button
+                  colorScheme='blue'
+                  variant='outline'
+                  mt={10}
+                  size='lg'
+                  onClick={() => setReadOnly(true)}
+                >
+                  {language === 'English' ? 'Cancel' : 'ยกเลิก'}
+                </Button>
+                <Button
+                  colorScheme='blue'
+                  variant='solid'
+                  mt={10}
+                  size='lg'
+                  onClick={editPatient}
+                >
+                  {loadEdit ? (
+                    <Spinner />
+                  ) : language === 'English' ? (
+                    'Save'
+                  ) : (
+                    'บันทึก'
+                  )}
+                </Button>
+              </Flex>
+            )}
           </Flex>
-          <Flex flexDir="row" gap={14} w="100%" px="20">
-            <Flex flexDir="column">
-              <Text fontSize="15px" mb={2}>
-                Phone Number
-              </Text>
-              <Input
-                variant="filled"
-                type="tel"
-                placeholder="084-xxx-xxxx"
-                required
-                bgColor="white"
-                mb={6}
-                boxShadow="lg"
-                w="md"
-                size="lg"
-              />
-            </Flex>
-            <Flex flexDir="column">
-              <Text fontSize="15px" mb={2}>
-                Gender
-              </Text>
-              <Select
-                variant="filled"
-                type="Gender"
-                placeholder="Male"
-                icon={<MdArrowDropDown />}
-                required
-                bgColor="white"
-                mb={6}
-                boxShadow="lg"
-                w="md"
-                size="lg"
-                // textColor='gray.500'
-              >
-                <option value="option1">Male</option>
-                <option value="option2">Female</option>
-                <option value="option3">Other</option>
-              </Select>
-            </Flex>
-          </Flex>
-          <Flex flexDir="column" w="100%" px="20">
-            <Text fontSize="15px" mb={2}>
-              Specialization
-            </Text>
-            <Input
-              variant="filled"
-              type="address"
-              placeholder="288 Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-              required
-              bgColor="white"
-              mb={6}
-              boxShadow="lg"
-              w="100%"
-              size="lg"
-            />
-          </Flex>
-          <Flex flexDir="column" w="100%" px="20">
-            <Text fontSize="15px" mb={2}>
-              Hospital
-            </Text>
-            <Input
-              variant="filled"
-              type="address"
-              placeholder="288 Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-              required
-              bgColor="white"
-              mb={6}
-              boxShadow="lg"
-              w="100%"
-              size="lg"
-            />
-          </Flex>
-          <Flex flexDir="column" w="100%" px="20">
-            <Text fontSize="15px" mb={2}>
-              Background
-            </Text>
-            <Input
-              variant="filled"
-              type="address"
-              placeholder="288 Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-              required
-              bgColor="white"
-              mb={6}
-              boxShadow="lg"
-              w="100%"
-              size="lg"
-            />
-          </Flex>
-
-          {/* เอาไปใช้ใน sign in user */}
-          {/* <FormControl isRequired>
-            <Flex flexDir="column" w="100%" px="20">
-              <FormLabel>Background</FormLabel>
-
-              <Input
-                variant="filled"
-                type="address"
-                placeholder="288 Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-                required
-                bgColor="white"
-                borderColor="gray.300"
-                mb={6}
-                w="100%"
-              />
-            </Flex>
-          </FormControl> */}
-
-          <Flex flexDir="row" gap={8}>
-            <Button colorScheme="blue" variant="outline" mt={10} size="lg">
-              Cancel
-            </Button>
-            <Button colorScheme="blue" variant="solid" mt={10} size="lg">
-              Save
-            </Button>
-          </Flex>
-        </Flex>
-      </GridItem>
+        </GridItem>
+      )}
     </Grid>
   );
 };

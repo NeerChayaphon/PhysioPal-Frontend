@@ -4,25 +4,29 @@ import TelemedicineHeader from '../../../component/telemedicine/TelemedicineHead
 import io from 'socket.io-client';
 import { useEffect, useState } from 'react';
 import Loading from '../../../component/Loading/Loading';
+import { useCookie } from 'react-use';
 
 const TelemedicineFirstPage = () => {
   const [socket, setSocket] = useState(null); // socket
   const [call, setCall] = useState(null);
   const [onlinePhy, setOnlinePhy] = useState([]);
-  const token = sessionStorage.getItem('token');
+  const [token, updateToken, deleteToken] = useCookie('token');
   const [allPhy, setAllPhy] = useState(null);
   const [loading, setLoading] = useState(true);
 
   console.log(allPhy);
 
   useEffect(() => {
-    fetch('https://physiopal-api-production.up.railway.app/physiotherapists', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `${token}`,
-      },
-    })
+    fetch(
+      'https://physiopal-api-deploy-production.up.railway.app/physiotherapists',
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `${token}`,
+        },
+      }
+    )
       .then((response) => response.json())
       .then((data) => {
         console.log(data);

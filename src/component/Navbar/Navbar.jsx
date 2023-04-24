@@ -29,6 +29,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../slice/user/userSlice';
 import { setEnglish, setThai } from '../../slice/language/languageSlice';
+import { useCookie } from 'react-use';
 
 const Links = [
   'Home',
@@ -38,23 +39,35 @@ const Links = [
   'About us',
 ];
 
-const Navbar = ({ Links, HomePageLink, User, UserLinks, SignoutLink }) => {
+const Navbar = ({ Links, HomePageLink, User, Language }) => {
+  let isPTPage = window.location.href.includes('physiotherapist');
+  let isCall = window.location.href.includes('call');
+  console.log(isPTPage);
   const dispatch = useDispatch();
   const refresh = () => window.location.reload(true);
+  const [token, updateToken, deleteToken] = useCookie('token');
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   if (HomePageLink === undefined) {
     HomePageLink = '/';
   }
 
+  if (isCall && User !== null && User.role === 'physiotherapist') {
+    isPTPage = true;
+  }
+
   const signout = () => {
     dispatch(logout());
-    sessionStorage.removeItem('token');
+    deleteToken();
+    window.location.reload();
+    // window.location.replace('https://codefrontend.com');
+
     // refresh();
   };
+
   return (
     <>
-      <Box bg='teal.400' px={8} py={2}>
+      <Box bg={!isPTPage ? 'teal.400' : 'blue.400'} px={8} py={2}>
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
           <IconButton
             size={'md'}
@@ -76,7 +89,7 @@ const Navbar = ({ Links, HomePageLink, User, UserLinks, SignoutLink }) => {
                 display={{ base: 'none', md: 'flex' }}
               >
                 {Links.map((link) => (
-                  <NavLink key={link.name} link={link.url}>
+                  <NavLink key={link.name} link={link.url} isPTPage={isPTPage}>
                     {' '}
                     <Text fontWeight='medium'>{link.name}</Text>
                   </NavLink>
@@ -90,7 +103,7 @@ const Navbar = ({ Links, HomePageLink, User, UserLinks, SignoutLink }) => {
                       color='black'
                       _hover={{
                         textDecoration: 'none',
-                        bg: 'teal.300',
+                        bg: !isPTPage ? 'teal.300' : 'blue.300',
                       }}
                       leftIcon={
                         <Avatar
@@ -102,44 +115,53 @@ const Navbar = ({ Links, HomePageLink, User, UserLinks, SignoutLink }) => {
                       }
                       rightIcon={<ChevronDownIcon />}
                     >
-                      <Text fontWeight='normal' fontSize='md'>
-                        {User.data.Name.En_Name}
-                      </Text>
+                      <Text fontWeight='normal' fontSize='md'></Text>
                     </MenuButton>
                     <MenuList>
-                      {UserLinks.map((link) => (
+                      {!isPTPage && (
                         <MenuItem>
                           <Link
                             w='full'
                             _hover={{
                               textDecoration: 'none',
                             }}
-                            href={link.url}
+                            href='/patient/profile'
                           >
-                            {' '}
-                            {link.name}
+                            {Language === 'English'
+                              ? 'Profile'
+                              : 'ข้อมูลส่วนตัว'}
                           </Link>
                         </MenuItem>
-                      ))}
+                      )}
+                      {isPTPage && (
+                        <MenuItem>
+                          <Link
+                            w='full'
+                            _hover={{
+                              textDecoration: 'none',
+                            }}
+                            href='/physiotherapist/profile'
+                          >
+                            {Language === 'English'
+                              ? 'Profile'
+                              : 'ข้อมูลส่วนตัว'}
+                          </Link>
+                        </MenuItem>
+                      )}
+                      <MenuItem
+                        onClick={
+                          Language === 'English'
+                            ? () => dispatch(setThai())
+                            : () => dispatch(setEnglish())
+                        }
+                      >
+                        ENG -- THAI
+                      </MenuItem>
 
-                      <MenuItem>
-                        <Link
-                          w='full'
-                          _hover={{
-                            textDecoration: 'none',
-                          }}
-                          href='/patient/profile'
-                        >
-                          Profile
-                        </Link>
+                      <MenuItem onClick={signout}>
+                        {' '}
+                        {Language === 'English' ? 'Sign Out' : 'ลงชื่อออก'}
                       </MenuItem>
-                      <MenuItem onClick={() => dispatch(setThai())}>
-                        THAI
-                      </MenuItem>
-                      <MenuItem onClick={() => dispatch(setEnglish())}>
-                        ENG
-                      </MenuItem>
-                      <MenuItem onClick={signout}>Sign Out</MenuItem>
                     </MenuList>
                   </Menu>
                 )}
@@ -151,33 +173,37 @@ const Navbar = ({ Links, HomePageLink, User, UserLinks, SignoutLink }) => {
                 spacing={5}
                 display={{ base: 'none', md: 'flex' }}
               >
-                <Link
-                  px={4}
-                  py={2}
-                  borderRadius='md'
-                  href={'/patient/login'}
-                  bg='teal.400'
-                  _hover={{
-                    textDecoration: 'none',
-                    bg: 'teal.300',
-                  }}
-                >
-                  <Text fontWeight='medium'>Login</Text>
-                </Link>
+                {!isPTPage && (
+                  <Link
+                    px={4}
+                    py={2}
+                    borderRadius='md'
+                    href={'/patient/login'}
+                    bg='teal.400'
+                    _hover={{
+                      textDecoration: 'none',
+                      bg: 'teal.300',
+                    }}
+                  >
+                    <Text fontWeight='medium'>Login</Text>
+                  </Link>
+                )}
 
-                <Link
-                  px={4}
-                  py={2}
-                  borderRadius='md'
-                  href={'/patient/register'}
-                  bg='teal.300'
-                  _hover={{
-                    textDecoration: 'none',
-                    bg: 'teal.100',
-                  }}
-                >
-                  <Text fontWeight='medium'>Sign Up</Text>
-                </Link>
+                {!isPTPage && (
+                  <Link
+                    px={4}
+                    py={2}
+                    borderRadius='md'
+                    href={'/patient/register'}
+                    bg='teal.300'
+                    _hover={{
+                      textDecoration: 'none',
+                      bg: 'teal.100',
+                    }}
+                  >
+                    <Text fontWeight='medium'>Sign Up</Text>
+                  </Link>
+                )}
               </HStack>
             )}
           </Flex>
@@ -199,14 +225,14 @@ const Navbar = ({ Links, HomePageLink, User, UserLinks, SignoutLink }) => {
   );
 };
 
-const NavLink = ({ link, children }) => (
+const NavLink = ({ link, children, isPTPage }) => (
   <Link
     px={2}
     py={1}
     rounded={'md'}
     _hover={{
       textDecoration: 'none',
-      bg: useColorModeValue('teal.300', 'teal.700'),
+      bg: !isPTPage ? 'teal.300' : 'blue.300',
     }}
     href={link}
   >

@@ -11,6 +11,8 @@ import { useStopwatch } from 'react-timer-hook';
 import debounce from 'lodash/debounce';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useCookie } from 'react-use';
+import { addExerciseStatus } from '../../slice/exerciseSet/exerciseStatusSlice';
 
 import {
   Flex,
@@ -26,9 +28,6 @@ import {
 import { FaPlay } from 'react-icons/fa';
 import { useDispatch } from 'react-redux';
 import { incrementExercise } from '../../slice/exerciseSet/exerciseSetSlice';
-import { addExerciseStatus } from '../../slice/exerciseSet/exerciseStatusSlice';
-import { useCookie } from 'react-use';
-import useCheckUser from '../../Hook/useCheckUser';
 
 let skeletonColor = 'rgb(255,255,255)';
 let interval;
@@ -37,11 +36,9 @@ let secondsRemaining = 5;
 
 function Exercise({ ExerciseSet, Language, ExerciseCount }) {
   const navigate = useNavigate();
-  useCheckUser('patient', '/patient/login');
-
-  const exerciseStatus = useSelector((state) => state.exerciseStatus.data);
 
   const dispatch = useDispatch();
+  const exerciseStatus = useSelector((state) => state.exerciseStatus.data);
 
   const user = useSelector((state) => state.user.data);
 
