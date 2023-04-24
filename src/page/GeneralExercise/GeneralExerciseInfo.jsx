@@ -21,31 +21,23 @@ import { MdOutlineNavigateNext } from 'react-icons/md';
 import { useParams } from 'react-router-dom';
 import useGet from '../../Hook/useGet';
 import Loading from '../../component/Loading/Loading';
-import { useSelector, useDispatch } from 'react-redux';
-import useCheckUser from '../../Hook/useCheckUser';
-import { useCookie } from 'react-use';
-import { removeExerciseStatus } from '../../slice/exerciseSet/exerciseStatusSlice';
+import { useSelector } from 'react-redux';
 
 const GeneralExerciseInfo = () => {
   const { id } = useParams();
   const language = useSelector((state) => state.language.value);
   const [exerciseData, setExerciseData] = useState(null);
   const [loadingEx, setLoadingEx] = useState(true);
-  const [token, updateToken, deleteToken] = useCookie('token');
+  const token = sessionStorage.getItem('token');
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  dispatch(removeExerciseStatus());
-
-  useCheckUser('patient', '/patient/login');
   const { data, error, loading } = useGet(
-    'https://physiopal-api-deploy-production.up.railway.app/generalExercises'
+    'https://physiopal-api-production.up.railway.app/generalExercises'
   );
 
   useEffect(() => {
     if (data != null) {
       fetch(
-        `https://physiopal-api-deploy-production.up.railway.app/generalExercise/join/${
+        `https://physiopal-api-production.up.railway.app/generalExercise/join/${
           data.data[id - 1]._id
         }`,
         {
@@ -147,10 +139,10 @@ const GeneralExerciseInfo = () => {
                               : item.exercise.Details.Th_Description.Name}
                           </Heading>
                           <Text py='2'>
-                            {exerciseData != null && language === 'English'
-                              ? item.exercise.Details.En_Description.Description
-                              : item.exercise.Details.Th_Description
-                                  .Description}
+                            Lorem ipsum dolor sit amet, consectetur adipiscing
+                            elit. <br />
+                            Etiam eu turpis molestie, dictum est a, mattis
+                            tellus.
                           </Text>
                         </CardBody>
                       </Stack>

@@ -26,9 +26,6 @@ import {
 import { FaPlay } from 'react-icons/fa';
 import { useDispatch } from 'react-redux';
 import { incrementExercise } from '../../slice/exerciseSet/exerciseSetSlice';
-import { addExerciseStatus } from '../../slice/exerciseSet/exerciseStatusSlice';
-import { useCookie } from 'react-use';
-import useCheckUser from '../../Hook/useCheckUser';
 
 let skeletonColor = 'rgb(255,255,255)';
 let interval;
@@ -37,15 +34,12 @@ let secondsRemaining = 5;
 
 function Exercise({ ExerciseSet, Language, ExerciseCount }) {
   const navigate = useNavigate();
-  useCheckUser('patient', '/patient/login');
-
-  const exerciseStatus = useSelector((state) => state.exerciseStatus.data);
 
   const dispatch = useDispatch();
 
   const user = useSelector((state) => state.user.data);
 
-  const [token, updateToken, deleteToken] = useCookie('token');
+  const token = sessionStorage.getItem('token');
 
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
@@ -407,21 +401,9 @@ function Exercise({ ExerciseSet, Language, ExerciseCount }) {
         // setCurrentExercise(ExerciseSet.ExerciseSet[exerciseIndex + 1]);
         // setExerciseIndex(exerciseIndex + 1);
         // nextExerciseAudio.play();
-        dispatch(
-          addExerciseStatus({
-            exerciseId: currentExercise.exercise._id,
-            status: 'done',
-          })
-        );
         dispatch(incrementExercise());
         window.location.reload();
       } else {
-        dispatch(
-          addExerciseStatus({
-            exerciseId: currentExercise.exercise._id,
-            status: 'done',
-          })
-        );
         setIsFinish(true);
       }
     }
@@ -456,21 +438,9 @@ function Exercise({ ExerciseSet, Language, ExerciseCount }) {
       // setCurrentExercise(ExerciseSet.ExerciseSet[exerciseIndex + 1]);
       // setExerciseIndex(exerciseIndex + 1);
       // nextExerciseAudio.play();
-      dispatch(
-        addExerciseStatus({
-          exerciseId: currentExercise.exercise._id,
-          status: 'skipped',
-        })
-      );
       dispatch(incrementExercise());
       window.location.reload();
     } else {
-      dispatch(
-        addExerciseStatus({
-          exerciseId: currentExercise.exercise._id,
-          status: 'skipped',
-        })
-      );
       setIsFinish(true);
     }
 
@@ -637,7 +607,7 @@ function Exercise({ ExerciseSet, Language, ExerciseCount }) {
 
   useEffect(() => {
     if (isFinish) {
-      addExerciseHistory(user.data._id, token, ExerciseSet._id, exerciseStatus);
+      addExerciseHistory(user.data._id, token, ExerciseSet._id);
     }
   }, [isFinish]);
 
@@ -958,16 +928,15 @@ function Exercise({ ExerciseSet, Language, ExerciseCount }) {
 
 export default Exercise;
 
-const addExerciseHistory = (id, token, exerciseId, exerciseStatus) => {
+const addExerciseHistory = (id, token, exerciseId) => {
   fetch(
-    `https://physiopal-api-deploy-production.up.railway.app/patient/exerciseHistory/${id}`,
+    `https://physiopal-api-production.up.railway.app/patient/exerciseHistory/${id}`,
     {
       method: 'POST',
       body: JSON.stringify({
         exercisetype: 'General',
         exerciseSetId: exerciseId,
         IsComplete: true,
-        exerciseStatus: exerciseStatus,
       }),
       headers: {
         'Content-Type': 'application/json',

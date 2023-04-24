@@ -30,54 +30,9 @@ import { MdArrowDropDown } from 'react-icons/md';
 import PatientProfileMenu from '../../../component/PatientProfile/PatientProfileMenu';
 import Loading from '../../../component/Loading/Loading';
 import { useSelector } from 'react-redux';
-import { useCookie } from 'react-use';
-import useCheckUser from '../../../Hook/useCheckUser';
-import { uploadFile } from 'react-s3';
-import AWS from 'aws-sdk';
-
-const S3_BUCKET = process.env.REACT_APP_S3_BUCKET;
-const REGION = process.env.REACT_APP_REGION;
-const ACCESS_KEY = process.env.REACT_APP_ACCESS_KEY;
-const SECRET_ACCESS_KEY = process.env.REACT_APP_SECRET_ACCESS_KEY;
-
-console.log(S3_BUCKET, REGION, ACCESS_KEY, SECRET_ACCESS_KEY);
-
-AWS.config.update({
-  accessKeyId: ACCESS_KEY,
-  secretAccessKey: SECRET_ACCESS_KEY,
-});
-
-const myBucket = new AWS.S3({
-  params: { Bucket: S3_BUCKET },
-  region: REGION,
-});
 
 const PatientProfileInfo = () => {
-  useCheckUser('patient', '/patient/login');
-
-  const [progress, setProgress] = useState(0);
-
-  const uploadFile = (file) => {
-    const params = {
-      ACL: 'public-read',
-      Body: file,
-      Bucket: S3_BUCKET,
-      Key: file.name,
-    };
-
-    myBucket
-      .putObject(params)
-      .on('httpUploadProgress', (evt) => {
-        setProgress(Math.round((evt.loaded / evt.total) * 100));
-      })
-      .send((err) => {
-        if (err) console.log(err);
-      });
-
-    editPatientPhoto(`http://d13jd1pynk5gjd.cloudfront.net/${file.name}`);
-  };
-
-  const [token, updateToken, deleteToken] = useCookie('token');
+  const token = sessionStorage.getItem('token');
 
   const language = useSelector((state) => state.language.value);
 
@@ -99,16 +54,13 @@ const PatientProfileInfo = () => {
   const [address, setAddress] = useState('');
 
   useEffect(() => {
-    fetch(
-      'https://physiopal-api-deploy-production.up.railway.app/user/GetUserByJWT',
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `${token}`,
-        },
-      }
-    )
+    fetch('https://physiopal-api-production.up.railway.app/user/GetUserByJWT', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `${token}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         setUser(data);
@@ -126,18 +78,13 @@ const PatientProfileInfo = () => {
     const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/jpg'];
     const selected = event.target.files[0];
 
-    uploadFile(selected);
-
     if (selected && ALLOWED_TYPES.includes(selected.type)) {
       let reader = new FileReader();
       reader.onloadend = () => setUserProfile(reader.result);
       return reader.readAsDataURL(selected);
     }
-
     onOpen();
   };
-
-  console.log(user);
 
   const editPatient = () => {
     let tempUser = user.data;
@@ -145,6 +92,7 @@ const PatientProfileInfo = () => {
     if (name !== '') {
       tempUser.Name = name;
     }
+
     if (email !== '') {
       tempUser.Email = email;
     }
@@ -165,6 +113,7 @@ const PatientProfileInfo = () => {
       email: tempUser.Email,
       exerciseHistory: tempUser.ExerciseHistory,
       name: tempUser.Name,
+      password: tempUser.Password,
       phone: tempUser.Phone,
       photo: tempUser.Photo,
       gender: tempUser.Gender,
@@ -175,44 +124,7 @@ const PatientProfileInfo = () => {
     }
 
     fetch(
-      `https://physiopal-api-deploy-production.up.railway.app/patient/${tempUser._id}`,
-      {
-        method: 'PUT',
-        body: JSON.stringify(tempData),
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `${token}`,
-        },
-      }
-    )
-      .then(() => {
-        setLoadEdit(false);
-        setReadOnly(true);
-      })
-      .catch((error) => {
-        setLoadEdit(false);
-        console.error('Error fetching data:', error);
-      });
-  };
-
-  const editPatientPhoto = (photo) => {
-    let tempUser = user.data;
-
-    setLoadEdit(true);
-
-    let tempData = {
-      address: tempUser.Address,
-      congenitalDisease: tempUser.CongenitalDisease,
-      email: tempUser.Email,
-      exerciseHistory: tempUser.ExerciseHistory,
-      name: tempUser.Name,
-      phone: tempUser.Phone,
-      photo: photo,
-      gender: tempUser.Gender,
-    };
-
-    fetch(
-      `https://physiopal-api-deploy-production.up.railway.app/patient/${tempUser._id}`,
+      `https://physiopal-api-production.up.railway.app/patient/${tempUser._id}`,
       {
         method: 'PUT',
         body: JSON.stringify(tempData),
@@ -252,13 +164,7 @@ const PatientProfileInfo = () => {
                 size='2xl'
                 cursor='pointer'
                 onClick={openChooseImage}
-                src={
-                  userProfile
-                    ? userProfile
-                    : user.data.Photo
-                    ? user.data.Photo
-                    : '/img/tim-cook.jpg'
-                }
+                src={userProfile ? userProfile : '/img/tim-cook.jpg'}
                 mb={6}
               >
                 {/* ปุ่มกดเพื่อเปลี่ยนรูป */}
@@ -460,7 +366,7 @@ const PatientProfileInfo = () => {
                   size='lg'
                   onClick={() => setReadOnly(true)}
                 >
-                  {language === 'English' ? 'Cancel' : 'ยกเลิก'}
+                  {language === 'English' ? 'Cancel' : 'ยาเลิก'}
                 </Button>
                 <Button
                   colorScheme='teal'
@@ -469,13 +375,8 @@ const PatientProfileInfo = () => {
                   size='lg'
                   onClick={editPatient}
                 >
-                  {loadEdit ? (
-                    <Spinner />
-                  ) : language === 'English' ? (
-                    'Save'
-                  ) : (
-                    'บันทึก'
-                  )}
+                  {loadEdit && <Spinner />}
+                  {!loadEdit && language === 'English' ? 'Save' : 'บันทึก'}
                 </Button>
               </Flex>
             )}

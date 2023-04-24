@@ -18,31 +18,20 @@ const NavigationBar = () => {
       url: '/',
     },
     {
-      name:
-        language === 'English' ? 'General Exercise' : 'การออกกำลังกายทั่วไป',
+      name: 'General Exercise',
       url: '/patient/generalExercise',
     },
     {
-      name: language === 'English' ? 'Telemedicine' : 'การแพทย์ทางไกล',
+      name: 'Telemedicine',
       url: '/patient/telemedicine',
     },
     {
-      name: language === 'English' ? 'My Exercise' : 'การออกกำลังกายของฉัน',
-      url: '/patient/profile/exercise',
-    },
-  ];
-
-  const PTLinks = [
-    {
-      name: language === 'English' ? 'Home' : 'หน้าหลัก',
-      url: '/physiotherapist/dashboard',
+      name: 'My Exercise',
+      url: '/#',
     },
     {
-      name: language === 'English' ? 'Telemedicine' : 'การแพทย์ทางไกล',
-      url:
-        userData !== null
-          ? `/physiotherapist/watting-room/${userData.data._id}`
-          : '',
+      name: 'About us',
+      url: '/#',
     },
   ];
 
@@ -66,16 +55,16 @@ const NavigationBar = () => {
   // }
   if (user != null) {
     if (user.role === 'patient') {
-      return <Navbar Links={Links} User={user} Language={language} />;
-    } else if (user.role === 'physiotherapist') {
       return (
         <Navbar
-          Links={PTLinks}
+          Links={Links}
           User={user}
-          Language={language}
-          HomePageLink='/physiotherapist/dashboard'
+          UserLinks={Links}
+          SignoutLink={'/patient/login'}
         />
       );
+    } else if (user.role === 'physiotherapist') {
+      return <Navbar Links={[]} />;
     }
   } else {
     return <Navbar Links={[]} />;

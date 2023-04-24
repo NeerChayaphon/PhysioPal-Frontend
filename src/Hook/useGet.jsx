@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useCookie } from 'react-use';
 
 // Hook for getting data from an API
 /* Instruction on how to use this hook:
@@ -10,7 +9,7 @@ const useGet = (url) => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const [token, updateToken, deleteToken] = useCookie('token');
+  const token = sessionStorage.getItem('token');
 
   useEffect(() => {
     const fetchData = async () => {

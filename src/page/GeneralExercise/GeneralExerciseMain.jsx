@@ -6,33 +6,27 @@ import Loading from '../../component/Loading/Loading';
 import { useDispatch } from 'react-redux';
 import { addExerciseSet } from '../../slice/exerciseSet/exerciseSetSlice';
 import { useNavigate } from 'react-router-dom';
-import { useCookie } from 'react-use';
-import useCheckUser from '../../Hook/useCheckUser';
 
 const GeneralExerciseMain = () => {
-  useCheckUser('patient', '/patient/login');
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [id, setId] = useState(null);
 
-  const [token, updateToken, deleteToken] = useCookie('token');
+  const token = sessionStorage.getItem('token');
   const params = useParams();
   const language = useSelector((state) => state.language.value);
   const exerciseSet = useSelector((state) => state.exerciseSet.data);
 
   useEffect(() => {
-    fetch(
-      'https://physiopal-api-deploy-production.up.railway.app/generalExercises',
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `${token}`,
-        },
-      }
-    )
+    fetch('https://physiopal-api-production.up.railway.app/generalExercises', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `${token}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         console.log(params.id);
@@ -52,7 +46,7 @@ const GeneralExerciseMain = () => {
     if (id !== null) {
       console.log(id);
       fetch(
-        `https://physiopal-api-deploy-production.up.railway.app/generalExercise/join/${id}`,
+        `https://physiopal-api-production.up.railway.app/generalExercise/join/${id}`,
         {
           method: 'GET',
           headers: {

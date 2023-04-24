@@ -15,13 +15,12 @@ import {
   ModalCloseButton,
   useDisclosure,
 } from '@chakra-ui/react';
-import { useCookie } from 'react-use';
 
 const Physiotherapist = () => {
   const { id } = useParams();
   const [socket, setSocket] = useState(null); // socket
   const [call, setCall] = useState(null);
-  const [token, updateToken, deleteToken] = useCookie('token');
+  const token = sessionStorage.getItem('token');
 
   const navigate = useNavigate();
 
@@ -51,53 +50,19 @@ const Physiotherapist = () => {
   // answer call
   const answerCall = () => {
     callAudio.pause();
-    var delayInMilliseconds = 3000; //2 second
+    var delayInMilliseconds = 1000; //2 second
     socket.emit('answerCall', call.from, true);
     addTelemedicineHistory(token, id, call.patient._id, id);
-
-    fetch(
-      `https://physiopal-api-deploy-production.up.railway.app/appointment`,
-      {
-        method: 'POST',
-        body: JSON.stringify({
-          patient: call.patient._id,
-          physiotherapist: id,
-          date: new Date(),
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `${token}`,
-        },
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        navigate(`/call/${id}`, {
-          state: {
-            type: 'physiotherapist',
-            user: call.patient._id,
-            appointment: data.data.InsertedID,
-          },
-        });
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
+    setTimeout(function () {
+      // history.push({
+      //   pathname: `/call/${call.url}`,
+      //   state: {type: 'doctor', user: call.patient},
+      // });
+      navigate(`/call/${id}`, {
+        state: { type: 'physiotherapist', user: call.patient._id },
       });
-
-    // setTimeout(function () {
-    //   // history.push({
-    //   //   pathname: `/call/${call.url}`,
-    //   //   state: {type: 'doctor', user: call.patient},
-    //   // });
-    // navigate(`/call/${id}`, {
-    //   state: {
-    //     type: 'physiotherapist',
-    //     user: call.patient._id,
-    //     appointment: appointment,
-    //   },
-    // });
-    //   console.log('answer call');
-    // }, delayInMilliseconds);
+      console.log('answer call');
+    }, delayInMilliseconds);
   };
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -133,7 +98,7 @@ const connectUser = (socket, userid) => {
 export default Physiotherapist;
 
 const addTelemedicineHistory = (token, roomID, patient, physiotherapist) => {
-  fetch(`https://physiopal-api-deploy-production.up.railway.app/telemedicine`, {
+  fetch(`https://physiopal-api-production.up.railway.app/telemedicine`, {
     method: 'POST',
     body: JSON.stringify({
       roomID,
@@ -148,26 +113,4 @@ const addTelemedicineHistory = (token, roomID, patient, physiotherapist) => {
   }).catch((error) => {
     console.error('Error fetching data:', error);
   });
-};
-
-const addAppointment = (token, patient, physiotherapist) => {
-  fetch(`https://physiopal-api-deploy-production.up.railway.app/appointment`, {
-    method: 'POST',
-    body: JSON.stringify({
-      patient,
-      physiotherapist,
-      date: new Date(),
-    }),
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `${token}`,
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      return data;
-    })
-    .catch((error) => {
-      return null;
-    });
 };

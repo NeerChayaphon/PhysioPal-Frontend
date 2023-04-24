@@ -6,7 +6,7 @@ import Loading from '../../component/Loading/Loading';
 
 const GeneralExerciseTypePage = () => {
   const { data, error, loading } = useGet(
-    'https://physiopal-api-deploy-production.up.railway.app/musculoskeltalTypes'
+    'https://physiopal-api-production.up.railway.app/musculoskeltalTypes'
   );
 
   if (loading) {

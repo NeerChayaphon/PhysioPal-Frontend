@@ -35,9 +35,6 @@ import PTTherapeuticalExerciseShopping from './page/PT/PTDashboard/PTTherapeutic
 import PTNote from './page/PT/PTNote/PTNote';
 import GeneralExerciseMain from './page/GeneralExercise/GeneralExerciseMain';
 import GeneralExerciseSetMain from './page/GeneralExercise/GeneralExerciseSetMain';
-import TherapeuticExerciseInfo from './page/GeneralExercise copy/TherapeuticExerciseInfo';
-import TherapeuticExerciseMain from './page/GeneralExercise copy/TherapeuticExerciseMain';
-import TherapeuticExerciseSetMain from './page/GeneralExercise copy/TherapeuticExerciseSetMain';
 
 const router = createBrowserRouter([
   {
@@ -57,7 +54,7 @@ const router = createBrowserRouter([
     element: <PatientRegisterPage />,
   },
   {
-    path: 'physiotherapist/watting-room/:id',
+    path: 'patient/physiotherapist/:id',
     element: <Physiotherapist />,
   },
   {
@@ -116,18 +113,6 @@ const router = createBrowserRouter([
     path: 'patient/myExercise',
     element: <MyExercise />,
   },
-  {
-    path: 'patient/therapeuticExercise/info/:id',
-    element: <TherapeuticExerciseInfo />,
-  },
-  {
-    path: 'patient/therapeuticExercise/set/:id',
-    element: <TherapeuticExerciseMain />,
-  },
-  {
-    path: 'patient/therapeuticExercise/session',
-    element: <TherapeuticExerciseSetMain />,
-  },
   // End for Patient
 
   //Start for Doctor
@@ -144,31 +129,31 @@ const router = createBrowserRouter([
     element: <PTDashboard />,
   },
   {
-    path: 'physiotherapist/patientprofile/:id',
+    path: 'physiotherapist/patientprofile',
     element: <PTViewPatientProfile />,
   },
   {
-    path: 'physiotherapist/patientappointment/:id',
+    path: 'physiotherapist/patientappointment',
     element: <PTPatientAppointment />,
   },
   {
-    path: 'physiotherapist/patientappointment/details/:id',
+    path: 'physiotherapist/patientappointment/:id',
     element: <PTPatientAppointmentDetail />,
   },
   {
-    path: 'physiotherapist/patientexercise/:id',
+    path: 'physiotherapist/patientexercise',
     element: <PTPatientExerciseRecord />,
   },
   {
-    path: 'physiotherapist/patientexercise/details/:id',
+    path: 'physiotherapist/patientexercise/:id',
     element: <PTPatientVideoRecord />,
   },
   {
-    path: 'physiotherapist/appointment/:id',
+    path: 'physiotherapist/dashboard/:id',
     element: <PTAppointmentDetail />,
   },
   {
-    path: 'physiotherapist/appointment/therapeutical/:id',
+    path: 'physiotherapist/dashboard/:id/therapeutical',
     element: <PTTherapeuticalExercise />,
   },
   {

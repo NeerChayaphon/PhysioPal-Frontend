@@ -20,7 +20,6 @@ import GetUserInfo from '../../utils/Auth/GetUserInfo';
 import { MdEmail } from 'react-icons/md';
 import { RiLockPasswordFill } from 'react-icons/ri';
 import SingInPicture from '../../icons/Exercise/SingInPicture.png';
-import { useCookie } from 'react-use';
 
 const PatientLogin = () => {
   const [email, setEmail] = React.useState('');
@@ -32,8 +31,6 @@ const PatientLogin = () => {
   const dispatch = useDispatch();
   const language = useSelector((state) => state.language.value);
 
-  const [token, updateToken, deleteToken] = useCookie('token');
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -43,7 +40,7 @@ const PatientLogin = () => {
     } else {
       try {
         const response = await fetch(
-          'https://physiopal-api-deploy-production.up.railway.app/patient/login',
+          'https://physiopal-api-production.up.railway.app/patient/login',
           {
             method: 'POST',
             body: JSON.stringify({ email, password }),
@@ -54,7 +51,7 @@ const PatientLogin = () => {
         );
         const data = await response.json();
         if (response.ok) {
-          updateToken(data.token);
+          sessionStorage.setItem('token', data.token);
 
           const userData = await GetUserInfo(data.token);
           if (userData) {
