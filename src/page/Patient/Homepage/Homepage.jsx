@@ -16,10 +16,12 @@ import TelemedicineHome from '../../../icons/Homepage/TelemedicineHome.png';
 import GeneralExerciseHome from '../../../icons/Homepage/GeneralExerciseHome.png';
 import { useSelector } from 'react-redux';
 import useCheckUser from '../../../Hook/useCheckUser';
+import { useNavigate } from 'react-router-dom';
 
 const Homepage = () => {
-  useCheckUser('patient', '/patient/login');
+  // useCheckUser('patient', '/patient/login');
   const user = useSelector((state) => state.user.data);
+  const navigate = useNavigate();
   return (
     <Grid w='100%' h='max'>
       <Grid w='100%' h='max' templateColumns='5fr 7fr' bgColor='teal.100'>
@@ -34,44 +36,111 @@ const Homepage = () => {
             Web application for Online Musculoskeletal Physiotherapy using
             Computer Vision and Deep Learning
           </Text>
-          <Button
-            // onClick={() => navigate('/patient/register')}
-            bgColor='teal.400'
-            textColor='white'
-            variant='solid'
-            type='submit'
-            mb={5}
-            size='lg'
-            boxShadow='lg'
-            _hover={{
-              textDecoration: 'none',
-              bg: 'teal.600',
-            }}
-          >
-            Sign In
-            {/* {' '}
-                    {language === 'English' ? 'SIGN UP' : 'ลงทะเบียน'} */}
-          </Button>
-          <Flex flexDir='row' gap={6}>
-            <Text mt={2} fontWeight='semibold'>
-              Don't you have an acoount
-            </Text>
+          {!user && (
             <Button
-              // onClick={() => navigate('/patient/register')}
-              colorScheme='teal.800'
-              variant='ghost'
+              onClick={() => navigate('/patient/login')}
+              bgColor='teal.400'
+              textColor='white'
+              variant='solid'
               type='submit'
-              size='md'
+              mb={5}
+              size='lg'
+              boxShadow='lg'
               _hover={{
                 textDecoration: 'none',
-                bg: 'gray.100',
+                bg: 'teal.600',
               }}
             >
-              Sign Up Now
+              Login
               {/* {' '}
-                        {language === 'English' ? 'SIGN UP' : 'ลงทะเบียน'} */}
+                    {language === 'English' ? 'SIGN UP' : 'ลงทะเบียน'} */}
             </Button>
-          </Flex>
+          )}
+          {!user && (
+            <Flex flexDir='row' gap={6}>
+              <Text mt={2} fontWeight='semibold'>
+                Don't you have an acoount
+              </Text>
+              <Button
+                onClick={() => navigate('/patient/register')}
+                colorScheme='teal.800'
+                variant='ghost'
+                type='submit'
+                size='md'
+                _hover={{
+                  textDecoration: 'none',
+                  bg: 'gray.100',
+                }}
+              >
+                Sign Up Now
+                {/* {' '}
+                        {language === 'English' ? 'SIGN UP' : 'ลงทะเบียน'} */}
+              </Button>
+            </Flex>
+          )}
+          {user && (
+            <Button
+              onClick={() => navigate('/patient/generalExercise')}
+              bgColor='teal.400'
+              textColor='white'
+              variant='solid'
+              type='submit'
+              mb={5}
+              size='md'
+              boxShadow='lg'
+              mr={2}
+              _hover={{
+                textDecoration: 'none',
+                bg: 'teal.600',
+              }}
+            >
+              General Exercise
+              {/* {' '}
+                    {language === 'English' ? 'SIGN UP' : 'ลงทะเบียน'} */}
+            </Button>
+          )}
+          {user && (
+            <Button
+              onClick={() => navigate('/patient/telemedicine')}
+              bgColor='teal.400'
+              textColor='white'
+              variant='solid'
+              type='submit'
+              mb={5}
+              size='md'
+              boxShadow='lg'
+              mr={2}
+              _hover={{
+                textDecoration: 'none',
+                bg: 'teal.600',
+              }}
+            >
+              Telemedicine
+              {/* {' '}
+                    {language === 'English' ? 'SIGN UP' : 'ลงทะเบียน'} */}
+            </Button>
+          )}
+          {user && (
+            <Button
+              onClick={() => navigate('/patient/profile/exercise')}
+              bgColor='teal.400'
+              textColor='white'
+              variant='solid'
+              type='submit'
+              mb={5}
+              size='md'
+              boxShadow='lg'
+              mr={2}
+              _hover={{
+                textDecoration: 'none',
+                bg: 'teal.600',
+              }}
+            >
+              My Exercise
+              {/* {' '}
+                    {language === 'English' ? 'SIGN UP' : 'ลงทะเบียน'} */}
+            </Button>
+          )}
         </GridItem>
         <GridItem px={8} py={5} mt={5}>
           <Image src={PhysiopalHome} />
@@ -80,7 +149,7 @@ const Homepage = () => {
       <Grid w='100%' h='max' templateColumns='5fr 7fr' bgColor='white'>
         <GridItem px={10} py={14}>
           <Heading size='lg' mb={10}>
-            Why Choose Us _______
+            Why Choose PhysioPal
           </Heading>
           <Text mb={10}>
             This web application will make it easier than ever for patients to
@@ -158,8 +227,8 @@ const Homepage = () => {
               an important role in our lives. Repeated use of the same muscles
               long time may lead to disorders of the musculoskeletal system.
             </Text>
-            <Button
-              // onClick={() => navigate('/patient/register')}
+            {/* <Button
+
               bgColor='teal.400'
               textColor='white'
               variant='solid'
@@ -172,9 +241,8 @@ const Homepage = () => {
               }}
             >
               Read more
-              {/* {' '}
-                        {language === 'English' ? 'SIGN UP' : 'ลงทะเบียน'} */}
-            </Button>
+             
+            </Button> */}
           </GridItem>
         </Grid>
         <Grid w='100%' h='max' templateColumns='6fr 6fr' mb={10}>
@@ -190,8 +258,7 @@ const Homepage = () => {
               an important role in our lives. Repeated use of the same muscles
               long time may lead to disorders of the musculoskeletal system.
             </Text>
-            <Button
-              // onClick={() => navigate('/patient/register')}
+            {/* <Button
               bgColor='teal.400'
               textColor='white'
               variant='solid'
@@ -204,9 +271,7 @@ const Homepage = () => {
               }}
             >
               Read more
-              {/* {' '}
-                        {language === 'English' ? 'SIGN UP' : 'ลงทะเบียน'} */}
-            </Button>
+            </Button> */}
           </GridItem>
           <GridItem ml={12} py={10}>
             <Image src={TelemedicineHome} />
@@ -228,8 +293,7 @@ const Homepage = () => {
               an important role in our lives. Repeated use of the same muscles
               long time may lead to disorders of the musculoskeletal system.
             </Text>
-            <Button
-              // onClick={() => navigate('/patient/register')}
+            {/* <Button
               bgColor='teal.400'
               textColor='white'
               variant='solid'
@@ -242,9 +306,7 @@ const Homepage = () => {
               }}
             >
               Read more
-              {/* {' '}
-                        {language === 'English' ? 'SIGN UP' : 'ลงทะเบียน'} */}
-            </Button>
+            </Button> */}
           </GridItem>
         </Grid>
       </Grid>

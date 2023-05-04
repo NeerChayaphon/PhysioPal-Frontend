@@ -42,6 +42,7 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   Spinner,
+  Badge,
 } from '@chakra-ui/react';
 import PTDashboardMenu from '../../../component/PTDashboard/PTDashboardMenu';
 import Profile1 from '../../../icons/Exercise/Profile1.png';
@@ -82,6 +83,16 @@ const PTTherapeuticalExercise = () => {
   } = useGet(
     `https://physiopal-api-deploy-production.up.railway.app/exercises`
   );
+
+  const {
+    data: muscleType,
+    error: muscleTypeError,
+    loading: muscleTypeLoading,
+  } = useGet(
+    `https://physiopal-api-deploy-production.up.railway.app/musculoskeltalTypes`
+  );
+
+  console.log(muscleType);
 
   // console.log(exercises);
 
@@ -356,11 +367,25 @@ const PTTherapeuticalExercise = () => {
                                 ? item.Details.En_Description.Name
                                 : item.Details.Th_Description.Name}
                             </Heading>
+                            <Badge
+                              colorScheme={
+                                muscleType.data.find(
+                                  (obj) =>
+                                    obj._id === item.MusculoskeltalTypes[0]
+                                ).Color
+                              }
+                            >
+                              {
+                                muscleType.data.find(
+                                  (obj) =>
+                                    obj._id === item.MusculoskeltalTypes[0]
+                                ).Type.En_Description.Name
+                              }
+                            </Badge>
                             <Text py='2'>
-                              Lorem ipsum dolor sit amet, consectetur adipiscing
-                              elit. <br />
-                              Etiam eu turpis molestie, dictum est a, mattis
-                              tellus.
+                              {item != null && language === 'English'
+                                ? item.Details.En_Description.Description
+                                : item.Details.Th_Description.Description}
                             </Text>
                           </CardBody>
                         </Stack>

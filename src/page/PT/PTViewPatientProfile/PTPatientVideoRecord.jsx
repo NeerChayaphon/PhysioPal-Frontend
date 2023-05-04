@@ -14,6 +14,7 @@ import {
   Avatar,
   Card,
   CardBody,
+  Badge,
   Stack,
 } from '@chakra-ui/react';
 import Picture from '../../../icons/Exercise/Picture.png';
@@ -126,36 +127,42 @@ const PTPatientVideoRecord = () => {
                         item.exercise.Steps[item.exercise.Steps.length - 1]
                           .Image
                       }
+                      mx={2}
                     />
                     <Stack>
                       <CardBody boxSize='md'>
                         <Heading size='md'>
-                          {exerciseSetData != null && language === 'English'
+                          {exerciseData != null && language === 'English'
                             ? item.exercise.Details.En_Description.Name
                             : item.exercise.Details.Th_Description.Name}
                         </Heading>
+                        <Badge colorScheme='blue' mr={2}>
+                          {language === 'English'
+                            ? `Time: ${item.TimePeriod} Seconds`
+                            : `เวลา: ${item.TimePeriod} วินาที`}
+                        </Badge>
+                        <Badge colorScheme='green'>
+                          {' '}
+                          {language === 'English'
+                            ? `Reps: ${item.Reps} Seconds`
+                            : `จำนวนรอบ: ${item.Reps}`}
+                        </Badge>
                         <Text py='2'>
                           {exerciseData != null && language === 'English'
                             ? item.exercise.Details.En_Description.Description
                             : item.exercise.Details.Th_Description.Description}
                         </Text>
                         {location.state.status && (
-                          <Flex
-                            flexDir='row'
-                            alignItems='center'
-                            justifyContent='center'
-                            w='30%'
-                            borderRadius='md'
-                            bgColor={
+                          <Badge
+                            colorScheme={
                               location.state.status[index].Status === 'skipped'
-                                ? 'red.200'
-                                : 'blue.200'
+                                ? 'red'
+                                : 'blue'
                             }
+                            mr={2}
                           >
-                            <Text fontSize='sm' w='105px'>
-                              Status: {location.state.status[index].Status}
-                            </Text>
-                          </Flex>
+                            Status: {location.state.status[index].Status}
+                          </Badge>
                         )}
                       </CardBody>
                     </Stack>
