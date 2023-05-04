@@ -172,7 +172,7 @@ const PTPatientExerciseRecord = () => {
               </Thead>
               <Tbody>
                 {userState.data.ExerciseHistory ? (
-                  userState.data.ExerciseHistory.map((item, index) => {
+                  userState.data.ExerciseHistory.slice().reverse().map((item, index) => {
                     return (
                       <Tr>
                         <Td>{index + 1}.</Td>

@@ -218,7 +218,7 @@ const PatientExerciseRecord = () => {
                     </Thead>
                     <Tbody>
                       {userState.data.ExerciseHistory ? (
-                        userState.data.ExerciseHistory.map((item, index) => {
+                        userState.data.ExerciseHistory.slice().reverse().map((item, index) => {
                           return (
                             <Tr>
                               <Td>{index + 1}.</Td>
@@ -346,7 +346,7 @@ const PatientExerciseRecord = () => {
                     </Thead>
                     <Tbody>
                       {TE.data ? (
-                        TE.data.map((item, index) => {
+                        TE.data.slice().reverse().map((item, index) => {
                           return (
                             <Tr>
                               <Td>{index + 1}.</Td>

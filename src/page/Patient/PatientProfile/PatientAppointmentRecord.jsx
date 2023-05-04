@@ -105,7 +105,7 @@ const PatientAppointmentRecord = () => {
               </Thead>
               <Tbody>
                 {data.data != null &&
-                  data.data.map((item, index) => {
+                  data.data.slice().reverse().map((item, index) => {
                     return (
                       <Tr>
                         <Td>{index + 1}.</Td>
@@ -119,7 +119,7 @@ const PatientAppointmentRecord = () => {
                             ).Details.En_Description.Name
                           }
                         </Td>
-                        <Td>{item.Injury}</Td>
+                        <Td>{item.Injury !== "" ? item.Injury : "-"}</Td>
                         <Td>
                           <Button
                             colorScheme='teal'
