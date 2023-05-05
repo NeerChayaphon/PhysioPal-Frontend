@@ -17,7 +17,7 @@ import {
   Badge,
   Stack,
 } from '@chakra-ui/react';
-import Picture from '../../../icons/Exercise/Picture.png';
+import Picture from '../../../icons/Exercise/Picture2.png';
 import Exercise1 from '../../../icons/Exercise/Exercise1.png';
 import { useLocation } from 'react-router-dom';
 import Loading from '../../../component/Loading/Loading';
@@ -144,7 +144,7 @@ const PTPatientVideoRecord = () => {
                         <Badge colorScheme='green'>
                           {' '}
                           {language === 'English'
-                            ? `Reps: ${item.Reps} Seconds`
+                            ? `Reps: ${item.Reps}`
                             : `จำนวนรอบ: ${item.Reps}`}
                         </Badge>
                         <Text py='2'>

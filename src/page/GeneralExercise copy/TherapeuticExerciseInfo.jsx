@@ -15,7 +15,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
-import Picture from '../../icons/Exercise/Picture.png';
+import Picture from '../../icons/Exercise/Picture2.png';
 import Exercise1 from '../../icons/Exercise/Exercise1.png';
 import { MdOutlineNavigateNext } from 'react-icons/md';
 import { useParams } from 'react-router-dom';
