@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Image,
   Text,
@@ -10,10 +10,10 @@ import {
   MenuButton,
   useColorModeValue,
   VStack,
-} from "@chakra-ui/react";
-import { useSelector } from "react-redux";
+} from '@chakra-ui/react';
+import { useSelector } from 'react-redux';
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 const TelemedicineDoctorCard = ({ doctorId, allPhy }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -26,7 +26,7 @@ const TelemedicineDoctorCard = ({ doctorId, allPhy }) => {
 
   console.log(filteredArray);
   return (
-    <Grid px={10} py={10} templateColumns="repeat(5, 1fr)" gap={6}>
+    <Grid px={10} py={10} templateColumns='repeat(5, 1fr)' gap={6}>
       {/* <Flex>
                 <Card bgColor='teal.100'>
                     <CardBody>
@@ -78,28 +78,33 @@ const TelemedicineDoctorCard = ({ doctorId, allPhy }) => {
         {filteredArray.map((item, index) => {
           return (
             <MenuButton
-              variant="ghost"
+              variant='ghost'
               //  px={4}
-              borderRadius="lg"
-              bgColor="teal.100"
-              _hover={{ bg: "teal.300" }}
-              aria-label="Courses"
-              fontWeight="normal"
-              w="max"
-              boxShadow="md"
+              borderRadius='lg'
+              bgColor='teal.100'
+              _hover={{ bg: 'teal.300' }}
+              aria-label='Courses'
+              fontWeight='normal'
+              w='max'
+              boxShadow='md'
               //  onMouseEnter={onOpen}
               //  onMouseLeave={onClose}
               onClick={() => navigate(`/patient/telemedicine/${item._id}`)}
             >
               <VStack mb={4}>
-                <Image src={item.photo} borderTopRadius="lg" boxSize="240px" />
+                <Image src={item.photo} borderTopRadius='lg' boxSize='240px' />
                 <Stack>
-                  <Heading size="sm" align="center" mt={2}>
-                    {language === "English"
+                  <Heading size='sm' align='center' mt={2}>
+                    {language === 'English'
                       ? item.Details.En_Description.Name
                       : item.Details.Th_Description.Name}
                   </Heading>
-                  <Text align="center">Physioterapist, Arm</Text>
+                  <Text align='center'>
+                    {' '}
+                    {language === 'English'
+                      ? item.Details.En_Description.Specialization
+                      : item.Details.Th_Description.Specialization}
+                  </Text>
                 </Stack>
               </VStack>
             </MenuButton>

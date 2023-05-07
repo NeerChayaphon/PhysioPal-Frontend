@@ -13,6 +13,7 @@ import {
   Avatar,
   HStack,
   VStack,
+  Badge,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import Picture from '../../icons/Exercise/Picture2.png';
@@ -137,6 +138,17 @@ const TherapeuticExerciseInfo = () => {
                               ? item.exercise.Details.En_Description.Name
                               : item.exercise.Details.Th_Description.Name}
                           </Heading>
+                          <Badge colorScheme='blue' mr={2}>
+                            {language === 'English'
+                              ? `Time: ${item.TimePeriod} Seconds`
+                              : `เวลา: ${item.exercise.TimePeriod} วินาที`}
+                          </Badge>
+                          <Badge colorScheme='green'>
+                            {' '}
+                            {language === 'English'
+                              ? `Reps: ${item.Reps}`
+                              : `จำนวนรอบ: ${item.Reps}`}
+                          </Badge>
                           <Text py='2'>
                             {exerciseData != null && language === 'English'
                               ? item.exercise.Details.En_Description.Description
