@@ -218,65 +218,75 @@ const PatientExerciseRecord = () => {
                     </Thead>
                     <Tbody>
                       {userState.data.ExerciseHistory ? (
-                        userState.data.ExerciseHistory.map((item, index) => {
-                          return (
-                            <Tr>
-                              <Td>{index + 1}.</Td>
-                              <Td>
-                                {item.ExerciseType === 'General'
-                                  ? generalExercises.data.find(
-                                      (obj) => obj._id === item.ExerciseSetId
-                                    ).Details.En_Description.Name
-                                  : therapeuticExercise.data.find(
-                                      (obj) => obj._id === item.ExerciseSetId
-                                    ).Details.En_Description.Name}
-                              </Td>
+                        userState.data.ExerciseHistory.slice()
+                          .reverse()
+                          .map((item, index) => {
+                            return (
+                              <Tr>
+                                <Td>{index + 1}.</Td>
+                                <Td>
+                                  {item.ExerciseType === 'General'
+                                    ? generalExercises.data.find(
+                                        (obj) => obj._id === item.ExerciseSetId
+                                      ).Details.En_Description.Name
+                                    : therapeuticExercise.data.find(
+                                        (obj) => obj._id === item.ExerciseSetId
+                                      ).Details.En_Description.Name}
+                                </Td>
 
-                              <Td>
-                                {item.ExerciseType} <br />
-                                Exercise
-                              </Td>
-                              {/* <Td>
+                                <Td>
+                                  {item.ExerciseType} <br />
+                                  Exercise
+                                </Td>
+                                {/* <Td>
                             {item.Physiotherapist != null
                               ? item.Physiotherapist
                               : '-'}
                           </Td> */}
-                              <Td>
-                                {new Date(item.Date)
-                                  .toISOString()
-                                  .substr(0, 10)}
-                              </Td>
-                              <Td>
-                                {item.IsComplete ? 'Finished' : 'UnFinish'}
-                              </Td>
-                              <Td>
-                                <Button
-                                  colorScheme='teal'
-                                  variant='solid'
-                                  size='xs'
-                                  onClick={() =>
-                                    navigate(
-                                      `/patient/profile/exercise/${index + 1}`,
-                                      {
-                                        state: {
-                                          exerciseSet: item,
-                                          type: item.ExerciseType,
-                                          status: item.ExerciseStatus
-                                            ? item.ExerciseStatus
-                                            : null,
-                                        },
-                                      }
-                                    )
-                                  }
-                                >
-                                  {language === 'English'
-                                    ? 'View Detail'
-                                    : 'ดูเพิ่มเติม'}
-                                </Button>
-                              </Td>
-                            </Tr>
-                          );
-                        })
+                                <Td>
+                                  {new Date(item.Date)
+                                    .toISOString()
+                                    .substr(0, 10)}
+                                </Td>
+                                <Td>
+                                  {item.ExerciseStatus
+                                    ? item.ExerciseStatus.find(
+                                        (i) => i.Status === 'skipped'
+                                      )
+                                      ? 'Incomplete'
+                                      : 'Completed'
+                                    : 'UnFinish'}
+                                </Td>
+                                <Td>
+                                  <Button
+                                    colorScheme='teal'
+                                    variant='solid'
+                                    size='xs'
+                                    onClick={() =>
+                                      navigate(
+                                        `/patient/profile/exercise/${
+                                          index + 1
+                                        }`,
+                                        {
+                                          state: {
+                                            exerciseSet: item,
+                                            type: item.ExerciseType,
+                                            status: item.ExerciseStatus
+                                              ? item.ExerciseStatus
+                                              : null,
+                                          },
+                                        }
+                                      )
+                                    }
+                                  >
+                                    {language === 'English'
+                                      ? 'View Detail'
+                                      : 'ดูเพิ่มเติม'}
+                                  </Button>
+                                </Td>
+                              </Tr>
+                            );
+                          })
                       ) : (
                         <>No Data Found</>
                       )}
@@ -346,55 +356,58 @@ const PatientExerciseRecord = () => {
                     </Thead>
                     <Tbody>
                       {TE.data ? (
-                        TE.data.map((item, index) => {
-                          return (
-                            <Tr>
-                              <Td>{index + 1}.</Td>
-                              <Td>
-                                {
-                                  item.TherapeuticExercise.Details
-                                    .En_Description.Name
-                                }
-                              </Td>
-
-                              <Td>
-                                {new Date(item.TherapeuticExercise.StartDate)
-                                  .toISOString()
-                                  .substr(0, 10)}
-                              </Td>
-                              <Td>
-                                {new Date(item.TherapeuticExercise.EndDate)
-                                  .toISOString()
-                                  .substr(0, 10)}
-                              </Td>
-                              <Td>
-                                {
-                                  PT.data.find(
-                                    (obj) =>
-                                      obj._id ===
-                                      item.Appointment.Physiotherapist
-                                  ).Details.En_Description.Name
-                                }
-                              </Td>
-                              <Td>
-                                <Button
-                                  colorScheme='teal'
-                                  variant='solid'
-                                  size='xs'
-                                  onClick={() =>
-                                    navigate(
-                                      `/patient/therapeuticExercise/info/${item.TherapeuticExercise._id}`
-                                    )
+                        TE.data
+                          .slice()
+                          .reverse()
+                          .map((item, index) => {
+                            return (
+                              <Tr>
+                                <Td>{index + 1}.</Td>
+                                <Td>
+                                  {
+                                    item.TherapeuticExercise.Details
+                                      .En_Description.Name
                                   }
-                                >
-                                  {language === 'English'
-                                    ? 'View Detail'
-                                    : 'ดูเพิ่มเติม'}
-                                </Button>
-                              </Td>
-                            </Tr>
-                          );
-                        })
+                                </Td>
+
+                                <Td>
+                                  {new Date(item.TherapeuticExercise.StartDate)
+                                    .toISOString()
+                                    .substr(0, 10)}
+                                </Td>
+                                <Td>
+                                  {new Date(item.TherapeuticExercise.EndDate)
+                                    .toISOString()
+                                    .substr(0, 10)}
+                                </Td>
+                                <Td>
+                                  {
+                                    PT.data.find(
+                                      (obj) =>
+                                        obj._id ===
+                                        item.Appointment.Physiotherapist
+                                    ).Details.En_Description.Name
+                                  }
+                                </Td>
+                                <Td>
+                                  <Button
+                                    colorScheme='teal'
+                                    variant='solid'
+                                    size='xs'
+                                    onClick={() =>
+                                      navigate(
+                                        `/patient/therapeuticExercise/info/${item.TherapeuticExercise._id}`
+                                      )
+                                    }
+                                  >
+                                    {language === 'English'
+                                      ? 'View Detail'
+                                      : 'ดูเพิ่มเติม'}
+                                  </Button>
+                                </Td>
+                              </Tr>
+                            );
+                          })
                       ) : (
                         <>No Data Found</>
                       )}

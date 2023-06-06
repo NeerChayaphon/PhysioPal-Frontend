@@ -7,8 +7,14 @@ import io from 'socket.io-client';
 // import medicalIcon from '../../img/medical-report-white.png';
 // import useTokenCheck from '../../helper/tokenCheck';
 import { Link, useParams } from 'react-router-dom';
-import { Box, Flex, Button, Image } from '@chakra-ui/react';
+import { Box, Flex, Button, Image, IconButton } from '@chakra-ui/react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  BsFillCameraVideoFill,
+  BsFillCameraVideoOffFill,
+  BsFillTelephoneXFill,
+} from 'react-icons/bs';
+import { FaMicrophone, FaMicrophoneSlash } from 'react-icons/fa';
 
 const VideoChat = () => {
   const { id: userId } = useParams();
@@ -160,12 +166,14 @@ const VideoChat = () => {
           borderRight={{ base: 'none', lg: '1px solid gray.200' }}
           bg='#B5E3FE'
           p='4'
+          overflow={'Hidden'}
         >
           {UserVideo}
         </Box>
         <Box
           w='50%'
           h='lg'
+          npm
           shadow='lg'
           rounded='lg'
           borderRight={{ base: 'none', lg: '1px solid gray.200' }}
@@ -179,32 +187,26 @@ const VideoChat = () => {
       <Flex mx='2' p='4' gap='2' mt='8'>
         <Box w='75%'>
           <Flex justify='start' gap='2'>
-            <Button
+            <IconButton
+              colorScheme='teal'
+              aria-label='Call Segun'
+              size='lg'
+              icon={isMute ? <FaMicrophoneSlash /> : <FaMicrophone />}
               onClick={mute}
-              rounded='lg'
-              bg='purple.500'
-              _hover={{ bg: 'purple.700' }}
-            >
-              {isMute ? (
-                <i className='text-white fas fa-microphone-slash'></i>
-              ) : (
-                <i className='text-white  fa fa-microphone'></i>
-              )}
-              Mute/Unmute
-            </Button>
-            <Button
+            />
+            <IconButton
+              colorScheme='teal'
+              aria-label='Call Segun'
+              size='lg'
+              icon={
+                isVideoOff ? (
+                  <BsFillCameraVideoOffFill />
+                ) : (
+                  <BsFillCameraVideoFill />
+                )
+              }
               onClick={videoControl}
-              rounded='lg'
-              bg='purple.500'
-              _hover={{ bg: 'purple.700' }}
-            >
-              {isVideoOff ? (
-                <i className='text-white fas fa-video-slash'></i>
-              ) : (
-                <i className='text-white fas fa-video'></i>
-              )}
-              Turn on/off video
-            </Button>
+            />
             {location.state.type === 'physiotherapist' && (
               <Button
                 onClick={() =>
@@ -214,8 +216,10 @@ const VideoChat = () => {
                   )
                 }
                 rounded='lg'
+                py={6}
                 bg='purple.500'
                 _hover={{ bg: 'purple.700' }}
+                color='white'
               >
                 Appointment
               </Button>
@@ -244,22 +248,20 @@ const VideoChat = () => {
         </Box>
         <Box w='25%'>
           <Flex justify='end' gap='2'>
-            <Button
-              display='inline-flex'
-              h='12'
-              w='12'
-              bg='red.400'
-              _hover={{ bg: 'red.500' }}
-              fontWeight='bold'
-              rounded='lg'
-              // alignItems='center'
-              // justifyContent='center'
-              py='2'
-              px='2'
+            <a
+              href={
+                location.state.type === 'physiotherapist'
+                  ? '/physiotherapist/dashboard'
+                  : '/patient/profile/appointment'
+              }
             >
-              End call
-              {/* <Image src={endCallIcon} alt='' /> */}
-            </Button>
+              <IconButton
+                colorScheme='red'
+                aria-label='Call Segun'
+                size='lg'
+                icon={<BsFillTelephoneXFill />}
+              />
+            </a>
           </Flex>
         </Box>
       </Flex>

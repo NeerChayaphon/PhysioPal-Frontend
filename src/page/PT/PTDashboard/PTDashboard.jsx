@@ -17,7 +17,8 @@ import {
   TableContainer,
   VStack,
   Image,
-  Square,
+  Box,
+  Circle,
 } from '@chakra-ui/react';
 import Profile1 from '../../../icons/Exercise/Profile1.png';
 import { useSelector } from 'react-redux';
@@ -98,50 +99,66 @@ const PTDashboard = () => {
                 </Thead>
                 <Tbody>
                   {data.data !== null &&
-                    data.data.map((item, index) => {
-                      return (
-                        <Tr>
-                          <Td>{index + 1}.</Td>
-                          <Td>
-                            <Square size='60px' color='white' borderRadius='lg'>
-                              <Image src={Profile1} />
-                            </Square>
-                          </Td>
-
-                          <Td>
-                            {
-                              Patient.data.find(
-                                (obj) => obj._id === item.Patient
-                              ).Name
-                            }
-                            asdasd
-                          </Td>
-                          <Td>
-                            {new Date(item.Date).toISOString().substr(0, 10)}
-                          </Td>
-                          <Td>{item.Injury}</Td>
-                          <Td>
-                            <Button
-                              colorScheme='blue'
-                              variant='solid'
-                              size='xs'
-                              onClick={() =>
-                                navigate(
-                                  `/physiotherapist/appointment/${item._id}`,
-                                  {
-                                    state: { appointment: item },
+                    data.data
+                      .slice()
+                      .reverse()
+                      .map((item, index) => {
+                        return (
+                          <Tr>
+                            <Td>{index + 1}.</Td>
+                            <Td>
+                              <Box
+                                w='60px'
+                                h='60px'
+                                overflow='hidden'
+                                borderRadius='full'
+                              >
+                                <Image
+                                  w='100%'
+                                  h='100%'
+                                  objectFit='cover'
+                                  src={
+                                    Patient.data.find(
+                                      (obj) => obj._id === item.Patient
+                                    ).Photo
                                   }
-                                )
+                                />
+                              </Box>
+                            </Td>
+
+                            <Td>
+                              {
+                                Patient.data.find(
+                                  (obj) => obj._id === item.Patient
+                                ).Name
                               }
-                            >
-                              {language === 'English'
-                                ? 'View more'
-                                : 'ดูเพิ่มเติม'}
-                            </Button>
-                          </Td>
-                        </Tr>
-                      );
-                    })}
+                            </Td>
+                            <Td>
+                              {new Date(item.Date).toISOString().substr(0, 10)}
+                            </Td>
+                            <Td>{item.Injury !== '' ? item.Injury : '-'}</Td>
+                            <Td>
+                              <Button
+                                colorScheme='blue'
+                                variant='solid'
+                                size='xs'
+                                onClick={() =>
+                                  navigate(
+                                    `/physiotherapist/appointment/${item._id}`,
+                                    {
+                                      state: { appointment: item },
+                                    }
+                                  )
+                                }
+                              >
+                                {language === 'English'
+                                  ? 'View more'
+                                  : 'ดูเพิ่มเติม'}
+                              </Button>
+                            </Td>
+                          </Tr>
+                        );
+                      })}
                 </Tbody>
                 {/* <Tfoot>
                                 <Tr>

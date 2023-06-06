@@ -92,18 +92,19 @@ const TelemedicineDoctorCard = ({ doctorId, allPhy }) => {
               onClick={() => navigate(`/patient/telemedicine/${item._id}`)}
             >
               <VStack mb={4}>
-                <Image
-                  src='https://img.freepik.com/free-vector/hand-drawn-doctor-answer-questions-clipart-gesture-character_40876-3115.jpg?w=1380&t=st=1677661140~exp=1677661740~hmac=5fe43c19dc5f4b8dca7b6b8b26c8840c44f5197a4d7ede3bdb0e5cda74597eeb'
-                  borderTopRadius='lg'
-                  boxSize='240px'
-                />
+                <Image src={item.photo} borderTopRadius='lg' boxSize='240px' />
                 <Stack>
                   <Heading size='sm' align='center' mt={2}>
                     {language === 'English'
                       ? item.Details.En_Description.Name
                       : item.Details.Th_Description.Name}
                   </Heading>
-                  <Text align='center'>Physioterapist, Arm</Text>
+                  <Text align='center'>
+                    {' '}
+                    {language === 'English'
+                      ? item.Details.En_Description.Specialization
+                      : item.Details.Th_Description.Specialization}
+                  </Text>
                 </Stack>
               </VStack>
             </MenuButton>

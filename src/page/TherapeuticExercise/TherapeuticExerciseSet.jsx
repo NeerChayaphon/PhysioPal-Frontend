@@ -961,7 +961,7 @@ const addExerciseHistory = (id, token, exerciseId, exerciseStatus) => {
     {
       method: 'POST',
       body: JSON.stringify({
-        exercisetype: 'General',
+        exercisetype: 'Therapeutical',
         exerciseSetId: exerciseId,
         IsComplete: true,
         exerciseStatus: exerciseStatus,

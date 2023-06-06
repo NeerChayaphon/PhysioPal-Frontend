@@ -13,6 +13,7 @@ import {
   FormLabel,
   InputGroup,
   Spinner,
+  Box,
 } from '@chakra-ui/react';
 import PTDashboardMenu from '../../../component/PTDashboard/PTDashboardMenu';
 import Profile1 from '../../../icons/Exercise/Profile1.png';
@@ -129,7 +130,10 @@ const PTAppointmentDetail = () => {
           <Grid templateColumns='5fr 7fr'>
             <GridItem px={3} py={10}>
               <VStack spacing={10}>
-                <Image borderRadius='full' boxSize='xxs' src={Profile1} />
+                <Box w="300px" h="300px" overflow="hidden" borderRadius="full">
+                <Image w="100%" h="100%" objectFit="cover" src={patient.data.Photo} />
+                </Box>
+                
                 <Text fontSize='20px' fontWeight='bold'>
                   {patient.data.Name}
                 </Text>

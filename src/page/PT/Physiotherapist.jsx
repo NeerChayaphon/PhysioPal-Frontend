@@ -2,7 +2,7 @@ import React from 'react';
 import io from 'socket.io-client';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Button } from '@chakra-ui/react';
+import { Button, Center, Spinner, Text } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import ringtone from '../../utils/music/ringtone.mp3';
 import {
@@ -119,7 +119,13 @@ const Physiotherapist = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-      <div>Physiotherapist {id}</div>
+
+      <Center h='100vh' bg='gray.100'>
+        <Spinner size='xl' color='blue.500' thickness='4px' speed='1.0s' />
+        <Text ml='4' fontSize='2xl' fontWeight='bold'>
+          Waiting in-comming call...
+        </Text>
+      </Center>
     </>
   );
 };

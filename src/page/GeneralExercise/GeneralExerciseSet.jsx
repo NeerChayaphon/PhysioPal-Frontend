@@ -333,12 +333,16 @@ function Exercise({ ExerciseSet, Language, ExerciseCount }) {
                 setCurrentTime(new Date(Date()).getTime());
                 skeletonColor = 'rgb(0,255,0)';
               } else {
-                if (stepCount == 0) {
-                  setStartingPosition(false);
+                if (stepCount === currentExercise.exercise.Steps.length - 1) {
+                  stopPose();
+                } else {
+                  if (stepCount == 0) {
+                    setStartingPosition(false);
+                  }
+                  setCurrentStep(currentExercise.exercise.Steps[stepCount + 1]);
+                  clearInterval(interval);
+                  setStepCount(stepCount + 1);
                 }
-                setCurrentStep(currentExercise.exercise.Steps[stepCount + 1]);
-                clearInterval(interval);
-                setStepCount(stepCount + 1);
               }
             } else {
               if (currentExercise.exercise.Steps[stepCount].Timer === true) {
@@ -784,7 +788,9 @@ function Exercise({ ExerciseSet, Language, ExerciseCount }) {
                     //
                     {currentStep.Timer === true && seconds !== 0 && (
                       <Text color='gray.700' fontSize='2xl'>
-                        {Language === 'th' ? 'จับเวลา' : 'Timer'}: {seconds}{' '}
+                        {Language === 'th' ? 'จับเวลา' : 'Timer'}: {seconds}
+                        {'/'}
+                        {currentExercise.TimePeriod}{' '}
                         {Language === 'th' ? 'วินาที' : 'seconds'}
                       </Text>
                     )}

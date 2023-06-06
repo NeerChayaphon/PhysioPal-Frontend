@@ -6,6 +6,7 @@ import {
   Flex,
   Input,
   Button,
+  Box,
   Image,
   VStack,
   FormControl,
@@ -65,7 +66,14 @@ const PatientAppointmentDetail = () => {
           <Grid templateColumns='5fr 7fr'>
             <GridItem px={3} py={10}>
               <VStack spacing={10}>
-                <Image borderRadius='full' boxSize='xxs' src={Profile1} />
+                <Box w='300px' h='300px' overflow='hidden' borderRadius='full'>
+                  <Image
+                    w='100%'
+                    h='100%'
+                    objectFit='cover'
+                    src={Patient.data.Photo}
+                  />
+                </Box>
                 <Text fontSize='20px' fontWeight='bold'>
                   {Patient.data.Name}
                 </Text>

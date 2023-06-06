@@ -50,18 +50,6 @@ const PatientProfileMenu = () => {
         >
           Exercise Record
         </Button>
-        <Button
-          leftIcon={<BiLogOut />}
-          bgColor='teal.100'
-          _hover={{ bg: useColorModeValue('teal.300', 'white') }}
-          variant='solid'
-          mb={3}
-          w='100%'
-          h='50px'
-          justifyContent='start'
-        >
-          Log out
-        </Button>
       </Box>
     </Flex>
   );

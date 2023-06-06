@@ -15,8 +15,9 @@ import {
   Card,
   CardBody,
   Stack,
+  Badge,
 } from '@chakra-ui/react';
-import Picture from '../../../icons/Exercise/Picture.png';
+import Picture from '../../../icons/Exercise/Picture2.png';
 import Exercise1 from '../../../icons/Exercise/Exercise1.png';
 import { useLocation } from 'react-router-dom';
 import Loading from '../../../component/Loading/Loading';
@@ -125,6 +126,7 @@ const PatientVideoRecord = () => {
                         item.exercise.Steps[item.exercise.Steps.length - 1]
                           .Image
                       }
+                      mx={2}
                     />
                     <Stack>
                       <CardBody boxSize='md'>
@@ -133,6 +135,17 @@ const PatientVideoRecord = () => {
                             ? item.exercise.Details.En_Description.Name
                             : item.exercise.Details.Th_Description.Name}
                         </Heading>
+                        <Badge colorScheme='blue' mr={2}>
+                          {language === 'English'
+                            ? `Time: ${item.TimePeriod} Seconds`
+                            : `เวลา: ${item.TimePeriod} วินาที`}
+                        </Badge>
+                        <Badge colorScheme='green'>
+                          {' '}
+                          {language === 'English'
+                            ? `Reps: ${item.Reps}`
+                            : `จำนวนรอบ: ${item.Reps}`}
+                        </Badge>
                         <Text py='2'>
                           {exerciseData != null && language === 'English'
                             ? item.exercise.Details.En_Description.Description
@@ -140,22 +153,16 @@ const PatientVideoRecord = () => {
                         </Text>
 
                         {location.state.status && (
-                          <Flex
-                            flexDir='row'
-                            alignItems='center'
-                            justifyContent='center'
-                            w='30%'
-                            borderRadius='md'
-                            bgColor={
+                          <Badge
+                            colorScheme={
                               location.state.status[index].Status === 'skipped'
-                                ? 'red.200'
-                                : 'blue.200'
+                                ? 'red'
+                                : 'blue'
                             }
+                            mr={2}
                           >
-                            <Text fontSize='sm' w='105px'>
-                              Status: {location.state.status[index].Status}
-                            </Text>
-                          </Flex>
+                            Status: {location.state.status[index].Status}
+                          </Badge>
                         )}
                       </CardBody>
                     </Stack>

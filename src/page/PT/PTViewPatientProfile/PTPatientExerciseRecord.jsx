@@ -172,63 +172,73 @@ const PTPatientExerciseRecord = () => {
               </Thead>
               <Tbody>
                 {userState.data.ExerciseHistory ? (
-                  userState.data.ExerciseHistory.map((item, index) => {
-                    return (
-                      <Tr>
-                        <Td>{index + 1}.</Td>
-                        <Td>
-                          {item.ExerciseType === 'General'
-                            ? generalExercises.data.find(
-                                (obj) => obj._id === item.ExerciseSetId
-                              ).Details.En_Description.Name
-                            : therapeuticExercise.data.find(
-                                (obj) => obj._id === item.ExerciseSetId
-                              ).Details.En_Description.Name}
-                        </Td>
+                  userState.data.ExerciseHistory.slice()
+                    .reverse()
+                    .map((item, index) => {
+                      return (
+                        <Tr>
+                          <Td>{index + 1}.</Td>
+                          <Td>
+                            {item.ExerciseType === 'General'
+                              ? generalExercises.data.find(
+                                  (obj) => obj._id === item.ExerciseSetId
+                                ).Details.En_Description.Name
+                              : therapeuticExercise.data.find(
+                                  (obj) => obj._id === item.ExerciseSetId
+                                ).Details.En_Description.Name}
+                          </Td>
 
-                        <Td>
-                          {item.ExerciseType} <br />
-                          Exercise
-                        </Td>
-                        {/* <Td>
+                          <Td>
+                            {item.ExerciseType} <br />
+                            Exercise
+                          </Td>
+                          {/* <Td>
                             {item.Physiotherapist != null
                               ? item.Physiotherapist
                               : '-'}
                           </Td> */}
-                        <Td>
-                          {new Date(item.Date).toISOString().substr(0, 10)}
-                        </Td>
-                        <Td>{item.IsComplete ? 'Finished' : 'UnFinish'}</Td>
-                        <Td>
-                          <Button
-                            colorScheme='blue'
-                            variant='solid'
-                            size='xs'
-                            onClick={() =>
-                              navigate(
-                                `/physiotherapist/patientexercise/details/${
-                                  index + 1
-                                }`,
-                                {
-                                  state: {
-                                    exerciseSet: item,
-                                    type: item.ExerciseType,
-                                    status: item.ExerciseStatus
-                                      ? item.ExerciseStatus
-                                      : null,
-                                  },
-                                }
-                              )
-                            }
-                          >
-                            {language === 'English'
-                              ? 'View Detail'
-                              : 'ดูเพิ่มเติม'}
-                          </Button>
-                        </Td>
-                      </Tr>
-                    );
-                  })
+                          <Td>
+                            {new Date(item.Date).toISOString().substr(0, 10)}
+                          </Td>
+                          <Td>
+                            {item.ExerciseStatus
+                              ? item.ExerciseStatus.find(
+                                  (i) => i.Status === 'skipped'
+                                )
+                                ? 'Incomplete'
+                                : 'Completed'
+                              : 'UnFinish'}
+                          </Td>
+                          <Td>
+                            <Button
+                              colorScheme='blue'
+                              variant='solid'
+                              size='xs'
+                              onClick={() =>
+                                navigate(
+                                  `/physiotherapist/patientexercise/details/${
+                                    index + 1
+                                  }`,
+                                  {
+                                    state: {
+                                      exerciseSet: item,
+                                      type: item.ExerciseType,
+                                      status: item.ExerciseStatus
+                                        ? item.ExerciseStatus
+                                        : null,
+                                    },
+                                  }
+                                )
+                              }
+                            >
+                              {language === 'English'
+                                ? 'View Detail'
+                                : 'ดูเพิ่มเติม'}
+                            </Button>
+                          </Td>
+                        </Tr>
+                      );
+                    })
                 ) : (
                   <>No Data Found</>
                 )}

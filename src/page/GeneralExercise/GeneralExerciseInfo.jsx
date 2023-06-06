@@ -13,9 +13,10 @@ import {
   Avatar,
   HStack,
   VStack,
+  Badge,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
-import Picture from '../../icons/Exercise/Picture.png';
+import Picture from '../../icons/Exercise/Picture2.png';
 import Exercise1 from '../../icons/Exercise/Exercise1.png';
 import { MdOutlineNavigateNext } from 'react-icons/md';
 import { useParams } from 'react-router-dom';
@@ -67,6 +68,8 @@ const GeneralExerciseInfo = () => {
         });
     }
   }, [data]);
+
+  console.log(exerciseData);
 
   if (loading || loadingEx) {
     return <Loading />;
@@ -138,6 +141,7 @@ const GeneralExerciseInfo = () => {
                           item.exercise.Steps[item.exercise.Steps.length - 1]
                             .Image
                         }
+                        mx={2}
                       />
                       <Stack>
                         <CardBody boxSize='md'>
@@ -146,6 +150,17 @@ const GeneralExerciseInfo = () => {
                               ? item.exercise.Details.En_Description.Name
                               : item.exercise.Details.Th_Description.Name}
                           </Heading>
+                          <Badge colorScheme='blue' mr={2}>
+                            {language === 'English'
+                              ? `Time: ${item.TimePeriod} Seconds`
+                              : `เวลา: ${item.TimePeriod} วินาที`}
+                          </Badge>
+                          <Badge colorScheme='green'>
+                            {' '}
+                            {language === 'English'
+                              ? `Reps: ${item.Reps}`
+                              : `จำนวนรอบ: ${item.Reps}`}
+                          </Badge>
                           <Text py='2'>
                             {exerciseData != null && language === 'English'
                               ? item.exercise.Details.En_Description.Description
