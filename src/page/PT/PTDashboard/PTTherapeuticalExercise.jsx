@@ -402,7 +402,7 @@ const PTTherapeuticalExercise = () => {
               >
                 <ModalOverlay />
                 <ModalContent>
-                  <ModalHeader>Create your account</ModalHeader>
+                  <ModalHeader>Add Exercise Details</ModalHeader>
                   <ModalCloseButton />
                   <ModalBody pb={6}>
                     <FormControl>
